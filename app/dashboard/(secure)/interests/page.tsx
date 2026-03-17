@@ -19,7 +19,7 @@ export default async function DashboardInterestsPage() {
               <p className="font-semibold text-[var(--brand-deep)]">{item.name}</p>
               <p className="text-xs text-[var(--muted)]">Doctor: {item.projectTitle}</p>
               <p className="text-[var(--muted)]">{item.email} {item.phone ? `• ${item.phone}` : ""}</p>
-              <p className="mt-1 text-[var(--muted)]">Insurance: {item.company || "N/A"} • Preferred slot: {item.budget || "N/A"}</p>
+              <p className="mt-1 text-[var(--muted)]">Location/Insurance: {item.company || "N/A"} • Service/Preferred slot: {item.budget || "N/A"}</p>
               <p className="mt-2">{item.message || "No message"}</p>
               <p className="mt-2 text-xs text-[var(--muted)]">{new Date(item.createdAt).toLocaleString()}</p>
             </article>
