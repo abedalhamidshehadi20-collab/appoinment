@@ -1,10 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
 import { readData } from "@/lib/cms";
+import { homepageSpecialties, SpecialtyLink } from "@/components/site/specialties";
 
-export default async function HomePage() {
+type Props = {
+  searchParams: Promise<{ q?: string }>;
+};
+
+export default async function HomePage({ searchParams }: Props) {
   const data = await readData();
-  const featuredDoctors = data.projects.slice(0, 6);
+  const query = (await searchParams).q?.trim().toLowerCase() ?? "";
+  const filteredDoctors = query
+    ? data.projects.filter((doctor) => {
+        const haystack = `${doctor.title} ${doctor.sector} ${doctor.location} ${doctor.excerpt}`.toLowerCase();
+        return haystack.includes(query);
+      })
+    : data.projects;
+
+  const popularDoctors = filteredDoctors.slice(0, 4);
 
   return (
     <main className="container fade-up pb-8">
@@ -44,18 +57,43 @@ export default async function HomePage() {
         <p className="mx-auto mt-2 max-w-xl text-lg text-[var(--muted)]">
           Search your doctor and book appointment in one click.
         </p>
+
+        <form action="/" method="get" className="mx-auto mt-5 flex w-full max-w-md gap-2">
+          <input
+            name="q"
+            defaultValue={query}
+            placeholder="Search..."
+            className="h-11 flex-1 rounded-lg border border-[var(--line)] bg-white px-3 text-sm"
+          />
+          <button className="button button-primary h-11 px-5">Search</button>
+        </form>
       </section>
 
-      <section className="mt-7">
+      <section className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+        {homepageSpecialties.map((item) => (
+          <article key={item.label} className="card px-3 py-3 text-center">
+            <SpecialtyLink item={item} />
+          </article>
+        ))}
+      </section>
+
+      <section className="mt-10">
+        <h3 className="text-3xl font-extrabold">Popular Doctors</h3>
+      </section>
+
+      <section className="mt-5">
+        {popularDoctors.length === 0 ? (
+          <article className="card p-6 text-sm text-[var(--muted)]">No doctors found for your search.</article>
+        ) : null}
         <div className="grid-cards">
-          {featuredDoctors.map((project) => (
+          {popularDoctors.map((project) => (
             <article key={project.id} className="card overflow-hidden">
               <Image
                 src={project.coverImage}
                 alt={project.title}
                 width={1200}
                 height={520}
-                className="h-44 w-full object-cover"
+                className="h-52 w-full object-cover"
               />
               <div className="p-4">
                 <p className="text-xs font-semibold uppercase text-[var(--brand)]">{project.sector}</p>
