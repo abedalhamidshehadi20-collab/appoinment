@@ -9,11 +9,11 @@ const sections: { href: string; label: string; permission?: Permission }[] = [
   { href: "/dashboard/home", label: "Home", permission: "home" },
   { href: "/dashboard/about", label: "About", permission: "about" },
   { href: "/dashboard/services", label: "Services", permission: "services" },
-  { href: "/dashboard/projects", label: "Projects", permission: "projects" },
+  { href: "/dashboard/projects", label: "Doctors", permission: "projects" },
   { href: "/dashboard/blogs", label: "Blogs", permission: "blogs" },
   { href: "/dashboard/news", label: "News", permission: "news" },
   { href: "/dashboard/contacts", label: "Contact Messages", permission: "contacts" },
-  { href: "/dashboard/interests", label: "Project Interests", permission: "interests" },
+  { href: "/dashboard/interests", label: "Appointment Requests", permission: "interests" },
 ];
 
 type User = {

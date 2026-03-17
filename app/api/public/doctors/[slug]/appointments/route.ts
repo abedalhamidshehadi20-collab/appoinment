@@ -9,17 +9,17 @@ export async function POST(request: Request, context: Params) {
   const { slug } = await context.params;
   const formData = await request.formData();
   const data = await readData();
-  const project = data.projects.find((item) => item.slug === slug);
+  const doctor = data.projects.find((item) => item.slug === slug);
 
-  if (!project) {
+  if (!doctor) {
     return NextResponse.redirect(new URL("/doctors", request.url));
   }
 
   await updateData((store) => {
     store.interests.unshift({
       id: nextId("int"),
-      projectId: project.id,
-      projectTitle: project.title,
+      projectId: doctor.id,
+      projectTitle: doctor.title,
       name: formData.get("name")?.toString() ?? "",
       email: formData.get("email")?.toString() ?? "",
       phone: formData.get("phone")?.toString() ?? "",

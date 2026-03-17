@@ -25,18 +25,18 @@ function ProjectForm({
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <input name="title" required defaultValue={item?.title} placeholder="Title" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="slug" defaultValue={item?.slug} placeholder="Slug (optional)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <input name="excerpt" required defaultValue={item?.excerpt} placeholder="Short excerpt" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <textarea name="description" required rows={3} defaultValue={item?.description} placeholder="Description" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <input name="excerpt" required defaultValue={item?.excerpt} placeholder="Doctor summary" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <textarea name="description" required rows={3} defaultValue={item?.description} placeholder="Doctor bio" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <div className="grid gap-3 md:grid-cols-3">
-        <input name="sector" defaultValue={item?.sector} placeholder="Sector" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-        <input name="location" defaultValue={item?.location} placeholder="Location" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-        <input name="status" defaultValue={item?.status} placeholder="Status" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+        <input name="sector" defaultValue={item?.sector} placeholder="Specialty" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+        <input name="location" defaultValue={item?.location} placeholder="Clinic location" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+        <input name="status" defaultValue={item?.status} placeholder="Availability" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       </div>
       <input name="coverImage" defaultValue={item?.coverImage} placeholder="Cover image URL" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <textarea name="gallery" defaultValue={item?.gallery.join("\n")} rows={3} placeholder="Gallery URLs (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <textarea name="details" defaultValue={item?.details.join("\n")} rows={3} placeholder="Details list (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <textarea name="details" defaultValue={item?.details.join("\n")} rows={3} placeholder="Doctor highlights (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="createdAt" defaultValue={item?.createdAt} placeholder="Created date ISO" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <button className="button button-primary w-fit">{item ? "Save Project" : "Add Project"}</button>
+      <button className="button button-primary w-fit">{item ? "Save Doctor" : "Add Doctor"}</button>
     </form>
   );
 }
@@ -48,7 +48,7 @@ export default async function DashboardProjectsPage() {
   return (
     <>
       <article className="card p-6">
-        <h1 className="text-2xl font-extrabold">Create Project</h1>
+        <h1 className="text-2xl font-extrabold">Create Doctor Profile</h1>
         <div className="mt-4">
           <ProjectForm />
         </div>

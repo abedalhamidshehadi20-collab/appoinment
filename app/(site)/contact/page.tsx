@@ -13,7 +13,7 @@ export default async function ContactPage({ searchParams }: Props) {
       <section className="card p-8 md:p-10">
         <h1 className="text-4xl font-extrabold">Contact</h1>
         <p className="mt-3 max-w-2xl text-[var(--muted)]">
-          Tell us about your clinic or healthcare project and our consulting team will contact you.
+          Tell us about your healthcare needs and our clinic team will contact you.
         </p>
       </section>
 

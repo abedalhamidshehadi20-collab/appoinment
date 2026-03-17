@@ -17,11 +17,11 @@ export default async function DashboardOverviewPage() {
 
       <section className="grid-cards">
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">Services</p><p className="text-3xl font-extrabold">{counts.services}</p></article>
-        <article className="card p-4"><p className="text-sm text-[var(--muted)]">Projects</p><p className="text-3xl font-extrabold">{counts.projects}</p></article>
+        <article className="card p-4"><p className="text-sm text-[var(--muted)]">Doctors</p><p className="text-3xl font-extrabold">{counts.projects}</p></article>
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">Blogs</p><p className="text-3xl font-extrabold">{counts.blogs}</p></article>
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">News</p><p className="text-3xl font-extrabold">{counts.news}</p></article>
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">Contact Messages</p><p className="text-3xl font-extrabold">{counts.contacts}</p></article>
-        <article className="card p-4"><p className="text-sm text-[var(--muted)]">Project Interests</p><p className="text-3xl font-extrabold">{counts.interests}</p></article>
+        <article className="card p-4"><p className="text-sm text-[var(--muted)]">Appointment Requests</p><p className="text-3xl font-extrabold">{counts.interests}</p></article>
       </section>
 
       <article className="card p-6 text-sm text-[var(--muted)]">

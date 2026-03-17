@@ -42,8 +42,8 @@ export default async function HomePage() {
 
       <section className="mt-8">
         <div className="mb-4 flex items-end justify-between">
-          <h2 className="text-2xl font-extrabold">Featured Projects</h2>
-          <Link href="/projects" className="text-sm font-semibold text-[var(--brand-deep)]">
+          <h2 className="text-2xl font-extrabold">Featured Doctors</h2>
+          <Link href="/doctors" className="text-sm font-semibold text-[var(--brand-deep)]">
             View all
           </Link>
         </div>
@@ -62,10 +62,10 @@ export default async function HomePage() {
                 <h3 className="mt-2 text-xl font-bold">{project.title}</h3>
                 <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
                 <Link
-                  href={`/projects/${project.slug}`}
+                  href={`/doctors/${project.slug}`}
                   className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]"
                 >
-                  Open project
+                  View profile
                 </Link>
               </div>
             </article>

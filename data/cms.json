@@ -2,8 +2,8 @@
   "home": {
     "headline": "MedAxis Care Solutions",
     "subheadline": "We build and operate modern clinic networks with measurable patient outcomes.",
-    "primaryCtaText": "Explore Projects",
-    "primaryCtaLink": "/projects",
+    "primaryCtaText": "Meet Our Doctors",
+    "primaryCtaLink": "/doctors",
     "secondaryCtaText": "Contact Us",
     "secondaryCtaLink": "/contact",
     "stats": [
@@ -46,42 +46,42 @@
   "projects": [
     {
       "id": "prj_1",
-      "slug": "northline-daycare-clinics",
-      "title": "Northline Daycare Clinics",
-      "excerpt": "A 6-site pediatric network rollout in 8 months.",
-      "description": "MedAxis designed and launched six pediatric day-care clinics with unified scheduling, pharmacy flow, and parent communication tools.",
-      "sector": "Pediatrics",
-      "location": "Cairo",
-      "status": "Completed",
-      "coverImage": "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80",
+      "slug": "dr-omar-hassan",
+      "title": "Dr. Omar Hassan",
+      "excerpt": "Consultant in internal medicine with 12+ years of clinical practice.",
+      "description": "Dr. Omar Hassan focuses on comprehensive adult care, chronic disease management, and preventive medicine with evidence-based plans.",
+      "sector": "Internal Medicine",
+      "location": "Main Clinic - Cairo",
+      "status": "Available",
+      "coverImage": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80",
       "gallery": [
         "https://images.unsplash.com/photo-1580281657527-47f249e8f4df?auto=format&fit=crop&w=1000&q=80",
         "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1000&q=80"
       ],
       "details": [
-        "Reduced patient waiting time by 34%.",
-        "Integrated insurance and billing in one workflow.",
-        "Trained 120 clinical and non-clinical staff."
+        "Focuses on hypertension, diabetes, and preventive checkups.",
+        "Provides bilingual consultations (Arabic/English).",
+        "Available Sunday to Thursday from 10:00 AM to 6:00 PM."
       ],
       "createdAt": "2026-03-01T10:00:00.000Z"
     },
     {
       "id": "prj_2",
-      "slug": "rivera-dermatology-hub",
-      "title": "Rivera Dermatology Hub",
-      "excerpt": "Premium dermatology center with digital-first patient journey.",
-      "description": "A flagship specialty clinic focused on dermatology and minor procedures, with streamlined intake and treatment documentation.",
+      "slug": "dr-khan-adel",
+      "title": "Dr. Khan Adel",
+      "excerpt": "Dermatology specialist for clinical and cosmetic treatments.",
+      "description": "Dr. Khan Adel provides diagnosis and treatment for skin, hair, and nail conditions with modern non-invasive procedures.",
       "sector": "Dermatology",
-      "location": "Alexandria",
-      "status": "In Progress",
-      "coverImage": "https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=1200&q=80",
+      "location": "North Branch - Alexandria",
+      "status": "Available",
+      "coverImage": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1200&q=80",
       "gallery": [
         "https://images.unsplash.com/photo-1666214280557-f1b5022eb634?auto=format&fit=crop&w=1000&q=80"
       ],
       "details": [
-        "Built a paperless intake and consent flow.",
-        "Implemented AI-assisted triage tags.",
-        "Designed procedure-room scheduling controls."
+        "Treats acne, eczema, pigmentation, and skin infections.",
+        "Offers laser and minimally invasive cosmetic sessions.",
+        "Available Saturday to Wednesday from 12:00 PM to 8:00 PM."
       ],
       "createdAt": "2026-03-10T12:00:00.000Z"
     }

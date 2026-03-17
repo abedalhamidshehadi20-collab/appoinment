@@ -8,19 +8,20 @@ Complete Next.js website for a healthcare operations agency with a fully working
 	- Home
 	- About
 	- Services
-	- Projects + Project Details
+	- Doctors + Doctor Details
+	- Appointments
 	- Blog + Blog Details
 	- News + News Details
 	- Contact
 - Internal dashboard:
 	- Login and logout
 	- Role-based permissions (RBAC)
-	- Editable Home, About, Services, Projects, Blogs, and News content
+	- Editable Home, About, Services, Doctors, Blogs, and News content
 	- Contact submissions inbox
-	- Project-interest submissions inbox
+	- Appointment requests inbox
 - Forms connected end-to-end:
 	- Public contact form -> dashboard contacts
-	- Public project interest form -> dashboard interests
+	- Public appointment request form -> dashboard interests
 
 ## Tech Notes
 

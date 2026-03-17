@@ -8,8 +8,8 @@ export default async function ProjectsPage() {
   return (
     <main className="container fade-up pb-8">
       <section className="card p-8 md:p-10">
-        <h1 className="text-4xl font-extrabold">Projects</h1>
-        <p className="mt-3 text-[var(--muted)]">Selected healthcare transformation initiatives.</p>
+        <h1 className="text-4xl font-extrabold">Doctors</h1>
+        <p className="mt-3 text-[var(--muted)]">Meet our medical specialists and book your appointment.</p>
       </section>
 
       <section className="grid-cards mt-6">
@@ -26,8 +26,8 @@ export default async function ProjectsPage() {
               <p className="text-xs font-semibold uppercase text-[var(--accent)]">{project.sector}</p>
               <h2 className="mt-2 text-xl font-bold">{project.title}</h2>
               <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
-              <Link href={`/projects/${project.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
-                View details
+              <Link href={`/doctors/${project.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
+                View profile
               </Link>
             </div>
           </article>
