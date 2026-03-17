@@ -1,0 +1,132 @@
+{
+  "home": {
+    "headline": "MedAxis Care Solutions",
+    "subheadline": "We build and operate modern clinic networks with measurable patient outcomes.",
+    "primaryCtaText": "Explore Projects",
+    "primaryCtaLink": "/projects",
+    "secondaryCtaText": "Contact Us",
+    "secondaryCtaLink": "/contact",
+    "stats": [
+      { "label": "Clinics Managed", "value": "48" },
+      { "label": "Cities", "value": "11" },
+      { "label": "Patient Satisfaction", "value": "96%" }
+    ]
+  },
+  "about": {
+    "title": "About MedAxis",
+    "description": "MedAxis is a healthcare operations agency focused on clinic setup, digital workflows, and patient-centered design.",
+    "mission": "To make premium clinical care accessible through better systems, better facilities, and better teams.",
+    "vision": "To become the region's most trusted partner for building high-performing care environments.",
+    "values": [
+      "Clinical excellence",
+      "Transparent operations",
+      "Long-term partnerships"
+    ]
+  },
+  "services": [
+    {
+      "id": "svc_1",
+      "title": "Clinic Launch",
+      "summary": "From feasibility study to opening day execution.",
+      "features": ["Market research", "Facility planning", "Staff onboarding"]
+    },
+    {
+      "id": "svc_2",
+      "title": "Digital Transformation",
+      "summary": "Upgrade operations using unified care and admin platforms.",
+      "features": ["EMR workflow design", "Training", "Data dashboards"]
+    },
+    {
+      "id": "svc_3",
+      "title": "Operational Audits",
+      "summary": "Performance, compliance, and patient journey reviews.",
+      "features": ["SOP review", "KPI setup", "Quality improvement plans"]
+    }
+  ],
+  "projects": [
+    {
+      "id": "prj_1",
+      "slug": "northline-daycare-clinics",
+      "title": "Northline Daycare Clinics",
+      "excerpt": "A 6-site pediatric network rollout in 8 months.",
+      "description": "MedAxis designed and launched six pediatric day-care clinics with unified scheduling, pharmacy flow, and parent communication tools.",
+      "sector": "Pediatrics",
+      "location": "Cairo",
+      "status": "Completed",
+      "coverImage": "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1580281657527-47f249e8f4df?auto=format&fit=crop&w=1000&q=80",
+        "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1000&q=80"
+      ],
+      "details": [
+        "Reduced patient waiting time by 34%.",
+        "Integrated insurance and billing in one workflow.",
+        "Trained 120 clinical and non-clinical staff."
+      ],
+      "createdAt": "2026-03-01T10:00:00.000Z"
+    },
+    {
+      "id": "prj_2",
+      "slug": "rivera-dermatology-hub",
+      "title": "Rivera Dermatology Hub",
+      "excerpt": "Premium dermatology center with digital-first patient journey.",
+      "description": "A flagship specialty clinic focused on dermatology and minor procedures, with streamlined intake and treatment documentation.",
+      "sector": "Dermatology",
+      "location": "Alexandria",
+      "status": "In Progress",
+      "coverImage": "https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=1200&q=80",
+      "gallery": [
+        "https://images.unsplash.com/photo-1666214280557-f1b5022eb634?auto=format&fit=crop&w=1000&q=80"
+      ],
+      "details": [
+        "Built a paperless intake and consent flow.",
+        "Implemented AI-assisted triage tags.",
+        "Designed procedure-room scheduling controls."
+      ],
+      "createdAt": "2026-03-10T12:00:00.000Z"
+    }
+  ],
+  "blogs": [
+    {
+      "id": "blg_1",
+      "slug": "five-signs-your-clinic-needs-a-workflow-redesign",
+      "title": "Five Signs Your Clinic Needs a Workflow Redesign",
+      "excerpt": "Long queues and documentation delays are early warning signs.",
+      "content": "When clinics grow quickly, the original workflow often fails. Start by tracking bottlenecks in registration, triage, and discharge.",
+      "author": "Operations Team",
+      "publishedAt": "2026-02-15",
+      "tags": ["Operations", "Healthcare", "Workflow"]
+    }
+  ],
+  "news": [
+    {
+      "id": "nws_1",
+      "slug": "medaxis-opens-training-center",
+      "title": "MedAxis Opens Regional Training Center",
+      "excerpt": "A new center focused on practical clinical operations training.",
+      "content": "The training center will support nurses, front-desk teams, and clinic managers with simulation-based modules.",
+      "publishedAt": "2026-03-12",
+      "source": "MedAxis Press"
+    }
+  ],
+  "contacts": [],
+  "interests": [],
+  "users": [
+    {
+      "id": "usr_1",
+      "name": "System Admin",
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin",
+      "permissions": ["all"]
+    },
+    {
+      "id": "usr_2",
+      "name": "Blog Editor",
+      "username": "blogger",
+      "password": "blog123",
+      "role": "editor",
+      "permissions": ["blogs"]
+    }
+  ]
+}
