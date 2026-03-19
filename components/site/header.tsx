@@ -121,13 +121,13 @@ export function SiteHeader() {
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-3">
-            <Link href="/dashboard/login" className="button button-secondary text-xs">
-              Dashboard
+          <div className="flex items-center">
+            <Link
+              href="/login"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-5 text-sm font-semibold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
+            >
+              Login
             </Link>
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#065f46] text-sm font-bold text-white">
-              G
-            </span>
           </div>
         </nav>
       </div>
