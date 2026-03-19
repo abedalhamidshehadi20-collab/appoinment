@@ -9,149 +9,153 @@ export default async function AppointmentsPage({ searchParams }: Props) {
   const data = await readData();
 
   return (
-    <main className="fade-up bg-[linear-gradient(180deg,#eef3f9_0%,#f7f9fc_36%,#f7f9fc_100%)] pb-16">
-      <section className="container mt-4">
-        <div className="relative overflow-hidden rounded-xl bg-[#1f5ca8] py-4 text-white md:py-5">
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-25"
-            style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=1600&q=80')",
-            }}
+    <main className="container fade-up py-10">
+      <section className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.02fr_0.98fr]">
+        <article className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#1d4f91_0%,#2377e7_55%,#6fb3ff_100%)] p-8 text-white shadow-[0_24px_60px_-32px_rgba(29,79,145,0.65)]">
+          <span className="inline-flex rounded-full border border-white/20 bg-white/12 px-4 py-1 text-xs font-bold uppercase tracking-[0.24em]">
+            Visit Our Clinic
+          </span>
+          <h1 className="mt-5 max-w-md text-4xl font-extrabold leading-tight">
+            Book your appointment and connect with the right care faster.
+          </h1>
+          <p className="mt-4 max-w-lg text-sm text-white/80">
+            Share your concern, preferred service, and contact details. Our team will review your
+            request and confirm the best next step for your visit.
+          </p>
+          <div className="mt-8 grid gap-3 text-sm text-white/90 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Fast appointment confirmation
+            </div>
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Guidance to the right doctor
+            </div>
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Easy follow-up coordination
+            </div>
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Friendly clinic support
+            </div>
+          </div>
+
+          <div className="mt-8 space-y-3 text-sm leading-6 text-white/85">
+            <p>123 Main Street, Springfield, IL 62704 United States</p>
+            <p>company@gmail.com</p>
+            <p>+91 12345 67890</p>
+          </div>
+
+          <iframe
+            title="Appointment location map"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
+            className="mt-5 h-56 w-full rounded-2xl border border-white/18"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#163d73]/80 to-[#2f6ab7]/70" />
-          <div className="relative text-center">
-            <h1 className="text-xl font-black md:text-3xl">Book Appointment</h1>
+        </article>
+
+        <article className="card rounded-[28px] p-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--brand)]">Appointment Form</p>
+            <h2 className="mt-3 text-3xl font-extrabold">Book An Appointment</h2>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              Share your concern and preferred time. Our care coordinator will confirm your visit.
+            </p>
           </div>
-        </div>
-      </section>
 
-      <section className="container -mt-10 md:-mt-14">
-        <div className="rounded-2xl border border-[#dfe6ef] bg-white p-5 shadow-[0_24px_50px_-36px_rgba(15,23,42,0.55)] md:p-8 lg:p-10">
-          <div className="grid gap-7 lg:grid-cols-[1.5fr_0.85fr]">
-            <article className="rounded-xl border border-[#e7edf5] bg-[#fbfcfe] p-5 md:p-6">
-              <h2 className="text-3xl font-black text-[#102a52] md:text-4xl">Book An Appointment</h2>
-              <p className="mt-2 text-sm text-[#64748b] md:text-base">
-                Share your concern and preferred time. Our care coordinator will confirm your visit.
-              </p>
+          {query.sent === "1" ? (
+            <p className="mt-6 rounded-2xl border border-[#bde5cb] bg-[#ecfff3] p-4 text-sm font-medium text-[#145f39]">
+              Appointment request sent successfully.
+            </p>
+          ) : null}
 
-              {query.sent === "1" ? (
-                <p className="mt-4 rounded-md bg-[#e8fff2] p-3 text-sm text-[#145f39]">
-                  Appointment request sent successfully.
-                </p>
-              ) : null}
+          <form action="/api/public/appointments" method="post" className="mt-8 grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Full Name
+                <input
+                  required
+                  name="name"
+                  placeholder="Enter your full name"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
+                />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Phone
+                <input
+                  name="phone"
+                  placeholder="+91"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
+                />
+              </label>
+            </div>
 
-              <form action="/api/public/appointments" method="post" className="mt-6 grid gap-4">
-                <div className="grid gap-3 md:grid-cols-2">
-                  <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
-                    Full Name *
-                    <input
-                      required
-                      name="name"
-                      placeholder="Enter your full name"
-                      className="h-11 rounded-md border border-[#dbe3ee] bg-white px-3 text-sm font-normal outline-none transition focus:border-[#7ea8da] focus:ring-2 focus:ring-[#d8e7fa]"
-                    />
-                  </label>
-                  <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
-                    Phone
-                    <input
-                      name="phone"
-                      placeholder="+91"
-                      className="h-11 rounded-md border border-[#dbe3ee] bg-white px-3 text-sm font-normal outline-none transition focus:border-[#7ea8da] focus:ring-2 focus:ring-[#d8e7fa]"
-                    />
-                  </label>
-                </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Email Address
+                <input
+                  required
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
+                />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Location
+                <input
+                  name="location"
+                  placeholder="City or area"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
+                />
+              </label>
+            </div>
 
-                <div className="grid gap-3 md:grid-cols-2">
-                  <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
-                    Email *
-                    <input
-                      required
-                      type="email"
-                      name="email"
-                      placeholder="you@example.com"
-                      className="h-11 rounded-md border border-[#dbe3ee] bg-white px-3 text-sm font-normal outline-none transition focus:border-[#7ea8da] focus:ring-2 focus:ring-[#d8e7fa]"
-                    />
-                  </label>
-                  <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
-                    Location
-                    <input
-                      name="location"
-                      placeholder="City or area"
-                      className="h-11 rounded-md border border-[#dbe3ee] bg-white px-3 text-sm font-normal outline-none transition focus:border-[#7ea8da] focus:ring-2 focus:ring-[#d8e7fa]"
-                    />
-                  </label>
-                </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Required Service
+                <select
+                  name="service"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium text-[#374151] outline-none transition focus:border-[#9ec5ff] focus:bg-white"
+                >
+                  <option value="General Consultation">General Consultation</option>
+                  <option value="Dental Checkup">Dental Checkup</option>
+                  <option value="ENT Care">ENT Care</option>
+                  <option value="Neurology Visit">Neurology Visit</option>
+                  <option value="Cardiology Visit">Cardiology Visit</option>
+                </select>
+              </label>
 
-                <div className="grid gap-3 md:grid-cols-2">
-                  <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
-                    Required Service
-                    <select
-                      name="service"
-                      className="h-11 rounded-md border border-[#dbe3ee] bg-white px-3 text-sm font-normal text-[#374151] outline-none transition focus:border-[#7ea8da] focus:ring-2 focus:ring-[#d8e7fa]"
-                    >
-                      <option value="General Consultation">General Consultation</option>
-                      <option value="Dental Checkup">Dental Checkup</option>
-                      <option value="ENT Care">ENT Care</option>
-                      <option value="Neurology Visit">Neurology Visit</option>
-                      <option value="Cardiology Visit">Cardiology Visit</option>
-                    </select>
-                  </label>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Preferred Doctor
+                <select
+                  name="doctorId"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium text-[#374151] outline-none transition focus:border-[#9ec5ff] focus:bg-white"
+                >
+                  <option value="">Choose doctor (optional)</option>
+                  {data.projects.map((doctor) => (
+                    <option key={doctor.id} value={doctor.id}>
+                      {doctor.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
-                  <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
-                    Preferred Doctor
-                    <select
-                      name="doctorId"
-                      className="h-11 rounded-md border border-[#dbe3ee] bg-white px-3 text-sm font-normal text-[#374151] outline-none transition focus:border-[#7ea8da] focus:ring-2 focus:ring-[#d8e7fa]"
-                    >
-                      <option value="">Choose doctor (optional)</option>
-                      {data.projects.map((doctor) => (
-                        <option key={doctor.id} value={doctor.id}>
-                          {doctor.title}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-
-                <label className="grid gap-1.5 text-sm font-semibold text-[#334155]">
-                  Message
-                  <textarea
-                    name="message"
-                    rows={5}
-                    placeholder="Briefly describe your symptoms or request"
-                    className="rounded-md border border-[#dbe3ee] bg-white px-3 py-2 text-sm font-normal outline-none transition focus:border-[#7ea8da] focus:ring-2 focus:ring-[#d8e7fa]"
-                  />
-                </label>
-
-                <div className="pt-2 text-center md:text-left">
-                  <button className="rounded-md bg-[#183e73] px-7 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#14345f]">
-                    Send Message
-                  </button>
-                  <p className="mt-3 text-xs text-[#94a3b8]">* These fields are required.</p>
-                </div>
-              </form>
-            </article>
-
-            <article className="rounded-xl border border-[#e3e8ef] bg-[linear-gradient(180deg,#f7fafe_0%,#f8fafc_100%)] p-5 md:p-6">
-              <h3 className="text-3xl font-black text-[#102a52]">Visit Our Clinic</h3>
-
-              <div className="mt-4 space-y-3 text-sm leading-6 text-[#475569]">
-                <p>123 Main Street, Springfield, IL 62704 United States</p>
-                <p>company@gmail.com</p>
-                <p>+91 12345 67890</p>
-              </div>
-
-              <iframe
-                title="Appointment location map"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
-                className="mt-5 h-60 w-full rounded-md border border-[#dbe3ee]"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
+            <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+              Message
+              <textarea
+                name="message"
+                rows={5}
+                placeholder="Briefly describe your symptoms or request"
+                className="rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 py-3 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
               />
-            </article>
-          </div>
-        </div>
+            </label>
+
+            <p className="text-center text-xs text-[var(--muted)]">* These fields are required.</p>
+            <button className="mt-1 inline-flex h-12 items-center justify-center rounded-2xl bg-[var(--brand)] px-6 text-sm font-semibold text-white transition hover:bg-[#1f68cb]">
+              Send Message
+            </button>
+          </form>
+        </article>
       </section>
     </main>
   );
