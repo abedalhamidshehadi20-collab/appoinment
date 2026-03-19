@@ -69,9 +69,9 @@ export default async function HomePage({ searchParams }: Props) {
         </form>
       </section>
 
-      <section className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+      <section className="mt-7 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
         {homepageSpecialties.map((item) => (
-          <article key={item.label} className="card px-3 py-3 text-center">
+          <article key={item.label} className="card overflow-hidden p-0 transition-all hover:shadow-lg">
             <SpecialtyLink item={item} />
           </article>
         ))}
