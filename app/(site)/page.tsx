@@ -50,12 +50,15 @@ export default async function HomePage({ searchParams }: Props) {
         </div>
       </section>
 
-      <section className="mt-10 text-center">
-        <h2 className="text-4xl font-extrabold">
+      <section className="mt-12 text-center">
+        <span className="text-xs font-bold uppercase tracking-[0.24em] text-[var(--brand-deep)]">
+          Browse By Specialty
+        </span>
+        <h2 className="mt-3 text-4xl font-extrabold">
           Search <span className="text-[var(--brand)]">Doctors</span>
         </h2>
-        <p className="mx-auto mt-2 max-w-xl text-lg text-[var(--muted)]">
-          Search your doctor and book appointment in one click.
+        <p className="mx-auto mt-3 max-w-2xl text-lg text-[var(--muted)]">
+          Choose a care category first, then move into doctors with a cleaner and more guided booking flow.
         </p>
 
         <form action="/" method="get" className="mx-auto mt-5 flex w-full max-w-md gap-2">
@@ -69,9 +72,9 @@ export default async function HomePage({ searchParams }: Props) {
         </form>
       </section>
 
-      <section className="mt-7 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+      <section className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {homepageSpecialties.map((item) => (
-          <article key={item.label} className="card overflow-hidden p-0 transition-all hover:shadow-lg">
+          <article key={item.label} className="overflow-hidden rounded-[22px] border border-[var(--line)] bg-white shadow-[0_12px_28px_-24px_rgba(17,24,39,0.28)]">
             <SpecialtyLink item={item} />
           </article>
         ))}

@@ -351,16 +351,34 @@ export function SpecialtyLink({
   return (
     <Link
       href={specialtyHref(item.label)}
-      className={`group flex flex-col items-center justify-center gap-2 rounded-lg px-3 py-4 text-sm font-semibold transition-all duration-200 ${
+      className={`group relative flex min-h-[132px] flex-col justify-between rounded-[22px] px-5 py-5 text-left transition-all duration-200 ${
         active
-          ? "bg-[#dbeafe] text-[var(--brand)] shadow-sm"
-          : "text-[var(--brand-deep)] hover:bg-[#eff6ff] hover:shadow-sm hover:-translate-y-0.5"
+          ? "bg-[linear-gradient(180deg,#eef5ff_0%,#dbeafe_100%)] text-[var(--brand-deep)] shadow-[0_16px_28px_-22px_rgba(35,119,231,0.65)]"
+          : "bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] text-[var(--brand-deep)] hover:-translate-y-1 hover:border-[#c7ddff] hover:shadow-[0_18px_30px_-22px_rgba(17,24,39,0.22)]"
       }`}
     >
-      <div className={`rounded-full p-2 transition-colors ${active ? "bg-white/50" : "bg-[#eff6ff] group-hover:bg-white"}`}>
+      <span
+        className={`absolute right-5 top-5 h-2 w-2 rounded-full transition-opacity ${
+          active ? "bg-[var(--brand)] opacity-100" : "bg-[#c7d2fe] opacity-0 group-hover:opacity-100"
+        }`}
+      />
+
+      <div
+        className={`flex h-14 w-14 items-center justify-center rounded-2xl border transition-colors ${
+          active
+            ? "border-white/70 bg-white/80"
+            : "border-[#edf2fb] bg-[#f4f8ff] group-hover:border-[#dbeafe] group-hover:bg-white"
+        }`}
+      >
         <MedicalIcon type={item.icon} />
       </div>
-      <span className="text-center">{item.label}</span>
+
+      <div className="mt-5">
+        <span className="block text-lg font-bold leading-tight tracking-[-0.02em]">{item.label}</span>
+        <span className="mt-2 block text-xs font-medium uppercase tracking-[0.14em] text-[var(--muted)]">
+          Explore specialty
+        </span>
+      </div>
     </Link>
   );
 }
