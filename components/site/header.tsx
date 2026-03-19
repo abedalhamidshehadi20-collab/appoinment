@@ -106,8 +106,8 @@ export function SiteHeader() {
       <div className="container py-4">
         <nav className="card flex flex-wrap items-center justify-between gap-4 px-5 py-3">
           <Link href="/" className="flex items-center gap-2 text-xl font-black text-[var(--brand)]">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand)] text-white">M</span>
-            MedAxis
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand)] text-sm text-white">SH</span>
+            Sh-Med
           </Link>
           <ul className="flex flex-wrap items-center gap-1 text-sm font-semibold text-[var(--muted)]">
             {navItems.map((item) => (
