@@ -43,8 +43,18 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
         <path
-          d="M12 2.9c-3.7 0-6.1 1.7-6.1 4.6 0 1.6.8 2.8 1.8 4 .8 1 1.2 2.1 1.2 3.3v1.5c0 3.1 1.5 5 3.4 5 1.1 0 1.8-.8 2.1-2.1l.4-1.9c.1-.4.4-.6.8-.6s.7.2.8.6l.4 1.9c.3 1.3 1 2.1 2.1 2.1 1.9 0 3.4-1.9 3.4-5v-1.5c0-1.2.4-2.3 1.2-3.3 1-1.2 1.8-2.4 1.8-4 0-2.9-2.4-4.6-6.1-4.6z"
-          fill="currentColor"
+          d="M12 3.1c-3.4 0-5.8 1.4-5.8 4 0 1.4.7 2.6 1.5 3.8.8 1.1 1.1 2.2 1.1 3.6v1.2c0 2.9 1.2 5 2.9 5 .9 0 1.5-.8 1.8-2.3l.4-2.2c.1-.5.4-.8.9-.8s.8.3.9.8l.4 2.2c.3 1.5.9 2.3 1.8 2.3 1.7 0 2.9-2.1 2.9-5v-1.2c0-1.4.3-2.5 1.1-3.6.8-1.2 1.5-2.4 1.5-3.8 0-2.6-2.4-4-5.8-4z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8.8 6.9c.6-.6 1.1-.9 1.7-.9.7 0 1.1.3 1.5.8.4-.5.9-.8 1.5-.8.7 0 1.2.3 1.7.9"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     );
