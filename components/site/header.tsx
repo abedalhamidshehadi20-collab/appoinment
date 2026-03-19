@@ -18,8 +18,14 @@ export function SiteHeader() {
   const [isVisible, setIsVisible] = useState(true);
   const heroBottomRef = useRef<number>(0);
   const mouseHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isVisibleRef = useRef(true);
 
   useEffect(() => {
+    const setHeaderVisible = (value: boolean) => {
+      isVisibleRef.current = value;
+      setIsVisible(value);
+    };
+
     const clearMouseHideTimer = () => {
       if (mouseHideTimerRef.current) {
         clearTimeout(mouseHideTimerRef.current);
@@ -45,32 +51,34 @@ export function SiteHeader() {
 
     const handleScroll = () => {
       if (isPastHero()) {
-        setIsVisible(false);
+        setHeaderVisible(false);
         return;
       }
 
       clearMouseHideTimer();
-      setIsVisible(true);
+      setHeaderVisible(true);
     };
 
     const handleMouseMove = (event: MouseEvent) => {
       if (!isPastHero()) {
-        return;
-      }
-
-      if (event.clientY <= 120) {
         clearMouseHideTimer();
-        setIsVisible(true);
+        setHeaderVisible(true);
         return;
       }
 
-      if (isVisible) {
+      if (event.clientY <= 160) {
+        clearMouseHideTimer();
+        setHeaderVisible(true);
+        return;
+      }
+
+      if (isVisibleRef.current) {
         clearMouseHideTimer();
         mouseHideTimerRef.current = setTimeout(() => {
           if (isPastHero()) {
-            setIsVisible(false);
+            setHeaderVisible(false);
           }
-        }, 120);
+        }, 220);
       }
     };
 
@@ -87,7 +95,7 @@ export function SiteHeader() {
       window.removeEventListener("resize", updateHeroBottom);
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [isVisible]);
+  }, []);
 
   return (
     <header
