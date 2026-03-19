@@ -1,6 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  const showWideMap = pathname === "/";
+  const showFooterLocation = pathname !== "/";
+
   return (
     <footer className="mt-14 border-t border-[var(--line)] bg-white">
       <section className="bg-[#0f172a] py-8 text-white">
@@ -38,18 +45,20 @@ export function SiteFooter() {
         </div>
       </section>
 
-      <section className="border-y border-[var(--line)]">
-        <iframe
-          title="Main location map"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
-          className="h-52 w-full border-0"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-        />
-      </section>
+      {showWideMap ? (
+        <section className="border-y border-[var(--line)]">
+          <iframe
+            title="Main location map"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
+            className="h-52 w-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </section>
+      ) : null}
 
       <section className="bg-[#f8fafc] py-10">
-        <div className="container grid gap-8 md:grid-cols-4">
+        <div className={`container grid gap-8 ${showFooterLocation ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
           <article>
             <div className="flex items-center gap-2 text-2xl font-black text-[#22a35b]">
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#22a35b] text-sm">M</span>
@@ -93,16 +102,18 @@ export function SiteFooter() {
             </ul>
           </article>
 
-          <article>
-            <h4 className="text-lg font-bold text-[var(--brand-deep)]">Location</h4>
-            <iframe
-              title="Footer location map"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
-              className="mt-3 h-28 w-full rounded border border-[var(--line)]"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </article>
+          {showFooterLocation ? (
+            <article>
+              <h4 className="text-lg font-bold text-[var(--brand-deep)]">Location</h4>
+              <iframe
+                title="Footer location map"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
+                className="mt-3 h-28 w-full rounded border border-[var(--line)]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </article>
+          ) : null}
         </div>
 
         <div className="container mt-8 border-t border-[var(--line)] pt-4 text-center text-xs text-[var(--muted)]">

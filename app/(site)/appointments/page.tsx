@@ -11,7 +11,7 @@ export default async function AppointmentsPage({ searchParams }: Props) {
   return (
     <main className="fade-up bg-[linear-gradient(180deg,#eef3f9_0%,#f7f9fc_36%,#f7f9fc_100%)] pb-16">
       <section className="container mt-4">
-        <div className="relative overflow-hidden rounded-xl bg-[#1f5ca8] py-7 text-white md:py-8">
+        <div className="relative overflow-hidden rounded-xl bg-[#1f5ca8] py-4 text-white md:py-5">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-25"
             style={{
@@ -21,7 +21,7 @@ export default async function AppointmentsPage({ searchParams }: Props) {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#163d73]/80 to-[#2f6ab7]/70" />
           <div className="relative text-center">
-            <h1 className="text-2xl font-black md:text-4xl">Book Appointment</h1>
+            <h1 className="text-xl font-black md:text-3xl">Book Appointment</h1>
           </div>
         </div>
       </section>
