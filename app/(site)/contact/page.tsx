@@ -6,81 +6,121 @@ export default async function ContactPage({ searchParams }: Props) {
   const query = await searchParams;
 
   return (
-    <main className="container fade-up pb-10">
-      <section className="overflow-hidden rounded-sm border border-[#d8dee8] bg-[#f3f5f8]">
-        <div className="grid md:grid-cols-2">
-          <article className="border-b border-[#d8dee8] px-8 py-8 md:border-b-0 md:border-r md:px-10 md:py-10">
-            <h1 className="text-3xl font-black text-[#1f5ca8]">Get In Touch With Us</h1>
-            <p className="mt-6 max-w-lg text-sm leading-6 text-[#6b7280]">
-              At MedAxis, your health and wellbeing are our top priorities. Whether you are seeking
-              treatment for an ear, nose, or throat condition, our dedicated team is here to provide
-              you with the highest standards of care.
-            </p>
-
-            <h2 className="mt-6 text-lg font-extrabold text-[#1f5ca8]">Stay connected</h2>
-            <div className="mt-3 flex gap-8 text-[#1f5ca8]">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded border border-[#b7c8de] text-sm font-bold">f</span>
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded border border-[#b7c8de] text-sm font-bold">ig</span>
+    <main className="container fade-up py-10">
+      <section className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.02fr_0.98fr]">
+        <article className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#1d4f91_0%,#2377e7_55%,#6fb3ff_100%)] p-8 text-white shadow-[0_24px_60px_-32px_rgba(29,79,145,0.65)]">
+          <span className="inline-flex rounded-full border border-white/20 bg-white/12 px-4 py-1 text-xs font-bold uppercase tracking-[0.24em]">
+            Contact Us
+          </span>
+          <h1 className="mt-5 max-w-md text-4xl font-extrabold leading-tight">
+            Get in touch and let us help guide your next visit.
+          </h1>
+          <p className="mt-4 max-w-lg text-sm text-white/80">
+            Reach out for appointments, questions, or support. Our team is here to help patients
+            connect with the right care in a simple and friendly way.
+          </p>
+          <div className="mt-8 grid gap-3 text-sm text-white/90 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Fast responses for patient questions
             </div>
-          </article>
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Help with appointment requests
+            </div>
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Guidance to the right doctor
+            </div>
+            <div className="rounded-2xl border border-white/18 bg-white/10 p-4">
+              Friendly support from our team
+            </div>
+          </div>
 
-          <article className="px-8 py-8 md:px-10 md:py-10">
-            <h2 className="text-3xl font-black text-[#1f5ca8]">Leave Us Your Info</h2>
-            <p className="mt-1 text-xs font-semibold text-[#8b95a7]">and We will get back to you.</p>
+          <div className="mt-8">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/85">Stay Connected</p>
+            <div className="mt-3 flex gap-3">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/18 bg-white/10 text-sm font-bold text-white">
+                f
+              </span>
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/18 bg-white/10 text-sm font-bold text-white">
+                ig
+              </span>
+            </div>
+          </div>
+        </article>
 
-            {query.sent === "1" ? (
-              <p className="mt-4 rounded-md bg-[#e8fff2] p-3 text-sm text-[#145f39]">
-                Your message has been sent successfully.
-              </p>
-            ) : null}
+        <article className="card rounded-[28px] p-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--brand)]">Contact Form</p>
+            <h2 className="mt-3 text-3xl font-extrabold">Leave Us Your Info</h2>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              Fill out the form and we will get back to you as soon as possible.
+            </p>
+          </div>
 
-            <form action="/api/public/contact" method="post" className="mt-4 grid gap-2 text-sm">
-              <div className="grid gap-2 md:grid-cols-2">
+          {query.sent === "1" ? (
+            <p className="mt-6 rounded-2xl border border-[#bde5cb] bg-[#ecfff3] p-4 text-sm font-medium text-[#145f39]">
+              Your message has been sent successfully.
+            </p>
+          ) : null}
+
+          <form action="/api/public/contact" method="post" className="mt-8 grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Full Name
                 <input
                   required
                   name="name"
-                  placeholder="Full Name *"
-                  className="h-9 rounded border border-[#dbe3ee] bg-white px-3 text-xs"
+                  placeholder="Full name"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
                 />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Phone Number
                 <input
                   name="phone"
                   placeholder="+1"
-                  className="h-9 rounded border border-[#dbe3ee] bg-white px-3 text-xs"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
                 />
-              </div>
+              </label>
+            </div>
 
-              <div className="grid gap-2 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Email Address
                 <input
                   required
                   type="email"
                   name="email"
-                  placeholder="Email *"
-                  className="h-9 rounded border border-[#dbe3ee] bg-white px-3 text-xs"
+                  placeholder="name@example.com"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
                 />
+              </label>
+              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+                Subject
                 <input
                   name="subject"
-                  placeholder="Subject *"
-                  className="h-9 rounded border border-[#dbe3ee] bg-white px-3 text-xs"
+                  placeholder="Subject"
+                  className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
                 />
-              </div>
+              </label>
+            </div>
 
+            <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
+              Message
               <textarea
                 required
                 name="message"
-                rows={4}
-                placeholder="Message *"
-                className="rounded border border-[#dbe3ee] bg-white px-3 py-2 text-xs"
+                rows={5}
+                placeholder="Write your message"
+                className="rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 py-3 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
               />
+            </label>
 
-              <p className="text-center text-[11px] text-[#9aa3b2]">* These fields are required</p>
-              <div className="flex justify-center">
-                <button className="rounded bg-[#24a148] px-5 py-2 text-xs font-bold text-white hover:bg-[#1f8d3f]">
-                  Submit Now
-                </button>
-              </div>
-            </form>
-          </article>
-        </div>
+            <p className="text-center text-xs text-[var(--muted)]">* These fields are required</p>
+            <button className="mt-1 inline-flex h-12 items-center justify-center rounded-2xl bg-[var(--brand)] px-6 text-sm font-semibold text-white transition hover:bg-[#1f68cb]">
+              Submit Now
+            </button>
+          </form>
+        </article>
       </section>
     </main>
   );
