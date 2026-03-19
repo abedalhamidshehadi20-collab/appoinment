@@ -5,8 +5,7 @@ import { usePathname } from "next/navigation";
 
 export function SiteFooter() {
   const pathname = usePathname();
-  const showWideMap = pathname === "/";
-  const showFooterLocation = pathname !== "/";
+  const showFooterLocation = true;
 
   return (
     <footer className="mt-14 border-t border-[var(--line)] bg-white">
@@ -45,24 +44,12 @@ export function SiteFooter() {
         </div>
       </section>
 
-      {showWideMap ? (
-        <section className="border-y border-[var(--line)]">
-          <iframe
-            title="Main location map"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
-            className="h-52 w-full border-0"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </section>
-      ) : null}
-
       <section className="bg-[#f8fafc] py-10">
         <div className={`container grid gap-8 ${showFooterLocation ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
           <article>
-            <div className="flex items-center gap-2 text-2xl font-black text-[#22a35b]">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#22a35b] text-sm">M</span>
-              MedAxis
+            <div className="flex items-center gap-2 text-2xl font-black text-[var(--brand)]">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand)] text-sm text-white">SH</span>
+              Sh-Med
             </div>
             <p className="mt-3 text-sm text-[var(--muted)]">
               2nd Floor, Prime Square, Airport Road, Heritage District, Gujarat 370001
@@ -108,7 +95,7 @@ export function SiteFooter() {
               <iframe
                 title="Footer location map"
                 src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
-                className="mt-3 h-28 w-full rounded border border-[var(--line)]"
+                className="mt-3 h-28 w-full rounded border border-[var(--line)] bg-white"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
@@ -117,7 +104,7 @@ export function SiteFooter() {
         </div>
 
         <div className="container mt-8 border-t border-[var(--line)] pt-4 text-center text-xs text-[var(--muted)]">
-          &copy; {new Date().getFullYear()} MedAxis. All rights reserved. This site is protected by reCAPTCHA and the Google Terms and Sitemap.
+          &copy; {new Date().getFullYear()} Sh-Med. All rights reserved. This site is protected by reCAPTCHA and the Google Terms and Sitemap.
         </div>
       </section>
     </footer>
