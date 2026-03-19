@@ -37,19 +37,14 @@ export function specialtyHref(label: string) {
 }
 
 export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
-  const shared = "h-8 w-8 text-[var(--brand)]";
+  const shared = "h-7 w-7 text-[var(--brand)]";
 
   if (type === "dentist") {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
         <path
-          d="M12 2C8.5 2 6 3.5 6 6.2c0 1.8 1 3.4 1.9 4.8.7 1.1 1 2.2 1 3.4v2.1c0 3 1.7 5.5 3.8 5.5 1.1 0 1.8-.8 2.2-2.2l.4-2c.1-.5.5-.8.9-.8.4 0 .8.3.9.8l.4 2c.4 1.4 1.1 2.2 2.2 2.2 2.1 0 3.8-2.5 3.8-5.5v-2.1c0-1.2.3-2.3 1-3.4.9-1.4 1.9-3 1.9-4.8 0-2.7-2.5-4.2-6-4.2z"
+          d="M12 2.9c-3.7 0-6.1 1.7-6.1 4.6 0 1.6.8 2.8 1.8 4 .8 1 1.2 2.1 1.2 3.3v1.5c0 3.1 1.5 5 3.4 5 1.1 0 1.8-.8 2.1-2.1l.4-1.9c.1-.4.4-.6.8-.6s.7.2.8.6l.4 1.9c.3 1.3 1 2.1 2.1 2.1 1.9 0 3.4-1.9 3.4-5v-1.5c0-1.2.4-2.3 1.2-3.3 1-1.2 1.8-2.4 1.8-4 0-2.9-2.4-4.6-6.1-4.6z"
           fill="currentColor"
-          fillOpacity="0.1"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
         />
       </svg>
     );
@@ -59,17 +54,12 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
         <path
-          d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+          d="M20.4 6.8a4.8 4.8 0 0 0-6.7 0L12 8.4l-1.7-1.6a4.8 4.8 0 0 0-6.7 6.8l1.6 1.5L12 21l6.8-5.9 1.6-1.5a4.8 4.8 0 0 0 0-6.8z"
           fill="currentColor"
-          fillOpacity="0.08"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
         />
         <path
-          d="M7 11h2.5l1.5-3 2 6 1.5-3H17"
-          stroke="currentColor"
+          d="M6.7 11.9h2.7l1.3-2.4 1.8 4.3 1.3-2.4h3"
+          stroke="white"
           strokeWidth="1.8"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -81,39 +71,11 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
   if (type === "orthopedic") {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
-        <g>
-          <rect
-            x="10"
-            y="3"
-            width="4"
-            height="18"
-            rx="2"
-            fill="currentColor"
-            fillOpacity="0.08"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-          <ellipse
-            cx="12"
-            cy="7"
-            rx="4.5"
-            ry="3"
-            fill="currentColor"
-            fillOpacity="0.08"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-          <ellipse
-            cx="12"
-            cy="17"
-            rx="4.5"
-            ry="3"
-            fill="currentColor"
-            fillOpacity="0.08"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-        </g>
+        <path
+          d="M12 2.8c-1.1 0-2 .9-2 2v2H8.6c-1.6 0-2.9 1.3-2.9 2.9s1.3 2.9 2.9 2.9H10v1.8H8.6c-1.6 0-2.9 1.3-2.9 2.9s1.3 2.9 2.9 2.9H10v2c0 1.1.9 2 2 2s2-.9 2-2v-2h1.4c1.6 0 2.9-1.3 2.9-2.9s-1.3-2.9-2.9-2.9H14v-1.8h1.4c1.6 0 2.9-1.3 2.9-2.9s-1.3-2.9-2.9-2.9H14v-2c0-1.1-.9-2-2-2z"
+          fill="currentColor"
+        />
+        <path d="M12 6.1v11.8M8.5 9.7h7M8.5 14.3h7" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
     );
   }
@@ -121,44 +83,11 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
   if (type === "neurologist") {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
-        <g>
-          <path
-            d="M12 3c-3.5 0-6.5 2.8-6.5 6.2 0 2.2 1.2 4 3 5.1V18c0 1.7 1.3 3 3 3h1c1.7 0 3-1.3 3-3v-3.7c1.8-1.1 3-2.9 3-5.1C18.5 5.8 15.5 3 12 3z"
-            fill="currentColor"
-            fillOpacity="0.08"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <line
-            x1="12"
-            y1="6"
-            x2="12"
-            y2="14"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-          <line
-            x1="9"
-            y1="8.5"
-            x2="15"
-            y2="8.5"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-          <line
-            x1="9"
-            y1="11.5"
-            x2="15"
-            y2="11.5"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-        </g>
+        <path
+          d="M12 3c-4.5 0-8 3.4-8 7.6 0 2.4 1.2 4.7 3.3 6l1.1-.9v-2.1l-1.7-1.3 1.2-1.9 1.9 1.1h1V8.8L9 7.5l1.1-1.8 1.7 1 .2-.1 1.7-1L14.8 7 13 8.3v3.2h1l1.9-1.1 1.2 1.9-1.7 1.3v2.1l1.1.9c2.1-1.3 3.3-3.6 3.3-6C20 6.4 16.5 3 12 3z"
+          fill="currentColor"
+        />
+        <path d="M12 6.4v11.2M9 9.6h2M13 9.6h2M9.4 13.8h1.6M13 13.8h1.6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
     );
   }
@@ -166,39 +95,14 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
   if (type === "otology") {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
-        <g>
-          <path
-            d="M15 4c-3.3 0-6 2.7-6 6 0 2 1 3.7 2.5 4.8 1 .8 1.5 1.5 1.5 2.5V19c0 1.7-1.3 3-3 3"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M15 7c1.7 0 3 1.3 3 3 0 1.4-.8 2.4-1.8 3.2-1 .7-1.7 1.5-1.7 2.8"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-          <circle
-            cx="9.5"
-            cy="10"
-            r="1.2"
-            fill="currentColor"
-          />
-          <circle
-            cx="9.5"
-            cy="14"
-            r="1.2"
-            fill="currentColor"
-          />
-          <circle
-            cx="9.5"
-            cy="18"
-            r="1.2"
-            fill="currentColor"
-          />
-        </g>
+        <path
+          d="M15 3.7c-3.4 0-6.1 2.8-6.1 6.2 0 2 .9 3.7 2.5 4.9 1 .8 1.5 1.6 1.5 2.7v.6c0 1.3-.8 2.3-2.1 2.8-.3.1-.6.5-.6.9 0 .6.5 1.1 1.1 1.1 2.6 0 4.6-2 4.6-4.6v-1c0-1.4.5-2.2 1.6-3.1 1.4-1 2.2-2.6 2.2-4.5 0-3.2-2.1-6-4.7-6z"
+          fill="currentColor"
+        />
+        <path d="M14.4 7.6c1.3 0 2.3 1 2.3 2.4 0 .8-.4 1.5-1 2.1-.8.7-1.3 1.5-1.3 2.8" stroke="white" strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="9.1" cy="10" r="1" fill="white" />
+        <circle cx="9.1" cy="13.4" r="1" fill="white" />
+        <circle cx="9.1" cy="16.8" r="1" fill="white" />
       </svg>
     );
   }
@@ -206,38 +110,12 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
   if (type === "surgeon") {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
-        <g>
-          <path
-            d="M4 4l16 16M20 4L4 20"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-          <circle
-            cx="6"
-            cy="6"
-            r="2.5"
-            fill="currentColor"
-            fillOpacity="0.1"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-          <circle
-            cx="18"
-            cy="18"
-            r="2.5"
-            fill="currentColor"
-            fillOpacity="0.1"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-          <path
-            d="M10 10l4 4"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-        </g>
+        <path
+          d="M12 3.1c-1.5 0-2.7 1.2-2.7 2.7 0 .5.2 1.1.5 1.6L7.1 9.3c-.7.5-1.1 1.2-1.1 2 0 .9.4 1.7 1.2 2.2l2.5 1.4v1.8l-2.5 1.4C6.4 18.6 6 19.4 6 20.3 6 22 7.8 23 10 23h4c2.2 0 4-.9 4-2.7 0-.9-.4-1.7-1.2-2.2l-2.5-1.4v-1.8l2.5-1.4c.8-.5 1.2-1.3 1.2-2.2 0-.8-.4-1.5-1.1-2l-2.7-1.9c.3-.5.5-1.1.5-1.6 0-1.5-1.2-2.7-2.7-2.7z"
+          fill="currentColor"
+        />
+        <circle cx="12" cy="5.8" r="1.4" fill="white" />
+        <path d="M9.8 14.9 12 13.8l2.2 1.1M10 19.6h4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
@@ -245,36 +123,11 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
   if (type === "psychiatry") {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
-        <g>
-          <circle
-            cx="12"
-            cy="12"
-            r="7"
-            fill="currentColor"
-            fillOpacity="0.08"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-          <path
-            d="M12 8v5l3 3"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M9 19.5l1.5-2.5M15 19.5l-1.5-2.5"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
-          <circle
-            cx="12"
-            cy="12"
-            r="1.5"
-            fill="currentColor"
-          />
-        </g>
+        <path
+          d="M11.8 3c-4.1 0-7.1 3-7.1 6.8 0 2.3 1.1 4.2 3 5.4v3.1c0 .8.6 1.4 1.4 1.4h.8v1.9c0 .8.6 1.4 1.4 1.4s1.4-.6 1.4-1.4v-1.9h.7c.8 0 1.4-.6 1.4-1.4V15c2-1.2 3.2-3.1 3.2-5.4C18 6 15.8 3 11.8 3z"
+          fill="currentColor"
+        />
+        <path d="M10 8.9c.2-.9.9-1.7 2-1.7 1.2 0 2.1.8 2.1 1.9 0 1.9-2.3 1.9-2.3 3.6M11.9 15.8h.1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   }
@@ -282,61 +135,21 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
   if (type === "eye") {
     return (
       <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
-        <g>
-          <path
-            d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"
-            fill="currentColor"
-            fillOpacity="0.08"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle
-            cx="12"
-            cy="12"
-            r="3.5"
-            fill="currentColor"
-            fillOpacity="0.1"
-            stroke="currentColor"
-            strokeWidth="1.8"
-          />
-          <circle
-            cx="12"
-            cy="12"
-            r="1.5"
-            fill="currentColor"
-          />
-        </g>
+        <path
+          d="M2.4 12s3.8-5.9 9.6-5.9 9.6 5.9 9.6 5.9-3.8 5.9-9.6 5.9S2.4 12 2.4 12z"
+          fill="currentColor"
+        />
+        <circle cx="12" cy="12" r="3" fill="white" />
+        <circle cx="12" cy="12" r="1.35" fill="currentColor" />
       </svg>
     );
   }
 
   return (
     <svg viewBox="0 0 24 24" fill="none" className={shared} aria-hidden="true">
-      <g>
-        <circle
-          cx="12"
-          cy="8"
-          r="3.5"
-          fill="currentColor"
-          fillOpacity="0.08"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        />
-        <path
-          d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-        <path
-          d="M19 9v6M16 12h6"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </g>
+      <circle cx="10.5" cy="7.2" r="3.1" fill="currentColor" />
+      <path d="M4.8 19.6c0-3.4 2.8-6.1 6.2-6.1s6.2 2.7 6.2 6.1" fill="currentColor" />
+      <path d="M18.1 8.8v5.8M15.2 11.7H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -363,14 +176,23 @@ export function SpecialtyLink({
         }`}
       />
 
-      <div
-        className={`flex h-14 w-14 items-center justify-center rounded-2xl border transition-colors ${
-          active
-            ? "border-white/70 bg-white/80"
-            : "border-[#edf2fb] bg-[#f4f8ff] group-hover:border-[#dbeafe] group-hover:bg-white"
-        }`}
-      >
-        <MedicalIcon type={item.icon} />
+      <div className="relative w-fit">
+        <div
+          className={`absolute -inset-1 rounded-[20px] transition-opacity ${
+            active
+              ? "bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.95),rgba(219,234,254,0.55))] opacity-100"
+              : "bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.92),rgba(239,246,255,0.8))] opacity-0 group-hover:opacity-100"
+          }`}
+        />
+        <div
+          className={`relative flex h-[62px] w-[62px] items-center justify-center rounded-[18px] border shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-all ${
+            active
+              ? "border-white/80 bg-[linear-gradient(180deg,#ffffff_0%,#edf4ff_100%)]"
+              : "border-[#e7eef9] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fc_100%)] group-hover:border-[#d5e4fb] group-hover:bg-[linear-gradient(180deg,#ffffff_0%,#f1f6ff_100%)]"
+          }`}
+        >
+          <MedicalIcon type={item.icon} />
+        </div>
       </div>
 
       <div className="mt-5">
