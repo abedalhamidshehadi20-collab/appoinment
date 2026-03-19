@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -12,8 +15,86 @@ const navItems = [
 ];
 
 export function SiteHeader() {
+  const [isVisible, setIsVisible] = useState(true);
+  const heroBottomRef = useRef<number>(0);
+  const mouseHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const clearMouseHideTimer = () => {
+      if (mouseHideTimerRef.current) {
+        clearTimeout(mouseHideTimerRef.current);
+        mouseHideTimerRef.current = null;
+      }
+    };
+
+    const updateHeroBottom = () => {
+      const heroSection = document.querySelector("main section");
+
+      if (!heroSection) {
+        heroBottomRef.current = 0;
+        return;
+      }
+
+      const rect = heroSection.getBoundingClientRect();
+      heroBottomRef.current = rect.top + window.scrollY + rect.height;
+    };
+
+    const isPastHero = () => {
+      return heroBottomRef.current > 0 && window.scrollY > heroBottomRef.current - 120;
+    };
+
+    const handleScroll = () => {
+      if (isPastHero()) {
+        setIsVisible(false);
+        return;
+      }
+
+      clearMouseHideTimer();
+      setIsVisible(true);
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      if (!isPastHero()) {
+        return;
+      }
+
+      if (event.clientY <= 120) {
+        clearMouseHideTimer();
+        setIsVisible(true);
+        return;
+      }
+
+      if (isVisible) {
+        clearMouseHideTimer();
+        mouseHideTimerRef.current = setTimeout(() => {
+          if (isPastHero()) {
+            setIsVisible(false);
+          }
+        }, 120);
+      }
+    };
+
+    updateHeroBottom();
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateHeroBottom);
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      clearMouseHideTimer();
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateHeroBottom);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [isVisible]);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[rgba(248,249,251,0.95)] backdrop-blur">
+    <header
+      className={`sticky top-0 z-40 border-b border-[var(--line)] bg-[rgba(248,249,251,0.95)] backdrop-blur transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="container py-4">
         <nav className="card flex flex-wrap items-center justify-between gap-4 px-5 py-3">
           <Link href="/" className="flex items-center gap-2 text-xl font-black text-[var(--brand)]">
