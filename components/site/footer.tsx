@@ -117,7 +117,7 @@ export function SiteFooter() {
         </div>
 
         <div className="container mt-8 border-t border-[var(--line)] pt-4 text-center text-xs text-[var(--muted)]">
-          © {new Date().getFullYear()} MedAxis. All rights reserved. This site is protected by reCAPTCHA and the Google Terms and Sitemap.
+          &copy; {new Date().getFullYear()} MedAxis. All rights reserved. This site is protected by reCAPTCHA and the Google Terms and Sitemap.
         </div>
       </section>
     </footer>
