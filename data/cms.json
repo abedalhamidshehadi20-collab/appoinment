@@ -1,6 +1,6 @@
 {
   "home": {
-    "headline": "MedAxis Care Solutions",
+    "headline": "Sh-Med Care Solutions",
     "subheadline": "We build and operate modern clinic networks with measurable patient outcomes.",
     "primaryCtaText": "Meet Our Doctors",
     "primaryCtaLink": "/doctors",
@@ -13,8 +13,8 @@
     ]
   },
   "about": {
-    "title": "About MedAxis",
-    "description": "MedAxis is a healthcare operations agency focused on clinic setup, digital workflows, and patient-centered design.",
+    "title": "About Sh-Med",
+    "description": "Sh-Med is a healthcare operations agency focused on clinic setup, digital workflows, and patient-centered design.",
     "mission": "To make premium clinical care accessible through better systems, better facilities, and better teams.",
     "vision": "To become the region's most trusted partner for building high-performing care environments.",
     "values": [
@@ -102,11 +102,11 @@
     {
       "id": "nws_1",
       "slug": "medaxis-opens-training-center",
-      "title": "MedAxis Opens Regional Training Center",
+      "title": "Sh-Med Opens Regional Training Center",
       "excerpt": "A new center focused on practical clinical operations training.",
       "content": "The training center will support nurses, front-desk teams, and clinic managers with simulation-based modules.",
       "publishedAt": "2026-03-12",
-      "source": "MedAxis Press"
+      "source": "Sh-Med Press"
     }
   ],
   "contacts": [],

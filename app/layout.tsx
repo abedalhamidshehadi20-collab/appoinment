@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MedAxis Care Solutions",
+  title: "Sh-Med Care Solutions",
   description:
     "Healthcare operations agency website with editable dashboard and role-based access.",
 };

@@ -124,7 +124,7 @@ export function SiteHeader() {
           <div className="flex items-center">
             <Link
               href="/login"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-5 text-sm font-semibold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-5 text-sm font-bold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
             >
               Login
             </Link>
