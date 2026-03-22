@@ -31,26 +31,37 @@ export default async function ServicesPage() {
 
       <section className="mt-20">
         <h2 className="text-center text-2xl font-bold text-[#1f2937]">OUR SERVICES</h2>
+        <p className="mt-2 text-center text-sm text-[#6b7280]">
+          Practical support designed to improve care delivery and clinic operations
+        </p>
 
-        <div className="mt-10 grid gap-0 overflow-hidden rounded-xl border border-[#e5e7eb] md:grid-cols-3">
-          {data.services.map((service, index) => (
+        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {data.services.map((service) => (
             <article
               key={service.id}
-              className={`p-10 transition hover:bg-[#5f6fff] hover:text-white ${
-                index < data.services.length - 1
-                  ? "border-b border-[#e5e7eb] md:border-b-0 md:border-r"
-                  : ""
-              }`}
+              className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:shadow-lg"
             >
-              <h2 className="text-lg font-bold uppercase">{service.title}</h2>
-              <p className="mt-4 text-sm leading-relaxed opacity-80">
-                {service.summary}
-              </p>
-              <ul className="mt-4 list-disc pl-5 text-sm leading-relaxed opacity-80">
-                {service.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
+              <div className="p-6">
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-medium text-[#5f6fff]">
+                    Service
+                  </span>
+                  <span className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-medium text-[#5f6fff]">
+                    Care Support
+                  </span>
+                </div>
+                <h2 className="mt-4 text-lg font-bold text-[#1f2937] group-hover:text-[#5f6fff]">
+                  {service.title}
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-[#6b7280]">
+                  {service.summary}
+                </p>
+                <ul className="mt-4 list-disc pl-5 text-sm leading-relaxed text-[#6b7280]">
+                  {service.features.map((feature) => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+              </div>
             </article>
           ))}
         </div>
