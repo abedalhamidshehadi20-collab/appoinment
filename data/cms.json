@@ -7,9 +7,18 @@
     "secondaryCtaText": "Contact Us",
     "secondaryCtaLink": "/contact",
     "stats": [
-      { "label": "Clinics Managed", "value": "48" },
-      { "label": "Cities", "value": "11" },
-      { "label": "Patient Satisfaction", "value": "96%" }
+      {
+        "label": "Clinics Managed",
+        "value": "48"
+      },
+      {
+        "label": "Cities",
+        "value": "11"
+      },
+      {
+        "label": "Patient Satisfaction",
+        "value": "96%"
+      }
     ]
   },
   "about": {
@@ -28,19 +37,31 @@
       "id": "svc_1",
       "title": "Clinic Launch",
       "summary": "From feasibility study to opening day execution.",
-      "features": ["Market research", "Facility planning", "Staff onboarding"]
+      "features": [
+        "Market research",
+        "Facility planning",
+        "Staff onboarding"
+      ]
     },
     {
       "id": "svc_2",
       "title": "Digital Transformation",
       "summary": "Upgrade operations using unified care and admin platforms.",
-      "features": ["EMR workflow design", "Training", "Data dashboards"]
+      "features": [
+        "EMR workflow design",
+        "Training",
+        "Data dashboards"
+      ]
     },
     {
       "id": "svc_3",
       "title": "Operational Audits",
       "summary": "Performance, compliance, and patient journey reviews.",
-      "features": ["SOP review", "KPI setup", "Quality improvement plans"]
+      "features": [
+        "SOP review",
+        "KPI setup",
+        "Quality improvement plans"
+      ]
     }
   ],
   "projects": [
@@ -95,7 +116,11 @@
       "content": "When clinics grow quickly, the original workflow often fails. Start by tracking bottlenecks in registration, triage, and discharge.",
       "author": "Operations Team",
       "publishedAt": "2026-02-15",
-      "tags": ["Operations", "Healthcare", "Workflow"]
+      "tags": [
+        "Operations",
+        "Healthcare",
+        "Workflow"
+      ]
     }
   ],
   "news": [
@@ -110,7 +135,22 @@
     }
   ],
   "contacts": [],
-  "interests": [],
+  "interests": [
+    {
+      "id": "int_3iu2vvof",
+      "projectId": "prj_1",
+      "projectTitle": "Dr. Omar Hassan",
+      "name": "Abedalhamid Shehadi",
+      "email": "abedalhamidshehadi20@gmail.com",
+      "phone": "+961 81865142",
+      "company": "saida, lebanon",
+      "budget": "Dental Checkup",
+      "date": "",
+      "time": "",
+      "message": "d",
+      "createdAt": "2026-03-22T06:38:44.491Z"
+    }
+  ],
   "patients": [],
   "users": [
     {
@@ -120,7 +160,9 @@
       "email": "admin@shmed.com",
       "password": "admin123",
       "role": "admin",
-      "permissions": ["all"]
+      "permissions": [
+        "all"
+      ]
     },
     {
       "id": "usr_2",
@@ -129,7 +171,9 @@
       "email": "blogger@shmed.com",
       "password": "blog123",
       "role": "editor",
-      "permissions": ["blogs"]
+      "permissions": [
+        "blogs"
+      ]
     }
   ]
 }
