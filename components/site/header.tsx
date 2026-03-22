@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const navItems = [
@@ -15,6 +16,7 @@ const navItems = [
 ];
 
 export function SiteHeader() {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
   const heroBottomRef = useRef<number>(0);
   const mouseHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -114,7 +116,11 @@ export function SiteHeader() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="rounded-md px-3 py-2 transition hover:bg-[#eff6ff] hover:text-[var(--brand)]"
+                  className={`rounded-md px-3 py-2 transition hover:bg-[#eff6ff] hover:text-[var(--brand)] ${
+                    pathname === item.href
+                      ? "font-extrabold text-[var(--brand-deep)] underline underline-offset-4"
+                      : ""
+                  }`}
                 >
                   {item.label}
                 </Link>
