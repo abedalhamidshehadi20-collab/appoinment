@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { readData } from "@/lib/cms";
 import BookingSlots from "@/components/BookingSlots";
@@ -17,6 +18,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
   }
 
   const yearsOfExperience = new Date().getFullYear() - 2008;
+  const relatedDoctors = data.projects.filter((item) => item.slug !== slug).slice(0, 5);
 
   return (
     <main className="container fade-up pb-10">
@@ -75,6 +77,40 @@ export default async function ProjectDetailsPage({ params }: Props) {
 
       {/* Booking Slots Section */}
       <BookingSlots doctorSlug={slug} />
+
+      {/* Related Doctors Section */}
+      <section className="mt-16">
+        <h2 className="text-center text-xl font-medium text-[#1f2937]">Related Doctors</h2>
+        <p className="mt-2 text-center text-sm text-[#6b7280]">Simply browse through our extensive list of trusted doctors.</p>
+
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {relatedDoctors.map((doctor) => (
+            <Link
+              key={doctor.id}
+              href={`/doctors/${doctor.slug}`}
+              className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:translate-y-[-10px]"
+            >
+              <div className="overflow-hidden bg-[#eef2ff]">
+                <Image
+                  src={doctor.coverImage}
+                  alt={doctor.title}
+                  width={300}
+                  height={300}
+                  className="h-48 w-full object-cover transition group-hover:scale-105"
+                />
+              </div>
+              <div className="p-4">
+                <p className="flex items-center gap-1 text-sm text-[#10b981]">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#10b981]"></span>
+                  Available
+                </p>
+                <p className="mt-2 font-medium text-[#1f2937]">{doctor.title}</p>
+                <p className="text-xs text-[#6b7280]">{doctor.sector}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

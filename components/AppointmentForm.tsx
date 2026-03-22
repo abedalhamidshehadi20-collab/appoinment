@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 type Doctor = {
   id: string;
   title: string;
@@ -14,39 +12,6 @@ type Props = {
 };
 
 export default function AppointmentForm({ doctors, showSuccess }: Props) {
-  const [selectedDate, setSelectedDate] = useState(0);
-  const [selectedTime, setSelectedTime] = useState("");
-
-  // Generate next 7 days
-  const days = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    return {
-      day: date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
-      date: date.getDate(),
-      fullDate: date.toISOString().split("T")[0],
-    };
-  });
-
-  const timeSlots = [
-    "8:00 am",
-    "8:30 am",
-    "9:00 am",
-    "9:30 am",
-    "10:00 am",
-    "10:30 am",
-    "11:00 am",
-    "11:30 am",
-    "1:00 pm",
-    "1:30 pm",
-    "2:00 pm",
-    "2:30 pm",
-    "3:00 pm",
-    "3:30 pm",
-    "4:00 pm",
-    "4:30 pm",
-  ];
-
   return (
     <article className="card rounded-[28px] p-8">
       <div>
@@ -134,51 +99,6 @@ export default function AppointmentForm({ doctors, showSuccess }: Props) {
               ))}
             </select>
           </label>
-        </div>
-
-        {/* Date Selection */}
-        <div className="grid gap-2">
-          <label className="text-sm font-semibold text-[var(--brand-deep)]">Preferred Date</label>
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {days.map((day, index) => (
-              <button
-                key={day.fullDate}
-                type="button"
-                onClick={() => setSelectedDate(index)}
-                className={`flex min-w-[70px] flex-shrink-0 flex-col items-center rounded-full px-4 py-3 text-sm transition ${
-                  selectedDate === index
-                    ? "bg-[#5f6fff] text-white"
-                    : "border border-[var(--line)] text-[#6b7280] hover:border-[#5f6fff]"
-                }`}
-              >
-                <span className="text-xs font-medium">{day.day}</span>
-                <span className="mt-1 text-lg font-semibold">{day.date}</span>
-              </button>
-            ))}
-          </div>
-          <input type="hidden" name="date" value={days[selectedDate].fullDate} />
-        </div>
-
-        {/* Time Selection */}
-        <div className="grid gap-2">
-          <label className="text-sm font-semibold text-[var(--brand-deep)]">Preferred Time</label>
-          <div className="flex flex-wrap gap-2">
-            {timeSlots.map((time) => (
-              <button
-                key={time}
-                type="button"
-                onClick={() => setSelectedTime(time)}
-                className={`rounded-full px-5 py-2 text-sm transition ${
-                  selectedTime === time
-                    ? "bg-[#5f6fff] text-white"
-                    : "border border-[var(--line)] text-[#6b7280] hover:border-[#5f6fff]"
-                }`}
-              >
-                {time}
-              </button>
-            ))}
-          </div>
-          <input type="hidden" name="time" value={selectedTime} />
         </div>
 
         <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
