@@ -7,72 +7,70 @@ export default async function BlogPage() {
 
   return (
     <main className="container fade-up pb-16">
-      <section className="py-8 text-center">
-        <p className="text-sm font-medium tracking-widest text-[#6b7280]">BLOG</p>
-      </section>
+      <section className="rounded-[32px] border border-[#e5e7eb] bg-white p-8 shadow-sm md:p-10">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="overflow-hidden rounded-xl">
+            <Image
+              src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80"
+              alt="Healthcare blog"
+              width={600}
+              height={500}
+              className="h-auto w-full object-cover"
+            />
+          </div>
 
-      <section className="grid gap-10 lg:grid-cols-2 lg:items-center">
-        <div className="overflow-hidden rounded-xl">
-          <Image
-            src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80"
-            alt="Healthcare blog"
-            width={600}
-            height={500}
-            className="h-auto w-full object-cover"
-          />
+          <div className="space-y-6">
+            <h1 className="text-4xl font-extrabold text-[#1f2937]">Health & Wellness Blog</h1>
+            <p className="text-[#4b5563] leading-relaxed">
+              Stay informed with the latest health tips, medical insights, and wellness advice from our team of healthcare professionals.
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-6">
-          <h1 className="text-4xl font-extrabold text-[#1f2937]">Health & Wellness Blog</h1>
-          <p className="text-[#4b5563] leading-relaxed">
-            Stay informed with the latest health tips, medical insights, and wellness advice from our team of healthcare professionals.
+        <div className="mt-16">
+          <h2 className="text-center text-2xl font-bold text-[#1f2937]">LATEST POSTS</h2>
+          <p className="mt-2 text-center text-sm text-[#6b7280]">
+            Expert advice and insights to help you live a healthier life
           </p>
-        </div>
-      </section>
 
-      <section className="mt-20">
-        <h2 className="text-center text-2xl font-bold text-[#1f2937]">LATEST POSTS</h2>
-        <p className="mt-2 text-center text-sm text-[#6b7280]">
-          Expert advice and insights to help you live a healthier life
-        </p>
-
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {data.blogs.map((post) => (
-            <article
-              key={post.id}
-              className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:shadow-lg"
-            >
-              <div className="p-6">
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.slice(0, 2).map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-medium text-[#5f6fff]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <h3 className="mt-4 text-lg font-bold text-[#1f2937] group-hover:text-[#5f6fff]">
-                  {post.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-[#6b7280]">
-                  {post.excerpt}
-                </p>
-                <div className="mt-4 flex items-center justify-between">
-                  <p className="text-xs text-[#9ca3af]">
-                    {post.publishedAt} • {post.author}
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {data.blogs.map((post) => (
+              <article
+                key={post.id}
+                className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:shadow-lg"
+              >
+                <div className="p-6">
+                  <div className="flex flex-wrap gap-2">
+                    {post.tags.slice(0, 2).map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-medium text-[#5f6fff]"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <h3 className="mt-4 text-lg font-bold text-[#1f2937] group-hover:text-[#5f6fff]">
+                    {post.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-[#6b7280]">
+                    {post.excerpt}
                   </p>
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="text-sm font-semibold text-[#5f6fff] hover:underline"
-                  >
-                    Read more →
-                  </Link>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-xs text-[#9ca3af]">
+                      {post.publishedAt} • {post.author}
+                    </p>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="text-sm font-semibold text-[#5f6fff] hover:underline"
+                    >
+                      Read more {"->"}
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     </main>
