@@ -111,11 +111,13 @@
   ],
   "contacts": [],
   "interests": [],
+  "patients": [],
   "users": [
     {
       "id": "usr_1",
       "name": "System Admin",
       "username": "admin",
+      "email": "admin@shmed.com",
       "password": "admin123",
       "role": "admin",
       "permissions": ["all"]
@@ -124,6 +126,7 @@
       "id": "usr_2",
       "name": "Blog Editor",
       "username": "blogger",
+      "email": "blogger@shmed.com",
       "password": "blog123",
       "role": "editor",
       "permissions": ["blogs"]

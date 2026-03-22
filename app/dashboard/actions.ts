@@ -11,10 +11,13 @@ const refreshSite = () => {
 };
 
 export async function loginAction(formData: FormData) {
-  const username = formData.get("username")?.toString() ?? "";
+  const identifier =
+    formData.get("email")?.toString() ??
+    formData.get("username")?.toString() ??
+    "";
   const password = formData.get("password")?.toString() ?? "";
 
-  const ok = await login(username, password);
+  const ok = await login(identifier, password);
   if (!ok) {
     redirect("/dashboard/login?error=1");
   }
@@ -255,5 +258,192 @@ export async function getDashboardCounts() {
     news: data.news.length,
     contacts: data.contacts.length,
     interests: data.interests.length,
+    patients: data.patients.length,
   };
+}
+
+// Patient Management Actions
+export async function savePatientAction(formData: FormData) {
+  await requirePermission("patients");
+  const id = formData.get("id")?.toString();
+
+  await updateData((data) => {
+    const payload = {
+      id: id || nextId("pat"),
+      name: formData.get("name")?.toString() ?? "",
+      email: formData.get("email")?.toString() ?? "",
+      phone: formData.get("phone")?.toString() ?? "",
+      address: formData.get("address")?.toString() ?? "",
+      dateOfBirth: formData.get("dateOfBirth")?.toString() ?? "",
+      gender: formData.get("gender")?.toString() ?? "",
+      medicalHistory: formData.get("medicalHistory")?.toString() ?? "",
+      appointments: [] as {
+        id: string;
+        doctorId: string;
+        doctorName: string;
+        date: string;
+        time: string;
+        status: string;
+        notes: string;
+      }[],
+      createdAt: new Date().toISOString(),
+    };
+
+    const existingIndex = data.patients.findIndex((patient) => patient.id === id);
+    if (existingIndex >= 0) {
+      // Keep existing appointments when updating
+      payload.appointments = data.patients[existingIndex].appointments;
+      payload.createdAt = data.patients[existingIndex].createdAt;
+      data.patients[existingIndex] = payload;
+      return;
+    }
+
+    data.patients.unshift(payload);
+  });
+
+  refreshSite();
+}
+
+export async function savePatientWithAppointmentAction(formData: FormData) {
+  await requirePermission("patients");
+
+  await updateData((data) => {
+    const newPatient = {
+      id: nextId("pat"),
+      name: formData.get("name")?.toString() ?? "",
+      email: formData.get("email")?.toString() ?? "",
+      phone: formData.get("phone")?.toString() ?? "",
+      address: formData.get("address")?.toString() ?? "",
+      dateOfBirth: formData.get("dateOfBirth")?.toString() ?? "",
+      gender: formData.get("gender")?.toString() ?? "",
+      medicalHistory: formData.get("medicalHistory")?.toString() ?? "",
+      appointments: [] as {
+        id: string;
+        doctorId: string;
+        doctorName: string;
+        date: string;
+        time: string;
+        status: string;
+        notes: string;
+      }[],
+      createdAt: new Date().toISOString(),
+    };
+
+    // Add appointment if requested
+    const includeAppointment = formData.get("includeAppointment")?.toString() === "true";
+    if (includeAppointment) {
+      const doctorId = formData.get("doctorId")?.toString();
+      const doctor = data.projects.find((d) => d.id === doctorId);
+
+      if (doctor && doctorId) {
+        newPatient.appointments.push({
+          id: nextId("apt"),
+          doctorId,
+          doctorName: doctor.title,
+          date: formData.get("appointmentDate")?.toString() ?? "",
+          time: formData.get("appointmentTime")?.toString() ?? "",
+          status: "Scheduled",
+          notes: formData.get("appointmentNotes")?.toString() ?? "",
+        });
+      }
+    }
+
+    data.patients.unshift(newPatient);
+  });
+
+  refreshSite();
+}
+
+export async function deletePatientAction(formData: FormData) {
+  await requirePermission("patients");
+  const id = formData.get("id")?.toString();
+
+  if (!id) {
+    return;
+  }
+
+  await updateData((data) => {
+    data.patients = data.patients.filter((patient) => patient.id !== id);
+  });
+
+  refreshSite();
+}
+
+export async function addAppointmentAction(formData: FormData) {
+  await requirePermission("patients");
+  const patientId = formData.get("patientId")?.toString();
+  const doctorId = formData.get("doctorId")?.toString();
+
+  if (!patientId || !doctorId) {
+    return;
+  }
+
+  await updateData((data) => {
+    const patient = data.patients.find((p) => p.id === patientId);
+    const doctor = data.projects.find((d) => d.id === doctorId);
+
+    if (!patient || !doctor) {
+      return;
+    }
+
+    const appointment = {
+      id: nextId("apt"),
+      doctorId,
+      doctorName: doctor.title,
+      date: formData.get("date")?.toString() ?? "",
+      time: formData.get("time")?.toString() ?? "",
+      status: "Scheduled",
+      notes: formData.get("notes")?.toString() ?? "",
+    };
+
+    patient.appointments.push(appointment);
+  });
+
+  refreshSite();
+}
+
+export async function updateAppointmentStatusAction(formData: FormData) {
+  await requirePermission("patients");
+  const patientId = formData.get("patientId")?.toString();
+  const appointmentId = formData.get("appointmentId")?.toString();
+  const status = formData.get("status")?.toString();
+
+  if (!patientId || !appointmentId || !status) {
+    return;
+  }
+
+  await updateData((data) => {
+    const patient = data.patients.find((p) => p.id === patientId);
+    if (!patient) {
+      return;
+    }
+
+    const appointment = patient.appointments.find((a) => a.id === appointmentId);
+    if (appointment) {
+      appointment.status = status;
+    }
+  });
+
+  refreshSite();
+}
+
+export async function deleteAppointmentAction(formData: FormData) {
+  await requirePermission("patients");
+  const patientId = formData.get("patientId")?.toString();
+  const appointmentId = formData.get("appointmentId")?.toString();
+
+  if (!patientId || !appointmentId) {
+    return;
+  }
+
+  await updateData((data) => {
+    const patient = data.patients.find((p) => p.id === patientId);
+    if (!patient) {
+      return;
+    }
+
+    patient.appointments = patient.appointments.filter((a) => a.id !== appointmentId);
+  });
+
+  refreshSite();
 }

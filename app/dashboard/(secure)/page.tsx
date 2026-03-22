@@ -18,6 +18,7 @@ export default async function DashboardOverviewPage() {
       <section className="grid-cards">
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">Services</p><p className="text-3xl font-extrabold">{counts.services}</p></article>
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">Doctors</p><p className="text-3xl font-extrabold">{counts.projects}</p></article>
+        <article className="card p-4"><p className="text-sm text-[var(--muted)]">Patients</p><p className="text-3xl font-extrabold">{counts.patients}</p></article>
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">Blogs</p><p className="text-3xl font-extrabold">{counts.blogs}</p></article>
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">News</p><p className="text-3xl font-extrabold">{counts.news}</p></article>
         <article className="card p-4"><p className="text-sm text-[var(--muted)]">Contact Messages</p><p className="text-3xl font-extrabold">{counts.contacts}</p></article>

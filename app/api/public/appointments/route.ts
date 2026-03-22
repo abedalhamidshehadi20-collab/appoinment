@@ -17,6 +17,8 @@ export async function POST(request: Request) {
       phone: formData.get("phone")?.toString() ?? "",
       company: formData.get("location")?.toString() ?? "",
       budget: formData.get("service")?.toString() ?? "",
+      date: formData.get("date")?.toString() ?? "",
+      time: formData.get("time")?.toString() ?? "",
       message: formData.get("message")?.toString() ?? "",
       createdAt: new Date().toISOString(),
     });

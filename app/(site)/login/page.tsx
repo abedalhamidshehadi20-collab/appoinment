@@ -69,6 +69,12 @@ export default function LoginPage() {
               Create one
             </Link>
           </p>
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            Admin login?{" "}
+            <Link href="/dashboard/login" className="font-semibold text-[var(--brand)]">
+              Click here
+            </Link>
+          </p>
         </article>
       </section>
     </main>

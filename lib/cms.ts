@@ -10,12 +10,14 @@ export type Permission =
   | "blogs"
   | "news"
   | "contacts"
-  | "interests";
+  | "interests"
+  | "patients";
 
 export type User = {
   id: string;
   name: string;
   username: string;
+  email: string;
   password: string;
   role: string;
   permissions: Permission[];
@@ -94,7 +96,29 @@ export type SiteData = {
     phone: string;
     company: string;
     budget: string;
+    date: string;
+    time: string;
     message: string;
+    createdAt: string;
+  }[];
+  patients: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    dateOfBirth: string;
+    gender: string;
+    medicalHistory: string;
+    appointments: {
+      id: string;
+      doctorId: string;
+      doctorName: string;
+      date: string;
+      time: string;
+      status: string;
+      notes: string;
+    }[];
     createdAt: string;
   }[];
   users: User[];
@@ -128,10 +152,12 @@ export async function updateData(mutator: (data: SiteData) => void) {
   await writeData(data);
 }
 
-export async function findUser(username: string, password: string) {
+export async function findUser(identifier: string, password: string) {
   const data = await readData();
   return data.users.find(
-    (user) => user.username === username && user.password === password,
+    (user) =>
+      (user.username === identifier || user.email === identifier) &&
+      user.password === password,
   );
 }
 
