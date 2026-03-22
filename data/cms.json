@@ -112,8 +112,8 @@
       "id": "blg_1",
       "slug": "five-signs-your-clinic-needs-a-workflow-redesign",
       "title": "Five Signs Your Clinic Needs a Workflow Redesign",
-      "excerpt": "Long queues and documentation delays are early warning signs.",
-      "content": "When clinics grow quickly, the original workflow often fails. Start by tracking bottlenecks in registration, triage, and discharge.",
+      "excerpt": "Long queues and documentation delays are early warning signs that your clinic workflow needs improvement.",
+      "content": "When clinics grow quickly, the original workflow often fails. Start by tracking bottlenecks in registration, triage, and discharge. Common signs include patient wait times exceeding 30 minutes, staff overtime becoming routine, and frequent miscommunication between departments. A well-designed workflow reduces errors, improves patient satisfaction, and increases staff efficiency.",
       "author": "Operations Team",
       "publishedAt": "2026-02-15",
       "tags": [
@@ -121,17 +121,132 @@
         "Healthcare",
         "Workflow"
       ]
+    },
+    {
+      "id": "blg_2",
+      "slug": "importance-of-regular-health-checkups",
+      "title": "The Importance of Regular Health Checkups",
+      "excerpt": "Preventive care through regular checkups can detect health issues early when they are most treatable.",
+      "content": "Regular health checkups are essential for maintaining good health and catching potential problems early. Adults should have a general checkup at least once a year. These visits typically include blood pressure measurement, cholesterol screening, blood glucose tests, and age-appropriate cancer screenings. Early detection of conditions like diabetes, hypertension, and heart disease can significantly improve treatment outcomes and quality of life.",
+      "author": "Dr. Medical Team",
+      "publishedAt": "2026-03-01",
+      "tags": [
+        "Preventive Care",
+        "Health Tips",
+        "Wellness"
+      ]
+    },
+    {
+      "id": "blg_3",
+      "slug": "managing-diabetes-lifestyle-tips",
+      "title": "Managing Diabetes: Essential Lifestyle Tips",
+      "excerpt": "Learn practical strategies to manage diabetes through diet, exercise, and regular monitoring.",
+      "content": "Diabetes management requires a comprehensive approach combining medication, diet, and lifestyle changes. Key strategies include monitoring blood sugar levels regularly, eating a balanced diet rich in fiber and low in refined sugars, exercising for at least 150 minutes per week, maintaining a healthy weight, and taking medications as prescribed. Regular consultations with your healthcare provider help adjust treatment plans as needed.",
+      "author": "Internal Medicine Dept.",
+      "publishedAt": "2026-03-05",
+      "tags": [
+        "Diabetes",
+        "Chronic Disease",
+        "Lifestyle"
+      ]
+    },
+    {
+      "id": "blg_4",
+      "slug": "understanding-blood-pressure-readings",
+      "title": "Understanding Your Blood Pressure Readings",
+      "excerpt": "What do the numbers mean and why monitoring blood pressure is crucial for heart health.",
+      "content": "Blood pressure is measured in millimeters of mercury (mmHg) with two numbers: systolic (top) and diastolic (bottom). Normal blood pressure is below 120/80 mmHg. Elevated readings between 120-129/80 indicate elevated blood pressure. Stage 1 hypertension is 130-139/80-89, and Stage 2 is 140/90 or higher. Uncontrolled high blood pressure increases risk of heart attack, stroke, and kidney disease. Regular monitoring and lifestyle modifications can help maintain healthy levels.",
+      "author": "Cardiology Team",
+      "publishedAt": "2026-03-10",
+      "tags": [
+        "Heart Health",
+        "Blood Pressure",
+        "Prevention"
+      ]
+    },
+    {
+      "id": "blg_5",
+      "slug": "skin-care-tips-for-healthy-skin",
+      "title": "Dermatologist-Approved Skin Care Tips",
+      "excerpt": "Simple daily habits that can improve your skin health and prevent common skin problems.",
+      "content": "Healthy skin starts with consistent care. Dermatologists recommend cleansing your face twice daily with a gentle cleanser, applying sunscreen with SPF 30 or higher every day, moisturizing regularly to maintain skin barrier function, and avoiding excessive sun exposure. For specific concerns like acne, eczema, or pigmentation, consult a dermatologist for personalized treatment. Remember, what works for one person may not work for another.",
+      "author": "Dermatology Dept.",
+      "publishedAt": "2026-03-15",
+      "tags": [
+        "Skin Care",
+        "Dermatology",
+        "Health Tips"
+      ]
+    },
+    {
+      "id": "blg_6",
+      "slug": "mental-health-awareness-seeking-help",
+      "title": "Mental Health Awareness: When to Seek Help",
+      "excerpt": "Recognizing signs of mental health issues and understanding when professional support is needed.",
+      "content": "Mental health is as important as physical health. Warning signs that indicate you may need professional help include persistent sadness lasting more than two weeks, excessive worry or fear, significant changes in sleep or appetite, difficulty concentrating, withdrawal from social activities, and thoughts of self-harm. Seeking help is a sign of strength, not weakness. Treatment options include therapy, medication, and lifestyle changes. Early intervention leads to better outcomes.",
+      "author": "Wellness Team",
+      "publishedAt": "2026-03-18",
+      "tags": [
+        "Mental Health",
+        "Wellness",
+        "Self-Care"
+      ]
     }
   ],
   "news": [
     {
       "id": "nws_1",
-      "slug": "medaxis-opens-training-center",
+      "slug": "sh-med-opens-training-center",
       "title": "Sh-Med Opens Regional Training Center",
-      "excerpt": "A new center focused on practical clinical operations training.",
-      "content": "The training center will support nurses, front-desk teams, and clinic managers with simulation-based modules.",
+      "excerpt": "A new center focused on practical clinical operations training for healthcare professionals.",
+      "content": "The training center will support nurses, front-desk teams, and clinic managers with simulation-based modules. The facility features state-of-the-art equipment and experienced instructors who will provide hands-on training in patient care, emergency response, and administrative procedures. This initiative aims to improve healthcare quality across our network.",
       "publishedAt": "2026-03-12",
       "source": "Sh-Med Press"
+    },
+    {
+      "id": "nws_2",
+      "slug": "new-pediatric-department-opening",
+      "title": "New Pediatric Department Opening Next Month",
+      "excerpt": "Sh-Med expands services with a dedicated pediatric care unit staffed by experienced specialists.",
+      "content": "We are excited to announce the opening of our new Pediatric Department, designed specifically for the healthcare needs of infants, children, and adolescents. The department will offer routine check-ups, vaccinations, developmental assessments, and treatment for common childhood illnesses. Our team of board-certified pediatricians is committed to providing compassionate, family-centered care.",
+      "publishedAt": "2026-03-18",
+      "source": "Sh-Med Press"
+    },
+    {
+      "id": "nws_3",
+      "slug": "online-appointment-system-upgrade",
+      "title": "Enhanced Online Appointment Booking System Now Live",
+      "excerpt": "Patients can now enjoy a faster, more intuitive appointment booking experience with our upgraded system.",
+      "content": "Our new online appointment system makes scheduling visits easier than ever. Features include real-time availability checking, appointment reminders via SMS and email, the ability to select preferred doctors, and easy rescheduling options. The system is accessible 24/7 from any device, ensuring patients can book appointments at their convenience.",
+      "publishedAt": "2026-03-15",
+      "source": "Technology Update"
+    },
+    {
+      "id": "nws_4",
+      "slug": "free-health-screening-campaign",
+      "title": "Free Health Screening Campaign Announced for April",
+      "excerpt": "Community health initiative offers free blood pressure, diabetes, and cholesterol screenings.",
+      "content": "As part of our commitment to community health, Sh-Med is organizing a free health screening campaign throughout April. The campaign will offer free blood pressure checks, blood glucose testing, cholesterol screening, and BMI assessments. No appointment is necessary. Our healthcare professionals will also provide personalized health advice and referrals when needed.",
+      "publishedAt": "2026-03-20",
+      "source": "Community Health"
+    },
+    {
+      "id": "nws_5",
+      "slug": "telemedicine-services-expansion",
+      "title": "Telemedicine Services Now Available for All Patients",
+      "excerpt": "Virtual consultations make healthcare more accessible for patients who cannot visit in person.",
+      "content": "Sh-Med now offers comprehensive telemedicine services, allowing patients to consult with doctors from the comfort of their homes. Virtual appointments are available for follow-up visits, minor illnesses, prescription refills, and general health consultations. Patients can schedule video calls through our online portal and receive the same quality care as in-person visits.",
+      "publishedAt": "2026-03-10",
+      "source": "Service Update"
+    },
+    {
+      "id": "nws_6",
+      "slug": "new-cardiology-specialist-joins-team",
+      "title": "Renowned Cardiologist Dr. Sarah Mitchell Joins Sh-Med",
+      "excerpt": "Award-winning heart specialist brings 20 years of experience to our cardiovascular department.",
+      "content": "We are pleased to welcome Dr. Sarah Mitchell to our medical team. Dr. Mitchell specializes in preventive cardiology, heart failure management, and cardiac rehabilitation. With over 20 years of experience and numerous awards for excellence in patient care, she will lead our efforts to provide comprehensive heart health services to the community.",
+      "publishedAt": "2026-03-08",
+      "source": "Staff Announcement"
     }
   ],
   "contacts": [],
