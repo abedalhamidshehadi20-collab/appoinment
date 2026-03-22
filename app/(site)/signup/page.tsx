@@ -1,6 +1,20 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { patientSignupAction } from "../auth-actions";
+import { getPatientSession } from "@/lib/patient-auth";
 
-export default function SignupPage() {
+type Props = {
+  searchParams: Promise<{ error?: string; exists?: string }>;
+};
+
+export default async function SignupPage({ searchParams }: Props) {
+  const query = await searchParams;
+  const patient = await getPatientSession();
+
+  if (patient) {
+    redirect("/");
+  }
+
   return (
     <main className="container fade-up py-10">
       <section className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[0.92fr_1.08fr]">
@@ -36,11 +50,24 @@ export default function SignupPage() {
             </p>
           </div>
 
-          <form className="mt-8 grid gap-4 sm:grid-cols-2">
+          {query.error === "1" ? (
+            <p className="mt-6 rounded-2xl border border-white/30 bg-white/12 p-4 text-sm font-medium text-white">
+              Please complete the required fields to create your patient account.
+            </p>
+          ) : null}
+
+          {query.exists === "1" ? (
+            <p className="mt-6 rounded-2xl border border-white/30 bg-white/12 p-4 text-sm font-medium text-white">
+              A patient account with this email already exists.
+            </p>
+          ) : null}
+
+          <form action={patientSignupAction} className="mt-8 grid gap-4 sm:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-white">
               First Name
               <input
                 type="text"
+                name="firstName"
                 placeholder="First name"
                 className="h-12 rounded-2xl border border-white/20 bg-white/12 px-4 text-sm font-medium text-white placeholder:text-white/65 outline-none transition focus:border-white/40 focus:bg-white/18"
               />
@@ -50,6 +77,7 @@ export default function SignupPage() {
               Last Name
               <input
                 type="text"
+                name="lastName"
                 placeholder="Last name"
                 className="h-12 rounded-2xl border border-white/20 bg-white/12 px-4 text-sm font-medium text-white placeholder:text-white/65 outline-none transition focus:border-white/40 focus:bg-white/18"
               />
@@ -59,6 +87,7 @@ export default function SignupPage() {
               Email Address
               <input
                 type="email"
+                name="email"
                 placeholder="name@example.com"
                 className="h-12 rounded-2xl border border-white/20 bg-white/12 px-4 text-sm font-medium text-white placeholder:text-white/65 outline-none transition focus:border-white/40 focus:bg-white/18"
               />
@@ -68,6 +97,7 @@ export default function SignupPage() {
               Phone Number
               <input
                 type="tel"
+                name="phone"
                 placeholder="+961 ..."
                 className="h-12 rounded-2xl border border-white/20 bg-white/12 px-4 text-sm font-medium text-white placeholder:text-white/65 outline-none transition focus:border-white/40 focus:bg-white/18"
               />
@@ -77,6 +107,7 @@ export default function SignupPage() {
               Password
               <input
                 type="password"
+                name="password"
                 placeholder="Create password"
                 className="h-12 rounded-2xl border border-white/20 bg-white/12 px-4 text-sm font-medium text-white placeholder:text-white/65 outline-none transition focus:border-white/40 focus:bg-white/18"
               />

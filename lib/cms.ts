@@ -105,6 +105,7 @@ export type SiteData = {
     id: string;
     name: string;
     email: string;
+    password?: string;
     phone: string;
     address: string;
     dateOfBirth: string;
@@ -158,6 +159,22 @@ export async function findUser(identifier: string, password: string) {
     (user) =>
       (user.username === identifier || user.email === identifier) &&
       user.password === password,
+  );
+}
+
+export async function findPatientByEmail(email: string) {
+  const data = await readData();
+  return data.patients.find(
+    (patient) => patient.email.toLowerCase() === email.toLowerCase(),
+  );
+}
+
+export async function findPatientByCredentials(email: string, password: string) {
+  const data = await readData();
+  return data.patients.find(
+    (patient) =>
+      patient.email.toLowerCase() === email.toLowerCase() &&
+      patient.password === password,
   );
 }
 

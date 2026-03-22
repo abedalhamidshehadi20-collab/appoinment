@@ -1,5 +1,6 @@
 import { readData } from "@/lib/cms";
 import AppointmentForm from "@/components/AppointmentForm";
+import { requirePatient } from "@/lib/patient-auth";
 
 type Props = {
   searchParams: Promise<{ sent?: string }>;
@@ -7,6 +8,7 @@ type Props = {
 
 export default async function AppointmentsPage({ searchParams }: Props) {
   const query = await searchParams;
+  await requirePatient("/appointments");
   const data = await readData();
 
   return (

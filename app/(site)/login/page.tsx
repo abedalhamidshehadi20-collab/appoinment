@@ -1,6 +1,20 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { patientLoginAction } from "../auth-actions";
+import { getPatientSession } from "@/lib/patient-auth";
 
-export default function LoginPage() {
+type Props = {
+  searchParams: Promise<{ error?: string; next?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: Props) {
+  const query = await searchParams;
+  const patient = await getPatientSession();
+
+  if (patient) {
+    redirect(query.next || "/");
+  }
+
   return (
     <main className="container fade-up py-10">
       <section className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -39,11 +53,19 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className="mt-8 grid gap-4">
+          {query.error === "1" ? (
+            <p className="mt-6 rounded-2xl border border-[#ffd1d1] bg-[#fff0f0] p-4 text-sm font-medium text-[#9b1c1c]">
+              Invalid patient email or password.
+            </p>
+          ) : null}
+
+          <form action={patientLoginAction} className="mt-8 grid gap-4">
+            <input type="hidden" name="next" value={query.next || "/"} />
             <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
               Email Address
               <input
                 type="email"
+                name="email"
                 placeholder="name@example.com"
                 className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
               />
@@ -53,6 +75,7 @@ export default function LoginPage() {
               Password
               <input
                 type="password"
+                name="password"
                 placeholder="Enter your password"
                 className="h-12 rounded-2xl border border-[var(--line)] bg-[#fbfdff] px-4 text-sm font-medium outline-none transition focus:border-[#9ec5ff] focus:bg-white"
               />

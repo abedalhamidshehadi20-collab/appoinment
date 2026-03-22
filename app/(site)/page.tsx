@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { readData } from "@/lib/cms";
 import { homepageSpecialties, SpecialtyLink } from "@/components/site/specialties";
+import { getPatientSession } from "@/lib/patient-auth";
 
 type Props = {
   searchParams: Promise<{ q?: string }>;
@@ -9,6 +10,7 @@ type Props = {
 
 export default async function HomePage({ searchParams }: Props) {
   const data = await readData();
+  const patient = await getPatientSession();
   const query = (await searchParams).q?.trim().toLowerCase() ?? "";
   const filteredDoctors = query
     ? data.projects.filter((doctor) => {
@@ -34,7 +36,10 @@ export default async function HomePage({ searchParams }: Props) {
               <Link href="/doctors" className="button button-primary">
                 Explore Now
               </Link>
-              <Link href="/appointments" className="button button-secondary">
+              <Link
+                href={patient ? "/appointments" : "/login?next=%2Fappointments"}
+                className="button button-secondary"
+              >
                 Book Appointment
               </Link>
             </div>

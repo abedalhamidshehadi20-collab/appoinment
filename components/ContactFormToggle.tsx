@@ -10,15 +10,16 @@ type Doctor = {
 type Props = {
   doctors: Doctor[];
   showSuccess: boolean;
+  isPatientLoggedIn: boolean;
 };
 
-export default function ContactFormToggle({ showSuccess }: Props) {
+export default function ContactFormToggle({ showSuccess, isPatientLoggedIn }: Props) {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   return (
     <section className="mt-16">
       {/* Toggle Button */}
-      {!isFormVisible && (
+      {!isFormVisible && isPatientLoggedIn && (
         <div className="flex justify-center">
           <button
             onClick={() => setIsFormVisible(true)}
@@ -29,8 +30,19 @@ export default function ContactFormToggle({ showSuccess }: Props) {
         </div>
       )}
 
+      {!isPatientLoggedIn ? (
+        <div className="flex justify-center">
+          <a
+            href="/login?next=%2Fcontact"
+            className="rounded-lg border border-[#1f2937] px-8 py-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#1f2937] hover:text-white"
+          >
+            Login as patient to contact us
+          </a>
+        </div>
+      ) : null}
+
       {/* Contact Form Section */}
-      {isFormVisible && (
+      {isFormVisible && isPatientLoggedIn && (
         <div className="fade-up mx-auto grid max-w-5xl gap-6 lg:grid-cols-[1.02fr_0.98fr]">
           <article className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,#1d4f91_0%,#2377e7_55%,#6fb3ff_100%)] p-8 text-white shadow-[0_24px_60px_-32px_rgba(29,79,145,0.65)]">
             <span className="inline-flex rounded-full border border-white/20 bg-white/12 px-4 py-1 text-xs font-bold uppercase tracking-[0.24em]">

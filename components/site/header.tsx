@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { patientLogoutAction } from "@/app/(site)/auth-actions";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -23,7 +24,11 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function SiteHeader() {
+type Props = {
+  patientName?: string | null;
+};
+
+export function SiteHeader({ patientName }: Props) {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
   const heroBottomRef = useRef<number>(0);
@@ -136,12 +141,26 @@ export function SiteHeader() {
             ))}
           </ul>
           <div className="flex items-center">
-            <Link
-              href="/login"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-5 text-sm font-bold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
-            >
-              Login
-            </Link>
+            {patientName ? (
+              <form action={patientLogoutAction} className="flex items-center gap-3">
+                <span className="text-sm font-semibold text-[var(--brand-deep)]">
+                  {patientName}
+                </span>
+                <button
+                  type="submit"
+                  className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-5 text-sm font-bold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
+                >
+                  Logout
+                </button>
+              </form>
+            ) : (
+              <Link
+                href="/login"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-5 text-sm font-bold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </nav>
       </div>

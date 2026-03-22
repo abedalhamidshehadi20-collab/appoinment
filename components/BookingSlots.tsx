@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   doctorSlug: string;
+  isPatientLoggedIn: boolean;
 };
 
-export default function BookingSlots({ doctorSlug }: Props) {
+export default function BookingSlots({ doctorSlug, isPatientLoggedIn }: Props) {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -36,6 +37,11 @@ export default function BookingSlots({ doctorSlug }: Props) {
 
   const handleBooking = () => {
     if (selectedTime) {
+      if (!isPatientLoggedIn) {
+        router.push(`/login?next=${encodeURIComponent(`/appointments?doctor=${doctorSlug}&date=${days[selectedDate].fullDate}&time=${encodeURIComponent(selectedTime)}`)}`);
+        return;
+      }
+
       router.push(`/appointments?doctor=${doctorSlug}&date=${days[selectedDate].fullDate}&time=${encodeURIComponent(selectedTime)}`);
     }
   };

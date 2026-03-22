@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { readData } from "@/lib/cms";
 import BookingSlots from "@/components/BookingSlots";
+import { getPatientSession } from "@/lib/patient-auth";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -11,6 +12,7 @@ type Props = {
 export default async function ProjectDetailsPage({ params }: Props) {
   const { slug } = await params;
   const data = await readData();
+  const patient = await getPatientSession();
   const project = data.projects.find((item) => item.slug === slug);
 
   if (!project) {
@@ -76,7 +78,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
       </section>
 
       {/* Booking Slots Section */}
-      <BookingSlots doctorSlug={slug} />
+      <BookingSlots doctorSlug={slug} isPatientLoggedIn={Boolean(patient)} />
 
       {/* Related Doctors Section */}
       <section className="mt-16">

@@ -2,10 +2,15 @@ import { ReactNode } from "react";
 import { SiteFooter } from "./footer";
 import { SiteHeader } from "./header";
 
-export function SiteShell({ children }: { children: ReactNode }) {
+type Props = {
+  children: ReactNode;
+  patientName?: string | null;
+};
+
+export function SiteShell({ children, patientName }: Props) {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader patientName={patientName} />
       {children}
       <SiteFooter />
     </>

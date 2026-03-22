@@ -1,5 +1,6 @@
 import Image from "next/image";
 import ContactFormToggle from "@/components/ContactFormToggle";
+import { getPatientSession } from "@/lib/patient-auth";
 
 type Props = {
   searchParams: Promise<{ sent?: string }>;
@@ -7,6 +8,7 @@ type Props = {
 
 export default async function ContactPage({ searchParams }: Props) {
   const query = await searchParams;
+  const patient = await getPatientSession();
 
   return (
     <main className="container fade-up pb-16 pt-10">
@@ -33,7 +35,7 @@ export default async function ContactPage({ searchParams }: Props) {
           </div>
         </div>
 
-        <ContactFormToggle doctors={[]} showSuccess={query.sent === "1"} />
+        <ContactFormToggle doctors={[]} showSuccess={query.sent === "1"} isPatientLoggedIn={Boolean(patient)} />
       </section>
     </main>
   );

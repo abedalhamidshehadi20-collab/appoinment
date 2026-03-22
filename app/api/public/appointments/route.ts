@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { nextId, readData, updateData } from "@/lib/cms";
+import { getPatientSession } from "@/lib/patient-auth";
 
 export async function POST(request: Request) {
+  const patient = await getPatientSession();
+  if (!patient) {
+    return NextResponse.redirect(new URL("/login?next=%2Fappointments", request.url));
+  }
+
   const formData = await request.formData();
   const data = await readData();
   const doctorId = formData.get("doctorId")?.toString() ?? "";
