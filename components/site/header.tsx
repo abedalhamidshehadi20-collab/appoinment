@@ -15,6 +15,14 @@ const navItems = [
   { href: "/contact", label: "Contact" },
 ];
 
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === "/";
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
@@ -116,9 +124,9 @@ export function SiteHeader() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`rounded-md px-3 py-2 transition hover:bg-[#eff6ff] hover:text-[var(--brand)] ${
-                    pathname === item.href
-                      ? "font-extrabold text-[var(--brand-deep)] underline underline-offset-4"
+                  className={`inline-flex px-3 py-2 transition hover:bg-[#eff6ff] hover:text-[var(--brand)] ${
+                    isActivePath(pathname, item.href)
+                      ? "border-b-4 border-blue-600 font-extrabold text-blue-600"
                       : ""
                   }`}
                 >
