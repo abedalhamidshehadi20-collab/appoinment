@@ -123,9 +123,16 @@ export default async function HomePage({ searchParams }: Props) {
 
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {data.home.stats.map((stat) => (
-            <article key={stat.label} className="card p-5 text-center">
-              <p className="text-3xl font-black text-[var(--brand)]">{stat.value}</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--muted)]">{stat.label}</p>
+            <article
+              key={stat.label}
+              className="group overflow-hidden rounded-[22px] border border-[var(--line)] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] p-5 text-center shadow-[0_12px_28px_-24px_rgba(17,24,39,0.28)] transition-all duration-200 hover:-translate-y-1 hover:border-[#c7ddff] hover:shadow-[0_18px_30px_-22px_rgba(17,24,39,0.22)]"
+            >
+              <p className="text-3xl font-black text-[var(--brand)] transition-colors duration-200 group-hover:text-[var(--brand-deep)]">
+                {stat.value}
+              </p>
+              <p className="mt-1 text-sm font-semibold text-[var(--muted)] transition-colors duration-200 group-hover:text-[var(--brand-deep)]">
+                {stat.label}
+              </p>
             </article>
           ))}
         </div>
