@@ -6,32 +6,34 @@ export default async function ProjectsPage() {
   const data = await readData();
 
   return (
-    <main className="container fade-up pb-8">
-      <section className="card p-8 md:p-10">
-        <h1 className="text-4xl font-extrabold">Doctors</h1>
-        <p className="mt-3 text-[var(--muted)]">Meet our medical specialists and book your appointment.</p>
-      </section>
+    <main className="container fade-up pb-16">
+      <section className="rounded-[32px] border border-[#e5e7eb] bg-white p-8 shadow-sm md:p-10">
+        <div>
+          <h1 className="text-4xl font-extrabold">Doctors</h1>
+          <p className="mt-3 text-[var(--muted)]">Meet our medical specialists and book your appointment.</p>
+        </div>
 
-      <section className="grid-cards mt-6">
-        {data.projects.map((project) => (
-          <article key={project.id} className="card overflow-hidden">
-            <Image
-              src={project.coverImage}
-              alt={project.title}
-              width={1200}
-              height={520}
-              className="h-44 w-full object-cover"
-            />
-            <div className="p-5">
-              <p className="text-xs font-semibold uppercase text-[var(--accent)]">{project.sector}</p>
-              <h2 className="mt-2 text-xl font-bold">{project.title}</h2>
-              <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
-              <Link href={`/doctors/${project.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
-                View profile
-              </Link>
-            </div>
-          </article>
-        ))}
+        <div className="grid-cards mt-6">
+          {data.projects.map((project) => (
+            <article key={project.id} className="card overflow-hidden">
+              <Image
+                src={project.coverImage}
+                alt={project.title}
+                width={1200}
+                height={520}
+                className="h-44 w-full object-cover"
+              />
+              <div className="p-5">
+                <p className="text-xs font-semibold uppercase text-[var(--accent)]">{project.sector}</p>
+                <h2 className="mt-2 text-xl font-bold">{project.title}</h2>
+                <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
+                <Link href={`/doctors/${project.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
+                  View profile
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
     </main>
   );
