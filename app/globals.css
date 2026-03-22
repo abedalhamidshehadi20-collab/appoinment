@@ -26,6 +26,25 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body), "Segoe UI", sans-serif;
+  scrollbar-color: var(--brand) #dbeafe;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #dbeafe;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brand);
+  border-radius: 999px;
+  border: 2px solid #dbeafe;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-deep);
 }
 
 h1,
