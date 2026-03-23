@@ -64,8 +64,9 @@ export default async function SignupPage({ searchParams }: Props) {
 
           {query.config === "1" ? (
             <p className="mt-6 rounded-2xl border border-[#ffd7a8] bg-[#fff4e5] p-4 text-sm font-medium text-[#7a4b00]">
-              Patient signup is blocked by your Supabase database policies. Run the patient policies in
-              <span className="font-semibold"> add-specialties-and-updates.sql</span> or update your RLS setup, then try again.
+              Patient signup is blocked by Supabase policies. Run
+              <span className="font-semibold"> fix-patient-signup.sql</span> in Supabase SQL Editor or set
+              <span className="font-semibold"> SUPABASE_SERVICE_ROLE_KEY</span> in your local environment, then restart the server.
             </p>
           ) : null}
 
