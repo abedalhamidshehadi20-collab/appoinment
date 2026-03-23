@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { readData } from "@/lib/cms";
+import { getAllServices } from "@/lib/db";
 
 export default async function ServicesPage() {
-  const data = await readData();
+  const services = await getAllServices();
+  const data = { services };
 
   return (
     <main className="container fade-up pb-16">

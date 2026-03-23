@@ -6,9 +6,22 @@ import { useRouter } from "next/navigation";
 type Props = {
   doctorSlug: string;
   isPatientLoggedIn: boolean;
+  availableTimes?: string[];
 };
 
-export default function BookingSlots({ doctorSlug, isPatientLoggedIn }: Props) {
+// Default time slots
+const defaultTimeSlots = [
+  "8:00 am",
+  "8:30 am",
+  "9:00 am",
+  "9:30 am",
+  "10:00 am",
+  "10:30 am",
+  "11:00 am",
+  "11:30 am",
+];
+
+export default function BookingSlots({ doctorSlug, isPatientLoggedIn, availableTimes }: Props) {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -24,16 +37,7 @@ export default function BookingSlots({ doctorSlug, isPatientLoggedIn }: Props) {
     };
   });
 
-  const timeSlots = [
-    "8:00 am",
-    "8:30 am",
-    "9:00 am",
-    "9:30 am",
-    "10:00 am",
-    "10:30 am",
-    "11:00 am",
-    "11:30 am",
-  ];
+  const timeSlots = availableTimes && availableTimes.length > 0 ? availableTimes : defaultTimeSlots;
 
   const handleBooking = () => {
     if (selectedTime) {

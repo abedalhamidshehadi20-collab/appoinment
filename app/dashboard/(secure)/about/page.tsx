@@ -1,10 +1,11 @@
 import { updateAboutAction } from "@/app/dashboard/actions";
 import { requirePermission } from "@/lib/auth";
-import { readData } from "@/lib/cms";
+import { getSiteSettings } from "@/lib/db";
 
 export default async function DashboardAboutPage() {
   await requirePermission("about");
-  const data = await readData();
+  const settings = await getSiteSettings();
+  const data = { about: settings.about };
 
   return (
     <article className="card p-6">

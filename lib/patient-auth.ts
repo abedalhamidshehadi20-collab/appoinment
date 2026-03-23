@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { findPatientByCredentials } from "./cms";
+import { findPatientByCredentials } from "./db";
 
 const COOKIE_NAME = "patient_session";
 const SECRET = process.env.PATIENT_SESSION_SECRET ?? process.env.SESSION_SECRET ?? "replace-this-in-production";

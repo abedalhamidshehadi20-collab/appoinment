@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Specialty } from "@/lib/db";
 
 export type SpecialtyIcon =
   | "dentist"
@@ -16,7 +17,8 @@ export type SpecialtyItem = {
   label: string;
 };
 
-export const homepageSpecialties: SpecialtyItem[] = [
+// Fallback specialties when database is empty
+export const defaultHomepageSpecialties: SpecialtyItem[] = [
   { icon: "dentist", label: "Dentist" },
   { icon: "cardiologist", label: "Cardiologist" },
   { icon: "orthopedic", label: "Orthopedic" },
@@ -25,12 +27,34 @@ export const homepageSpecialties: SpecialtyItem[] = [
   { icon: "general", label: "General Doctor" },
 ];
 
-export const allSpecialties: SpecialtyItem[] = [
-  ...homepageSpecialties,
+export const defaultAllSpecialties: SpecialtyItem[] = [
+  ...defaultHomepageSpecialties,
   { icon: "surgeon", label: "Surgeon" },
   { icon: "psychiatry", label: "Psychiatry" },
   { icon: "eye", label: "Eye Specialist" },
 ];
+
+// Convert database specialty to SpecialtyItem
+export function specialtyToItem(specialty: Specialty): SpecialtyItem {
+  return {
+    icon: specialty.icon as SpecialtyIcon,
+    label: specialty.name,
+  };
+}
+
+// Convert database specialties to items with fallback
+export function getSpecialtyItems(
+  specialties: Specialty[] | null,
+  featuredOnly: boolean = false
+): SpecialtyItem[] {
+  if (!specialties || specialties.length === 0) {
+    return featuredOnly ? defaultHomepageSpecialties : defaultAllSpecialties;
+  }
+  const items = specialties.map(specialtyToItem);
+  return featuredOnly
+    ? items.filter((_, idx) => idx < 6)
+    : items;
+}
 
 export function specialtyHref(label: string) {
   return `/search/${encodeURIComponent(label)}`;

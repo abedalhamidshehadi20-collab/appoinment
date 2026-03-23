@@ -1,10 +1,11 @@
 import { deleteServiceAction, saveServiceAction } from "@/app/dashboard/actions";
 import { requirePermission } from "@/lib/auth";
-import { readData } from "@/lib/cms";
+import { getAllServices } from "@/lib/db";
 
 export default async function DashboardServicesPage() {
   await requirePermission("services");
-  const data = await readData();
+  const services = await getAllServices();
+  const data = { services };
 
   return (
     <>

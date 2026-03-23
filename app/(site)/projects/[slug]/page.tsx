@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { readData } from "@/lib/cms";
+import { getDoctorBySlug, getAllDoctors } from "@/lib/db";
 import BookingSlots from "@/components/BookingSlots";
 import { getPatientSession } from "@/lib/patient-auth";
 
@@ -11,16 +11,19 @@ type Props = {
 
 export default async function ProjectDetailsPage({ params }: Props) {
   const { slug } = await params;
-  const data = await readData();
+  const [doctor, allDoctors] = await Promise.all([
+    getDoctorBySlug(slug),
+    getAllDoctors()
+  ]);
   const patient = await getPatientSession();
-  const project = data.projects.find((item) => item.slug === slug);
 
-  if (!project) {
+  if (!doctor) {
     redirect("/doctors");
   }
 
-  const yearsOfExperience = new Date().getFullYear() - 2008;
-  const relatedDoctors = data.projects.filter((item) => item.slug !== slug).slice(0, 5);
+  const yearsOfExperience = doctor.years_experience || (new Date().getFullYear() - 2008);
+  const appointmentFee = doctor.appointment_fee || 50;
+  const relatedDoctors = allDoctors.filter((item) => item.slug !== slug).slice(0, 5);
 
   return (
     <main className="container fade-up pb-10">
@@ -29,8 +32,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <div className="flex-shrink-0">
           <div className="overflow-hidden rounded-xl bg-[#5f6fff]">
             <Image
-              src={project.coverImage}
-              alt={project.title}
+              src={doctor.cover_image}
+              alt={doctor.title}
               width={320}
               height={320}
               className="h-72 w-full object-cover lg:h-80 lg:w-72"
@@ -41,7 +44,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
         {/* Doctor Info Card */}
         <div className="flex-1 rounded-xl border border-[#e4e9ef] bg-white p-6">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-[#1f2937]">{project.title}</h1>
+            <h1 className="text-2xl font-bold text-[#1f2937]">{doctor.title}</h1>
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#3b82f6]">
               <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -50,7 +53,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
           </div>
 
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[#6b7280]">
-            <span>{project.sector}</span>
+            <span>{doctor.sector}</span>
             <span className="rounded-full border border-[#e5e7eb] px-2 py-0.5 text-xs">
               {yearsOfExperience} Years
             </span>
@@ -64,21 +67,25 @@ export default async function ProjectDetailsPage({ params }: Props) {
               </svg>
             </div>
             <p className="mt-2 text-sm leading-6 text-[#6b7280]">
-              {project.description} {project.details.join(" ")} With a patient-first approach, every treatment
+              {doctor.description} {doctor.details?.join(" ")} With a patient-first approach, every treatment
               plan is customized to the patient&apos;s symptoms, history, and lifestyle.
             </p>
           </div>
 
           <div className="mt-5">
             <p className="text-[#4b5563]">
-              Appointment fee: <span className="font-semibold text-[#1f2937]">$50</span>
+              Appointment fee: <span className="font-semibold text-[#1f2937]">${appointmentFee}</span>
             </p>
           </div>
         </div>
       </section>
 
       {/* Booking Slots Section */}
-      <BookingSlots doctorSlug={slug} isPatientLoggedIn={Boolean(patient)} />
+      <BookingSlots
+        doctorSlug={slug}
+        isPatientLoggedIn={Boolean(patient)}
+        availableTimes={doctor.available_times}
+      />
 
       {/* Related Doctors Section */}
       <section className="mt-16">
@@ -86,16 +93,16 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <p className="mt-2 text-center text-sm text-[#6b7280]">Simply browse through our extensive list of trusted doctors.</p>
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-          {relatedDoctors.map((doctor) => (
+          {relatedDoctors.map((doc) => (
             <Link
-              key={doctor.id}
-              href={`/doctors/${doctor.slug}`}
+              key={doc.id}
+              href={`/doctors/${doc.slug}`}
               className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:translate-y-[-10px]"
             >
               <div className="overflow-hidden bg-[#eef2ff]">
                 <Image
-                  src={doctor.coverImage}
-                  alt={doctor.title}
+                  src={doc.cover_image}
+                  alt={doc.title}
                   width={300}
                   height={300}
                   className="h-48 w-full object-cover transition group-hover:scale-105"
@@ -106,8 +113,8 @@ export default async function ProjectDetailsPage({ params }: Props) {
                   <span className="inline-block h-2 w-2 rounded-full bg-[#10b981]"></span>
                   Available
                 </p>
-                <p className="mt-2 font-medium text-[#1f2937]">{doctor.title}</p>
-                <p className="text-xs text-[#6b7280]">{doctor.sector}</p>
+                <p className="mt-2 font-medium text-[#1f2937]">{doc.title}</p>
+                <p className="text-xs text-[#6b7280]">{doc.sector}</p>
               </div>
             </Link>
           ))}

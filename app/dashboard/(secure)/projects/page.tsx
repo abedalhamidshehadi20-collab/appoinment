@@ -1,24 +1,11 @@
 import { deleteProjectAction, saveProjectAction } from "@/app/dashboard/actions";
 import { requirePermission } from "@/lib/auth";
-import { readData } from "@/lib/cms";
+import { getAllDoctors, Doctor } from "@/lib/db";
 
 function ProjectForm({
   item,
 }: {
-  item?: {
-    id: string;
-    title: string;
-    slug: string;
-    excerpt: string;
-    description: string;
-    sector: string;
-    location: string;
-    status: string;
-    coverImage: string;
-    gallery: string[];
-    details: string[];
-    createdAt: string;
-  };
+  item?: Doctor;
 }) {
   return (
     <form action={saveProjectAction} className="grid gap-3">
@@ -32,10 +19,15 @@ function ProjectForm({
         <input name="location" defaultValue={item?.location} placeholder="Clinic location" className="rounded-lg border border-[var(--line)] px-3 py-2" />
         <input name="status" defaultValue={item?.status} placeholder="Availability" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       </div>
-      <input name="coverImage" defaultValue={item?.coverImage} placeholder="Cover image URL" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <textarea name="gallery" defaultValue={item?.gallery.join("\n")} rows={3} placeholder="Gallery URLs (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <textarea name="details" defaultValue={item?.details.join("\n")} rows={3} placeholder="Doctor highlights (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <input name="createdAt" defaultValue={item?.createdAt} placeholder="Created date ISO" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <div className="grid gap-3 md:grid-cols-2">
+        <input name="appointmentFee" type="number" step="0.01" defaultValue={item?.appointment_fee ?? 50} placeholder="Appointment Fee ($)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+        <input name="yearsExperience" type="number" defaultValue={item?.years_experience ?? 0} placeholder="Years of Experience" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      </div>
+      <input name="coverImage" defaultValue={item?.cover_image} placeholder="Cover image URL" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <textarea name="gallery" defaultValue={item?.gallery?.join("\n")} rows={3} placeholder="Gallery URLs (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <textarea name="details" defaultValue={item?.details?.join("\n")} rows={3} placeholder="Doctor highlights (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <textarea name="availableTimes" defaultValue={item?.available_times?.join("\n") ?? "8:00 am\n8:30 am\n9:00 am\n9:30 am\n10:00 am\n10:30 am\n11:00 am\n11:30 am"} rows={4} placeholder="Available time slots (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <input name="createdAt" defaultValue={item?.created_at} placeholder="Created date ISO" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <button className="button button-primary w-fit">{item ? "Save Doctor" : "Add Doctor"}</button>
     </form>
   );
@@ -43,7 +35,7 @@ function ProjectForm({
 
 export default async function DashboardProjectsPage() {
   await requirePermission("projects");
-  const data = await readData();
+  const doctors = await getAllDoctors();
 
   return (
     <>
@@ -54,14 +46,14 @@ export default async function DashboardProjectsPage() {
         </div>
       </article>
 
-      {data.projects.map((project) => (
-        <article key={project.id} className="card p-6">
-          <h2 className="text-lg font-bold">{project.title}</h2>
+      {doctors.map((doctor) => (
+        <article key={doctor.id} className="card p-6">
+          <h2 className="text-lg font-bold">{doctor.title}</h2>
           <div className="mt-3">
-            <ProjectForm item={project} />
+            <ProjectForm item={doctor} />
           </div>
           <form action={deleteProjectAction} className="mt-2">
-            <input type="hidden" name="id" value={project.id} />
+            <input type="hidden" name="id" value={doctor.id} />
             <button className="button button-secondary text-xs">Delete</button>
           </form>
         </article>

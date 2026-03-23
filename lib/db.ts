@@ -47,6 +47,20 @@ export type Doctor = {
   cover_image: string;
   gallery: string[];
   details: string[];
+  appointment_fee: number;
+  years_experience: number;
+  available_times: string[];
+  created_at: string;
+};
+
+export type Specialty = {
+  id: string;
+  slug: string;
+  name: string;
+  icon: string;
+  description: string;
+  is_featured: boolean;
+  sort_order: number;
   created_at: string;
 };
 
@@ -121,6 +135,18 @@ export type SiteSettings = {
     mission: string;
     vision: string;
     values: string[];
+  };
+  contact: {
+    address: string;
+    city: string;
+    phone: string;
+    email: string;
+    mapUrl: string;
+    workingHours: {
+      weekdays: string;
+      saturday: string;
+      sunday: string;
+    };
   };
 };
 
@@ -578,6 +604,73 @@ export async function createContact(contact: Omit<Contact, 'id' | 'created_at'>)
 export async function deleteContact(id: string) {
   const { error } = await supabase
     .from('contacts')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+// ============================================
+// Specialties
+// ============================================
+
+export async function getAllSpecialties() {
+  const { data, error } = await supabase
+    .from('specialties')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  if (error) throw error;
+  return data as Specialty[];
+}
+
+export async function getFeaturedSpecialties() {
+  const { data, error } = await supabase
+    .from('specialties')
+    .select('*')
+    .eq('is_featured', true)
+    .order('sort_order', { ascending: true });
+
+  if (error) throw error;
+  return data as Specialty[];
+}
+
+export async function getSpecialtyBySlug(slug: string) {
+  const { data, error } = await supabase
+    .from('specialties')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) return null;
+  return data as Specialty;
+}
+
+export async function createSpecialty(specialty: Omit<Specialty, 'id' | 'created_at'>) {
+  const newSpecialty = {
+    ...specialty,
+    id: nextId('spc'),
+    created_at: new Date().toISOString()
+  };
+
+  const { error } = await supabase.from('specialties').insert(newSpecialty);
+
+  if (error) throw error;
+  return newSpecialty;
+}
+
+export async function updateSpecialty(id: string, updates: Partial<Specialty>) {
+  const { error } = await supabase
+    .from('specialties')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+export async function deleteSpecialty(id: string) {
+  const { error } = await supabase
+    .from('specialties')
     .delete()
     .eq('id', id);
 

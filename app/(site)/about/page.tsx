@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { readData } from "@/lib/cms";
+import { getSiteSettings } from "@/lib/db";
 
 export default async function AboutPage() {
-  const data = await readData();
+  const settings = await getSiteSettings();
+  const data = { about: settings.about };
 
   return (
     <main className="container fade-up pb-16">

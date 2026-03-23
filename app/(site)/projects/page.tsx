@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { readData } from "@/lib/cms";
+import { getAllDoctors } from "@/lib/db";
 
 export default async function ProjectsPage() {
-  const data = await readData();
+  const doctors = await getAllDoctors();
 
   return (
     <main className="container fade-up pb-16">
@@ -14,20 +14,20 @@ export default async function ProjectsPage() {
         </div>
 
         <div className="grid-cards mt-6">
-          {data.projects.map((project) => (
-            <article key={project.id} className="card overflow-hidden">
+          {doctors.map((doctor) => (
+            <article key={doctor.id} className="card overflow-hidden">
               <Image
-                src={project.coverImage}
-                alt={project.title}
+                src={doctor.cover_image}
+                alt={doctor.title}
                 width={1200}
                 height={520}
                 className="h-44 w-full object-cover"
               />
               <div className="p-5">
-                <p className="text-xs font-semibold uppercase text-[var(--accent)]">{project.sector}</p>
-                <h2 className="mt-2 text-xl font-bold">{project.title}</h2>
-                <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
-                <Link href={`/doctors/${project.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
+                <p className="text-xs font-semibold uppercase text-[var(--accent)]">{doctor.sector}</p>
+                <h2 className="mt-2 text-xl font-bold">{doctor.title}</h2>
+                <p className="mt-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
+                <Link href={`/doctors/${doctor.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
                   View profile
                 </Link>
               </div>

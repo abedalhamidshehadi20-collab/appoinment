@@ -1,15 +1,27 @@
-import { readData } from "@/lib/cms";
+import { getAllDoctors, getAllServices, getSiteSettings } from "@/lib/db";
 import AppointmentForm from "@/components/AppointmentForm";
 import { requirePatient } from "@/lib/patient-auth";
 
 type Props = {
-  searchParams: Promise<{ sent?: string }>;
+  searchParams: Promise<{ sent?: string; doctor?: string; date?: string; time?: string }>;
 };
 
 export default async function AppointmentsPage({ searchParams }: Props) {
   const query = await searchParams;
   await requirePatient("/appointments");
-  const data = await readData();
+  const [doctors, services, settings] = await Promise.all([
+    getAllDoctors(),
+    getAllServices(),
+    getSiteSettings()
+  ]);
+
+  const contactInfo = settings.contact || {
+    address: "123 Main Street, Springfield",
+    city: "IL 62704, United States",
+    email: "contact@shmed.com",
+    phone: "+1 (555) 123-4567",
+    mapUrl: "https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
+  };
 
   return (
     <main className="container fade-up py-10">
@@ -36,21 +48,28 @@ export default async function AppointmentsPage({ searchParams }: Props) {
             </div>
 
             <div className="mt-6 space-y-3 text-sm leading-7 text-white/90">
-              <p>123 Main Street, Springfield, IL 62704 United States</p>
-              <p>company@gmail.com</p>
-              <p>+91 12345 67890</p>
+              <p>{contactInfo.address}, {contactInfo.city}</p>
+              <p>{contactInfo.email}</p>
+              <p>{contactInfo.phone}</p>
             </div>
 
             <iframe
               title="Appointment location map"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
+              src={contactInfo.mapUrl}
               className="mt-5 h-56 w-full rounded-2xl border border-white/18 bg-white"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
           </article>
 
-          <AppointmentForm doctors={data.projects} showSuccess={query.sent === "1"} />
+          <AppointmentForm
+            doctors={doctors}
+            services={services}
+            showSuccess={query.sent === "1"}
+            preselectedDoctor={query.doctor}
+            preselectedDate={query.date}
+            preselectedTime={query.time}
+          />
         </div>
       </section>
     </main>

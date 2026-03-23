@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { readData } from "@/lib/cms";
+import { getAllBlogs } from "@/lib/db";
 
 export default async function BlogPage() {
-  const data = await readData();
+  const blogs = await getAllBlogs();
 
   return (
     <main className="container fade-up pb-16">
@@ -34,14 +34,14 @@ export default async function BlogPage() {
           </p>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {data.blogs.map((post) => (
+            {blogs.map((post) => (
               <article
                 key={post.id}
                 className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:shadow-lg"
               >
                 <div className="p-6">
                   <div className="flex flex-wrap gap-2">
-                    {post.tags.slice(0, 2).map((tag) => (
+                    {post.tags?.slice(0, 2).map((tag) => (
                       <span
                         key={tag}
                         className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-medium text-[#5f6fff]"
@@ -58,7 +58,7 @@ export default async function BlogPage() {
                   </p>
                   <div className="mt-4 flex items-center justify-between">
                     <p className="text-xs text-[#9ca3af]">
-                      {post.publishedAt} • {post.author}
+                      {post.published_at} • {post.author}
                     </p>
                     <Link
                       href={`/blog/${post.slug}`}

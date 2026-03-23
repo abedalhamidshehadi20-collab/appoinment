@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { allSpecialties, SpecialtyLink } from "@/components/site/specialties";
-import { readData } from "@/lib/cms";
+import { SpecialtyLink, getSpecialtyItems, defaultAllSpecialties } from "@/components/site/specialties";
+import { getAllDoctors, getAllSpecialties } from "@/lib/db";
 
 type Props = {
   params: Promise<{ specialty: string }>;
@@ -44,12 +44,17 @@ export default async function SpecialtySearchPage({ params, searchParams }: Prop
   const { specialty } = await params;
   const selectedSpecialty = decodeSpecialty(specialty);
   const query = (await searchParams).q?.trim().toLowerCase() ?? "";
-  const data = await readData();
+  const [allDoctors, specialtiesData] = await Promise.all([
+    getAllDoctors(),
+    getAllSpecialties().catch(() => null)
+  ]);
+
+  const allSpecialties = getSpecialtyItems(specialtiesData, false);
 
   const selectedKeywords = categoryKeywords[selectedSpecialty] ?? [selectedSpecialty.toLowerCase()];
   const selectedSectorAliases = specialtySectorAliases[selectedSpecialty] ?? [selectedSpecialty];
 
-  const doctorsBySpecialty = data.projects.filter((doctor) => {
+  const doctorsBySpecialty = allDoctors.filter((doctor) => {
     const haystack = `${doctor.sector} ${doctor.title} ${doctor.excerpt}`.toLowerCase();
     const sector = doctor.sector.toLowerCase();
 
@@ -102,10 +107,10 @@ export default async function SpecialtySearchPage({ params, searchParams }: Prop
           ) : null}
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {doctors.map((doctor, index) => (
+            {doctors.map((doctor) => (
               <article key={doctor.id} className="card p-3">
                 <Image
-                  src={doctor.coverImage}
+                  src={doctor.cover_image}
                   alt={doctor.title}
                   width={900}
                   height={700}
@@ -116,7 +121,7 @@ export default async function SpecialtySearchPage({ params, searchParams }: Prop
                     {doctor.sector}
                   </span>
                   <h2 className="mt-3 text-2xl font-bold">{doctor.title}</h2>
-                  <p className="mt-1 text-lg font-semibold text-[var(--brand)]">{10 + index * 3} Years</p>
+                  <p className="mt-1 text-lg font-semibold text-[var(--brand)]">{doctor.years_experience || 10} Years</p>
                   <p className="mt-1 text-sm text-[var(--muted)]">{doctor.location}</p>
                   <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
                   <Link href={`/doctors/${doctor.slug}`} className="button button-secondary mt-4 w-full">

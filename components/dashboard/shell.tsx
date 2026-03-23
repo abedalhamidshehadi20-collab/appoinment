@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ReactNode } from "react";
-import { Permission } from "@/lib/cms";
+import { Permission } from "@/lib/db";
 import { canAccess } from "@/lib/auth";
 import { logoutAction } from "@/app/dashboard/actions";
 

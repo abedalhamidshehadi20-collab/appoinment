@@ -1,0 +1,264 @@
+/**
+ * Simple Data Migration Script
+ * Runs the migration SQL directly from Node.js
+ */
+
+import { readFileSync } from 'fs';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://fpqckpprlcofmhqgedep.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_3oHF0ZU5DRhSsJ9obnsJUw_XGYe09Di';
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+console.log('🚀 Starting data migration...\n');
+
+async function migrate() {
+  try {
+    // Services
+    console.log('📝 Migrating services...');
+    const { error: servicesError } = await supabase.from('services').upsert([
+      {
+        id: 'svc_1',
+        title: 'Clinic Launch',
+        summary: 'From feasibility study to opening day execution.',
+        features: ['Market research', 'Facility planning', 'Staff onboarding']
+      },
+      {
+        id: 'svc_2',
+        title: 'Digital Transformation',
+        summary: 'Upgrade operations using unified care and admin platforms.',
+        features: ['EMR workflow design', 'Training', 'Data dashboards']
+      },
+      {
+        id: 'svc_3',
+        title: 'Operational Audits',
+        summary: 'Performance, compliance, and patient journey reviews.',
+        features: ['SOP review', 'KPI setup', 'Quality improvement plans']
+      }
+    ]);
+    if (servicesError) throw servicesError;
+    console.log('✅ Services migrated\n');
+
+    // Doctors
+    console.log('📝 Migrating doctors...');
+    const { error: doctorsError } = await supabase.from('doctors').upsert([
+      {
+        id: 'prj_1',
+        slug: 'dr-omar-hassan',
+        title: 'Dr. Omar Hassan',
+        excerpt: 'Consultant in internal medicine with 12+ years of clinical practice.',
+        description: 'Dr. Omar Hassan focuses on comprehensive adult care, chronic disease management, and preventive medicine with evidence-based plans.',
+        sector: 'Internal Medicine',
+        location: 'Main Clinic - Cairo',
+        status: 'Available',
+        cover_image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=1200&q=80',
+        gallery: [
+          'https://images.unsplash.com/photo-1580281657527-47f249e8f4df?auto=format&fit=crop&w=1000&q=80',
+          'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1000&q=80'
+        ],
+        details: [
+          'Focuses on hypertension, diabetes, and preventive checkups.',
+          'Provides bilingual consultations (Arabic/English).',
+          'Available Sunday to Thursday from 10:00 AM to 6:00 PM.'
+        ],
+        created_at: '2026-03-01T10:00:00.000Z'
+      },
+      {
+        id: 'prj_2',
+        slug: 'dr-khan-adel',
+        title: 'Dr. Khan Adel',
+        excerpt: 'Dermatology specialist for clinical and cosmetic treatments.',
+        description: 'Dr. Khan Adel provides diagnosis and treatment for skin, hair, and nail conditions with modern non-invasive procedures.',
+        sector: 'Dermatology',
+        location: 'North Branch - Alexandria',
+        status: 'Available',
+        cover_image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1200&q=80',
+        gallery: ['https://images.unsplash.com/photo-1666214280557-f1b5022eb634?auto=format&fit=crop&w=1000&q=80'],
+        details: [
+          'Treats acne, eczema, pigmentation, and skin infections.',
+          'Offers laser and minimally invasive cosmetic sessions.',
+          'Available Saturday to Wednesday from 12:00 PM to 8:00 PM.'
+        ],
+        created_at: '2026-03-10T12:00:00.000Z'
+      }
+    ]);
+    if (doctorsError) throw doctorsError;
+    console.log('✅ Doctors migrated\n');
+
+    // Blogs
+    console.log('📝 Migrating blogs...');
+    const { error: blogsError } = await supabase.from('blogs').upsert([
+      {
+        id: 'blg_1',
+        slug: 'five-signs-your-clinic-needs-a-workflow-redesign',
+        title: 'Five Signs Your Clinic Needs a Workflow Redesign',
+        excerpt: 'Long queues and documentation delays are early warning signs that your clinic workflow needs improvement.',
+        content: 'When clinics grow quickly, the original workflow often fails. Start by tracking bottlenecks in registration, triage, and discharge. Common signs include patient wait times exceeding 30 minutes, staff overtime becoming routine, and frequent miscommunication between departments. A well-designed workflow reduces errors, improves patient satisfaction, and increases staff efficiency.',
+        author: 'Operations Team',
+        published_at: '2026-02-15',
+        tags: ['Operations', 'Healthcare', 'Workflow']
+      },
+      {
+        id: 'blg_2',
+        slug: 'importance-of-regular-health-checkups',
+        title: 'The Importance of Regular Health Checkups',
+        excerpt: 'Preventive care through regular checkups can detect health issues early when they are most treatable.',
+        content: 'Regular health checkups are essential for maintaining good health and catching potential problems early. Adults should have a general checkup at least once a year. These visits typically include blood pressure measurement, cholesterol screening, blood glucose tests, and age-appropriate cancer screenings. Early detection of conditions like diabetes, hypertension, and heart disease can significantly improve treatment outcomes and quality of life.',
+        author: 'Dr. Medical Team',
+        published_at: '2026-03-01',
+        tags: ['Preventive Care', 'Health Tips', 'Wellness']
+      },
+      {
+        id: 'blg_3',
+        slug: 'managing-diabetes-lifestyle-tips',
+        title: 'Managing Diabetes: Essential Lifestyle Tips',
+        excerpt: 'Learn practical strategies to manage diabetes through diet, exercise, and regular monitoring.',
+        content: 'Diabetes management requires a comprehensive approach combining medication, diet, and lifestyle changes. Key strategies include monitoring blood sugar levels regularly, eating a balanced diet rich in fiber and low in refined sugars, exercising for at least 150 minutes per week, maintaining a healthy weight, and taking medications as prescribed. Regular consultations with your healthcare provider help adjust treatment plans as needed.',
+        author: 'Internal Medicine Dept.',
+        published_at: '2026-03-05',
+        tags: ['Diabetes', 'Chronic Disease', 'Lifestyle']
+      },
+      {
+        id: 'blg_4',
+        slug: 'understanding-blood-pressure-readings',
+        title: 'Understanding Your Blood Pressure Readings',
+        excerpt: 'What do the numbers mean and why monitoring blood pressure is crucial for heart health.',
+        content: 'Blood pressure is measured in millimeters of mercury (mmHg) with two numbers: systolic (top) and diastolic (bottom). Normal blood pressure is below 120/80 mmHg. Elevated readings between 120-129/80 indicate elevated blood pressure. Stage 1 hypertension is 130-139/80-89, and Stage 2 is 140/90 or higher. Uncontrolled high blood pressure increases risk of heart attack, stroke, and kidney disease. Regular monitoring and lifestyle modifications can help maintain healthy levels.',
+        author: 'Cardiology Team',
+        published_at: '2026-03-10',
+        tags: ['Heart Health', 'Blood Pressure', 'Prevention']
+      },
+      {
+        id: 'blg_5',
+        slug: 'skin-care-tips-for-healthy-skin',
+        title: 'Dermatologist-Approved Skin Care Tips',
+        excerpt: 'Simple daily habits that can improve your skin health and prevent common skin problems.',
+        content: 'Healthy skin starts with consistent care. Dermatologists recommend cleansing your face twice daily with a gentle cleanser, applying sunscreen with SPF 30 or higher every day, moisturizing regularly to maintain skin barrier function, and avoiding excessive sun exposure. For specific concerns like acne, eczema, or pigmentation, consult a dermatologist for personalized treatment. Remember, what works for one person may not work for another.',
+        author: 'Dermatology Dept.',
+        published_at: '2026-03-15',
+        tags: ['Skin Care', 'Dermatology', 'Health Tips']
+      },
+      {
+        id: 'blg_6',
+        slug: 'mental-health-awareness-seeking-help',
+        title: 'Mental Health Awareness: When to Seek Help',
+        excerpt: 'Recognizing signs of mental health issues and understanding when professional support is needed.',
+        content: 'Mental health is as important as physical health. Warning signs that indicate you may need professional help include persistent sadness lasting more than two weeks, excessive worry or fear, significant changes in sleep or appetite, difficulty concentrating, withdrawal from social activities, and thoughts of self-harm. Seeking help is a sign of strength, not weakness. Treatment options include therapy, medication, and lifestyle changes. Early intervention leads to better outcomes.',
+        author: 'Wellness Team',
+        published_at: '2026-03-18',
+        tags: ['Mental Health', 'Wellness', 'Self-Care']
+      }
+    ]);
+    if (blogsError) throw blogsError;
+    console.log('✅ Blogs migrated\n');
+
+    // News
+    console.log('📝 Migrating news...');
+    const { error: newsError } = await supabase.from('news').upsert([
+      {
+        id: 'nws_1',
+        slug: 'sh-med-opens-training-center',
+        title: 'Sh-Med Opens Regional Training Center',
+        excerpt: 'A new center focused on practical clinical operations training for healthcare professionals.',
+        content: 'The training center will support nurses, front-desk teams, and clinic managers with simulation-based modules. The facility features state-of-the-art equipment and experienced instructors who will provide hands-on training in patient care, emergency response, and administrative procedures. This initiative aims to improve healthcare quality across our network.',
+        published_at: '2026-03-12',
+        source: 'Sh-Med Press'
+      },
+      {
+        id: 'nws_2',
+        slug: 'new-pediatric-department-opening',
+        title: 'New Pediatric Department Opening Next Month',
+        excerpt: 'Sh-Med expands services with a dedicated pediatric care unit staffed by experienced specialists.',
+        content: 'We are excited to announce the opening of our new Pediatric Department, designed specifically for the healthcare needs of infants, children, and adolescents. The department will offer routine check-ups, vaccinations, developmental assessments, and treatment for common childhood illnesses. Our team of board-certified pediatricians is committed to providing compassionate, family-centered care.',
+        published_at: '2026-03-18',
+        source: 'Sh-Med Press'
+      },
+      {
+        id: 'nws_3',
+        slug: 'online-appointment-system-upgrade',
+        title: 'Enhanced Online Appointment Booking System Now Live',
+        excerpt: 'Patients can now enjoy a faster, more intuitive appointment booking experience with our upgraded system.',
+        content: 'Our new online appointment system makes scheduling visits easier than ever. Features include real-time availability checking, appointment reminders via SMS and email, the ability to select preferred doctors, and easy rescheduling options. The system is accessible 24/7 from any device, ensuring patients can book appointments at their convenience.',
+        published_at: '2026-03-15',
+        source: 'Technology Update'
+      },
+      {
+        id: 'nws_4',
+        slug: 'free-health-screening-campaign',
+        title: 'Free Health Screening Campaign Announced for April',
+        excerpt: 'Community health initiative offers free blood pressure, diabetes, and cholesterol screenings.',
+        content: 'As part of our commitment to community health, Sh-Med is organizing a free health screening campaign throughout April. The campaign will offer free blood pressure checks, blood glucose testing, cholesterol screening, and BMI assessments. No appointment is necessary. Our healthcare professionals will also provide personalized health advice and referrals when needed.',
+        published_at: '2026-03-20',
+        source: 'Community Health'
+      },
+      {
+        id: 'nws_5',
+        slug: 'telemedicine-services-expansion',
+        title: 'Telemedicine Services Now Available for All Patients',
+        excerpt: 'Virtual consultations make healthcare more accessible for patients who cannot visit in person.',
+        content: 'Sh-Med now offers comprehensive telemedicine services, allowing patients to consult with doctors from the comfort of their homes. Virtual appointments are available for follow-up visits, minor illnesses, prescription refills, and general health consultations. Patients can schedule video calls through our online portal and receive the same quality care as in-person visits.',
+        published_at: '2026-03-10',
+        source: 'Service Update'
+      },
+      {
+        id: 'nws_6',
+        slug: 'new-cardiology-specialist-joins-team',
+        title: 'Renowned Cardiologist Dr. Sarah Mitchell Joins Sh-Med',
+        excerpt: 'Award-winning heart specialist brings 20 years of experience to our cardiovascular department.',
+        content: 'We are pleased to welcome Dr. Sarah Mitchell to our medical team. Dr. Mitchell specializes in preventive cardiology, heart failure management, and cardiac rehabilitation. With over 20 years of experience and numerous awards for excellence in patient care, she will lead our efforts to provide comprehensive heart health services to the community.',
+        published_at: '2026-03-08',
+        source: 'Staff Announcement'
+      }
+    ]);
+    if (newsError) throw newsError;
+    console.log('✅ News migrated\n');
+
+    // Site Settings
+    console.log('📝 Migrating site settings...');
+    const { error: settingsError } = await supabase.from('site_settings').upsert([
+      {
+        key: 'home',
+        value: {
+          headline: 'Sh-Med Care Solutions',
+          subheadline: 'We build and operate modern clinic networks with measurable patient outcomes.',
+          primaryCtaText: 'Meet Our Doctors',
+          primaryCtaLink: '/doctors',
+          secondaryCtaText: 'Contact Us',
+          secondaryCtaLink: '/contact',
+          stats: [
+            { label: 'Clinics Managed', value: '48' },
+            { label: 'Cities', value: '11' },
+            { label: 'Patient Satisfaction', value: '96%' }
+          ]
+        }
+      },
+      {
+        key: 'about',
+        value: {
+          title: 'About Sh-Med',
+          description: 'Sh-Med is a healthcare operations agency focused on clinic setup, digital workflows, and patient-centered design.',
+          mission: 'To make premium clinical care accessible through better systems, better facilities, and better teams.',
+          vision: "To become the region's most trusted partner for building high-performing care environments.",
+          values: ['Clinical excellence', 'Transparent operations', 'Long-term partnerships']
+        }
+      }
+    ]);
+    if (settingsError) throw settingsError;
+    console.log('✅ Site settings migrated\n');
+
+    console.log('🎉 All data migrated successfully!');
+    console.log('\n📊 Summary:');
+    console.log('   - Services: 3');
+    console.log('   - Doctors: 2');
+    console.log('   - Blogs: 6');
+    console.log('   - News: 6');
+    console.log('   - Site Settings: 2');
+
+  } catch (error) {
+    console.error('❌ Migration failed:', error);
+    process.exit(1);
+  }
+}
+
+migrate();

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { nextId, readData, updateData } from "@/lib/cms";
+import { createAppointment, getDoctorById } from "@/lib/db";
 import { getPatientSession } from "@/lib/patient-auth";
 
 export async function POST(request: Request) {
@@ -9,25 +9,23 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData();
-  const data = await readData();
   const doctorId = formData.get("doctorId")?.toString() ?? "";
-  const selectedDoctor = data.projects.find((doctor) => doctor.id === doctorId);
+  const selectedDoctor = await getDoctorById(doctorId);
 
-  await updateData((store) => {
-    store.interests.unshift({
-      id: nextId("int"),
-      projectId: selectedDoctor?.id ?? "general_appointment",
-      projectTitle: selectedDoctor?.title ?? "General Appointment Desk",
-      name: formData.get("name")?.toString() ?? "",
-      email: formData.get("email")?.toString() ?? "",
-      phone: formData.get("phone")?.toString() ?? "",
-      company: formData.get("location")?.toString() ?? "",
-      budget: formData.get("service")?.toString() ?? "",
-      date: formData.get("date")?.toString() ?? "",
-      time: formData.get("time")?.toString() ?? "",
-      message: formData.get("message")?.toString() ?? "",
-      createdAt: new Date().toISOString(),
-    });
+  await createAppointment({
+    patient_id: patient.id,
+    doctor_id: selectedDoctor?.id ?? "general_appointment",
+    doctor_name: selectedDoctor?.title ?? "General Appointment Desk",
+    name: formData.get("name")?.toString() ?? "",
+    email: formData.get("email")?.toString() ?? "",
+    phone: formData.get("phone")?.toString() ?? "",
+    location: formData.get("location")?.toString() ?? "",
+    service: formData.get("service")?.toString() ?? "",
+    appointment_date: formData.get("date")?.toString() ?? "",
+    appointment_time: formData.get("time")?.toString() ?? "",
+    message: formData.get("message")?.toString() ?? "",
+    status: "pending",
+    notes: "",
   });
 
   return NextResponse.redirect(new URL("/appointments?sent=1", request.url));

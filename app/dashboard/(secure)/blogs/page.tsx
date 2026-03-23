@@ -1,6 +1,6 @@
 import { deleteBlogAction, saveBlogAction } from "@/app/dashboard/actions";
 import { requirePermission } from "@/lib/auth";
-import { readData } from "@/lib/cms";
+import { getAllBlogs } from "@/lib/db";
 
 function BlogForm({
   item,
@@ -12,7 +12,7 @@ function BlogForm({
     excerpt: string;
     content: string;
     author: string;
-    publishedAt: string;
+    published_at: string;
     tags: string[];
   };
 }) {
@@ -22,10 +22,10 @@ function BlogForm({
       <input name="title" required defaultValue={item?.title} placeholder="Title" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="slug" defaultValue={item?.slug} placeholder="Slug (optional)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="author" defaultValue={item?.author} placeholder="Author" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <input name="publishedAt" defaultValue={item?.publishedAt} placeholder="Published date (YYYY-MM-DD)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <input name="publishedAt" defaultValue={item?.published_at} placeholder="Published date (YYYY-MM-DD)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="excerpt" required defaultValue={item?.excerpt} placeholder="Excerpt" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <textarea name="content" required defaultValue={item?.content} rows={5} placeholder="Content" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <textarea name="tags" defaultValue={item?.tags.join("\n")} rows={3} placeholder="Tags (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <textarea name="tags" defaultValue={item?.tags?.join("\n")} rows={3} placeholder="Tags (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <button className="button button-primary w-fit">{item ? "Save Blog" : "Add Blog"}</button>
     </form>
   );
@@ -33,7 +33,7 @@ function BlogForm({
 
 export default async function DashboardBlogsPage() {
   await requirePermission("blogs");
-  const data = await readData();
+  const blogs = await getAllBlogs();
 
   return (
     <>
@@ -42,7 +42,7 @@ export default async function DashboardBlogsPage() {
         <div className="mt-4"><BlogForm /></div>
       </article>
 
-      {data.blogs.map((post) => (
+      {blogs.map((post) => (
         <article key={post.id} className="card p-6">
           <h2 className="text-lg font-bold">{post.title}</h2>
           <div className="mt-3"><BlogForm item={post} /></div>

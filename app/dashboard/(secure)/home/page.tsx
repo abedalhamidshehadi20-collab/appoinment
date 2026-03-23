@@ -1,10 +1,11 @@
 import { updateHomeAction } from "@/app/dashboard/actions";
 import { requirePermission } from "@/lib/auth";
-import { readData } from "@/lib/cms";
+import { getSiteSettings } from "@/lib/db";
 
 export default async function DashboardHomePage() {
   await requirePermission("home");
-  const data = await readData();
+  const settings = await getSiteSettings();
+  const data = { home: settings.home };
 
   return (
     <article className="card p-6">

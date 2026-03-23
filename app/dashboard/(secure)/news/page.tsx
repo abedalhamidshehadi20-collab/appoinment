@@ -1,6 +1,6 @@
 import { deleteNewsAction, saveNewsAction } from "@/app/dashboard/actions";
 import { requirePermission } from "@/lib/auth";
-import { readData } from "@/lib/cms";
+import { getAllNews } from "@/lib/db";
 
 function NewsForm({
   item,
@@ -12,7 +12,7 @@ function NewsForm({
     excerpt: string;
     content: string;
     source: string;
-    publishedAt: string;
+    published_at: string;
   };
 }) {
   return (
@@ -21,7 +21,7 @@ function NewsForm({
       <input name="title" required defaultValue={item?.title} placeholder="Title" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="slug" defaultValue={item?.slug} placeholder="Slug (optional)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="source" defaultValue={item?.source} placeholder="Source" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <input name="publishedAt" defaultValue={item?.publishedAt} placeholder="Published date (YYYY-MM-DD)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+      <input name="publishedAt" defaultValue={item?.published_at} placeholder="Published date (YYYY-MM-DD)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <input name="excerpt" required defaultValue={item?.excerpt} placeholder="Excerpt" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <textarea name="content" required defaultValue={item?.content} rows={5} placeholder="Content" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <button className="button button-primary w-fit">{item ? "Save News" : "Add News"}</button>
@@ -31,7 +31,7 @@ function NewsForm({
 
 export default async function DashboardNewsPage() {
   await requirePermission("news");
-  const data = await readData();
+  const news = await getAllNews();
 
   return (
     <>
@@ -40,7 +40,7 @@ export default async function DashboardNewsPage() {
         <div className="mt-4"><NewsForm /></div>
       </article>
 
-      {data.news.map((item) => (
+      {news.map((item) => (
         <article key={item.id} className="card p-6">
           <h2 className="text-lg font-bold">{item.title}</h2>
           <div className="mt-3"><NewsForm item={item} /></div>

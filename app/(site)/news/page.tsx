@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { readData } from "@/lib/cms";
+import { getAllNews } from "@/lib/db";
 
 export default async function NewsPage() {
-  const data = await readData();
+  const news = await getAllNews();
 
   return (
     <main className="container fade-up pb-16">
@@ -34,7 +34,7 @@ export default async function NewsPage() {
           </p>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {data.news.map((item) => (
+            {news.map((item) => (
               <article
                 key={item.id}
                 className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:shadow-lg"
@@ -52,7 +52,7 @@ export default async function NewsPage() {
                     {item.excerpt}
                   </p>
                   <div className="mt-4 flex items-center justify-between">
-                    <p className="text-xs text-[#9ca3af]">{item.publishedAt}</p>
+                    <p className="text-xs text-[#9ca3af]">{item.published_at}</p>
                     <Link
                       href={`/news/${item.slug}`}
                       className="text-sm font-semibold text-[#5f6fff] hover:underline"

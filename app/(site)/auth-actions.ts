@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createPatientSession, logoutPatient, patientLogin } from "@/lib/patient-auth";
-import { findPatientByEmail, nextId, updateData } from "@/lib/cms";
+import { findPatientByEmail, createPatient, nextId } from "@/lib/db";
 
 export async function patientLoginAction(formData: FormData) {
   const email = formData.get("email")?.toString().trim() ?? "";
@@ -33,27 +33,21 @@ export async function patientSignupAction(formData: FormData) {
     redirect("/signup?exists=1");
   }
 
-  const patientId = nextId("pat");
   const patientName = `${firstName} ${lastName}`.trim();
 
-  await updateData((data) => {
-    data.patients.unshift({
-      id: patientId,
-      name: patientName,
-      email,
-      password,
-      phone,
-      address: "",
-      dateOfBirth: "",
-      gender: "",
-      medicalHistory: "",
-      appointments: [],
-      createdAt: new Date().toISOString(),
-    });
+  const newPatient = await createPatient({
+    name: patientName,
+    email,
+    password,
+    phone,
+    address: "",
+    date_of_birth: "",
+    gender: "",
+    medical_history: "",
   });
 
   await createPatientSession({
-    id: patientId,
+    id: newPatient.id,
     name: patientName,
     email,
   });
