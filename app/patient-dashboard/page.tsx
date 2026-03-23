@@ -1,6 +1,8 @@
 import { requirePatient } from "@/lib/patient-auth";
-import { getAppointmentsForPatient } from "@/lib/db";
-import { Calendar, CheckCircle2, Clock3, CircleAlert } from "lucide-react";
+import { findPatientByEmail, getAppointmentsForPatient } from "@/lib/db";
+import { cookies } from "next/headers";
+import Link from "next/link";
+import { Calendar, CheckCircle2, Clock3, CircleAlert, BellRing, UserRound, PlusCircle } from "lucide-react";
 
 function normalizeStatus(status: string) {
   const value = status.toLowerCase();
@@ -51,23 +53,90 @@ function formatDate(dateValue: string) {
   return parsed.toLocaleDateString();
 }
 
+function toDateOnly(value: string) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  parsed.setHours(0, 0, 0, 0);
+  return parsed;
+}
+
+function statusLabel(status: string) {
+  const value = normalizeStatus(status);
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 export default async function PatientDashboardPage() {
   const patient = await requirePatient("/patient-dashboard");
-  const appointments = await getAppointmentsForPatient(patient.id, patient.email);
+  const [appointments, patientRecord] = await Promise.all([
+    getAppointmentsForPatient(patient.id, patient.email),
+    findPatientByEmail(patient.email),
+  ]);
+
+  const cookieStore = await cookies();
+  const remindersEnabled = cookieStore.get("patient_reminder_opt_in")?.value !== "0";
+
+  async function updateReminderPreference(formData: FormData) {
+    "use server";
+
+    const enabled = formData.get("reminders") === "on";
+    const store = await cookies();
+    store.set("patient_reminder_opt_in", enabled ? "1" : "0", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const upcomingAppointments = appointments.filter((item) => {
+    const status = normalizeStatus(item.status);
+    if (status === "completed" || status === "cancelled") {
+      return false;
+    }
+
+    const dateOnly = toDateOnly(item.appointment_date);
+    if (!dateOnly) {
+      return true;
+    }
+
+    return dateOnly >= today;
+  });
+
+  const upcomingIds = new Set(upcomingAppointments.map((item) => item.id));
+  const previousAppointments = appointments.filter((item) => !upcomingIds.has(item.id));
 
   const pendingCount = appointments.filter((item) => normalizeStatus(item.status) === "pending").length;
   const scheduledCount = appointments.filter((item) => normalizeStatus(item.status) === "scheduled").length;
   const completedCount = appointments.filter((item) => normalizeStatus(item.status) === "completed").length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl bg-white p-5 shadow-sm">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Patient Dashboard</h1>
           <p className="mt-1 text-sm text-gray-500">
             Welcome back, {patient.name}. Track your upcoming and previous appointments.
           </p>
         </div>
+
+        <Link
+          href="/appointments"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium !text-white transition hover:bg-blue-700"
+        >
+          <PlusCircle className="h-4 w-4 text-white" />
+          Book New Appointment
+        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -112,10 +181,110 @@ export default async function PatientDashboardPage() {
         </div>
       </div>
 
+      <div className="grid gap-6 xl:grid-cols-3">
+        <section className="rounded-xl bg-white p-6 shadow-sm xl:col-span-2">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">Upcoming Appointments</h2>
+            <span className="text-sm text-gray-500">Action required first</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Doctor</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Service</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Time</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {upcomingAppointments.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-10 text-center text-sm text-gray-500">
+                      No upcoming appointments. You can book a new one anytime.
+                    </td>
+                  </tr>
+                ) : (
+                  upcomingAppointments.map((appointment) => (
+                    <tr key={appointment.id} className="hover:bg-gray-50">
+                      <td className="py-3 text-sm font-medium text-gray-900">{appointment.doctor_name || "General Desk"}</td>
+                      <td className="py-3 text-sm text-gray-600">{appointment.service || "General Consultation"}</td>
+                      <td className="py-3 text-sm text-gray-600">{formatDate(appointment.appointment_date)}</td>
+                      <td className="py-3 text-sm text-gray-600">{appointment.appointment_time || "-"}</td>
+                      <td className="py-3">
+                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge(appointment.status)}`}>
+                          {statusLabel(appointment.status)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <UserRound className="h-5 w-5 text-blue-600" />
+              <h2 className="text-lg font-semibold text-gray-900">Profile</h2>
+            </div>
+
+            <dl className="space-y-3 text-sm">
+              <div>
+                <dt className="text-gray-500">Name</dt>
+                <dd className="font-medium text-gray-900">{patientRecord?.name || patient.name}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Email</dt>
+                <dd className="font-medium text-gray-900">{patientRecord?.email || patient.email}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Phone</dt>
+                <dd className="font-medium text-gray-900">{patientRecord?.phone || "-"}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <BellRing className="h-5 w-5 text-blue-600" />
+              <h2 className="text-lg font-semibold text-gray-900">Appointment Reminders</h2>
+            </div>
+
+            <p className="mb-4 text-sm text-gray-600">
+              Receive email reminders for pending and scheduled appointments.
+            </p>
+
+            <form action={updateReminderPreference} className="space-y-3">
+              <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3">
+                <input
+                  type="checkbox"
+                  name="reminders"
+                  defaultChecked={remindersEnabled}
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">Enable reminder emails</span>
+              </label>
+
+              <button
+                type="submit"
+                className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+              >
+                Save preference
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+
       <div className="rounded-xl bg-white p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">My Appointments</h2>
-          <span className="text-sm text-gray-500">Latest first</span>
+          <h2 className="text-lg font-semibold text-gray-900">Previous Appointments</h2>
+          <span className="text-sm text-gray-500">Completed or older visits</span>
         </div>
 
         <div className="overflow-x-auto">
@@ -130,14 +299,14 @@ export default async function PatientDashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {appointments.length === 0 ? (
+              {previousAppointments.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-10 text-center text-sm text-gray-500">
-                    No appointments yet. Book your first appointment.
+                    No previous appointments yet.
                   </td>
                 </tr>
               ) : (
-                appointments.map((appointment) => (
+                previousAppointments.map((appointment) => (
                   <tr key={appointment.id} className="hover:bg-gray-50">
                     <td className="py-3 text-sm font-medium text-gray-900">{appointment.doctor_name || "General Desk"}</td>
                     <td className="py-3 text-sm text-gray-600">{appointment.service || "General Consultation"}</td>
@@ -145,7 +314,7 @@ export default async function PatientDashboardPage() {
                     <td className="py-3 text-sm text-gray-600">{appointment.appointment_time || "-"}</td>
                     <td className="py-3">
                       <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge(appointment.status)}`}>
-                        {normalizeStatus(appointment.status)}
+                        {statusLabel(appointment.status)}
                       </span>
                     </td>
                   </tr>
