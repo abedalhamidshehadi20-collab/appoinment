@@ -5,5 +5,11 @@ import { getPatientSession } from "@/lib/patient-auth";
 export default async function PublicLayout({ children }: { children: ReactNode }) {
   const patient = await getPatientSession();
 
-  return <SiteShell patientName={patient?.name}>{children}</SiteShell>;
+  return (
+    <SiteShell
+      patient={patient ? { name: patient.name, email: patient.email } : null}
+    >
+      {children}
+    </SiteShell>
+  );
 }

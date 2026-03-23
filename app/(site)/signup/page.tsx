@@ -4,7 +4,7 @@ import { patientSignupAction } from "../auth-actions";
 import { getPatientSession } from "@/lib/patient-auth";
 
 type Props = {
-  searchParams: Promise<{ error?: string; exists?: string }>;
+  searchParams: Promise<{ error?: string; exists?: string; config?: string }>;
 };
 
 export default async function SignupPage({ searchParams }: Props) {
@@ -59,6 +59,13 @@ export default async function SignupPage({ searchParams }: Props) {
           {query.exists === "1" ? (
             <p className="mt-6 rounded-2xl border border-white/30 bg-white/12 p-4 text-sm font-medium text-white">
               A patient account with this email already exists.
+            </p>
+          ) : null}
+
+          {query.config === "1" ? (
+            <p className="mt-6 rounded-2xl border border-[#ffd7a8] bg-[#fff4e5] p-4 text-sm font-medium text-[#7a4b00]">
+              Patient signup is blocked by your Supabase database policies. Run the patient policies in
+              <span className="font-semibold"> add-specialties-and-updates.sql</span> or update your RLS setup, then try again.
             </p>
           ) : null}
 

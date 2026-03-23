@@ -213,6 +213,13 @@ CREATE POLICY "Anyone can create contacts" ON contacts
 CREATE POLICY "Anyone can create appointments" ON appointments
   FOR INSERT WITH CHECK (true);
 
+-- Public patient auth access for the current custom login/signup flow
+CREATE POLICY "Anyone can create patients" ON patients
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Anyone can read patients for authentication" ON patients
+  FOR SELECT USING (true);
+
 -- Patients can view their own data
 CREATE POLICY "Patients can view their own profile" ON patients
   FOR SELECT USING (auth.uid()::text = id);

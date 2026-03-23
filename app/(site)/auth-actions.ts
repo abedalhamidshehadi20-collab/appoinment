@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createPatientSession, logoutPatient, patientLogin } from "@/lib/patient-auth";
-import { findPatientByEmail, createPatient, nextId } from "@/lib/db";
+import { findPatientByEmail, createPatient } from "@/lib/db";
 
 export async function patientLoginAction(formData: FormData) {
   const email = formData.get("email")?.toString().trim() ?? "";
@@ -28,29 +28,45 @@ export async function patientSignupAction(formData: FormData) {
     redirect("/signup?error=1");
   }
 
-  const existingPatient = await findPatientByEmail(email);
-  if (existingPatient) {
-    redirect("/signup?exists=1");
+  try {
+    const existingPatient = await findPatientByEmail(email);
+    if (existingPatient) {
+      redirect("/signup?exists=1");
+    }
+
+    const patientName = `${firstName} ${lastName}`.trim();
+
+    const newPatient = await createPatient({
+      name: patientName,
+      email,
+      password,
+      phone,
+      address: "",
+      date_of_birth: "",
+      gender: "",
+      medical_history: "",
+    });
+
+    await createPatientSession({
+      id: newPatient.id,
+      name: patientName,
+      email,
+    });
+  } catch (error) {
+    const code = typeof error === "object" && error && "code" in error
+      ? String(error.code)
+      : "";
+
+    if (code === "23505") {
+      redirect("/signup?exists=1");
+    }
+
+    if (code === "42501") {
+      redirect("/signup?config=1");
+    }
+
+    redirect("/signup?error=1");
   }
-
-  const patientName = `${firstName} ${lastName}`.trim();
-
-  const newPatient = await createPatient({
-    name: patientName,
-    email,
-    password,
-    phone,
-    address: "",
-    date_of_birth: "",
-    gender: "",
-    medical_history: "",
-  });
-
-  await createPatientSession({
-    id: newPatient.id,
-    name: patientName,
-    email,
-  });
 
   redirect("/");
 }
