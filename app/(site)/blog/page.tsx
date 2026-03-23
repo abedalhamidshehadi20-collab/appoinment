@@ -2,6 +2,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllBlogs } from "@/lib/db";
 
+function formatPublishedDate(dateValue: string) {
+  const parsed = new Date(dateValue);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return dateValue;
+  }
+
+  return parsed.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default async function BlogPage() {
   const blogs = await getAllBlogs();
 
@@ -58,7 +72,7 @@ export default async function BlogPage() {
                   </p>
                   <div className="mt-4 flex items-center justify-between">
                     <p className="text-xs text-[#9ca3af]">
-                      {post.published_at} • {post.author}
+                      {formatPublishedDate(post.published_at)} • {post.author}
                     </p>
                     <Link
                       href={`/blog/${post.slug}`}

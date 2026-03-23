@@ -2,6 +2,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllNews } from "@/lib/db";
 
+function formatPublishedDate(dateValue: string) {
+  const parsed = new Date(dateValue);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return dateValue;
+  }
+
+  return parsed.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default async function NewsPage() {
   const news = await getAllNews();
 
@@ -52,7 +66,7 @@ export default async function NewsPage() {
                     {item.excerpt}
                   </p>
                   <div className="mt-4 flex items-center justify-between">
-                    <p className="text-xs text-[#9ca3af]">{item.published_at}</p>
+                    <p className="text-xs text-[#9ca3af]">{formatPublishedDate(item.published_at)}</p>
                     <Link
                       href={`/news/${item.slug}`}
                       className="text-sm font-semibold text-[#5f6fff] hover:underline"
