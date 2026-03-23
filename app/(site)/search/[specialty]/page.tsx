@@ -20,6 +20,18 @@ const categoryKeywords: Record<string, string[]> = {
   "Eye Specialist": ["eye", "ophthal", "vision"],
 };
 
+const specialtySectorAliases: Record<string, string[]> = {
+  Dentist: ["Dentistry", "Dental"],
+  Cardiologist: ["Cardiology"],
+  Orthopedic: ["Orthopedics", "Orthopedic Surgery"],
+  Neurologist: ["Neurology"],
+  Otology: ["ENT", "Otolaryngology", "Otology"],
+  "General Doctor": ["Internal Medicine", "General Medicine", "Family Medicine"],
+  Surgeon: ["Surgery", "General Surgery"],
+  Psychiatry: ["Psychiatry"],
+  "Eye Specialist": ["Ophthalmology", "Eye Care"],
+};
+
 function decodeSpecialty(value: string) {
   try {
     return decodeURIComponent(value);
@@ -35,13 +47,19 @@ export default async function SpecialtySearchPage({ params, searchParams }: Prop
   const data = await readData();
 
   const selectedKeywords = categoryKeywords[selectedSpecialty] ?? [selectedSpecialty.toLowerCase()];
+  const selectedSectorAliases = specialtySectorAliases[selectedSpecialty] ?? [selectedSpecialty];
 
   const doctorsBySpecialty = data.projects.filter((doctor) => {
     const haystack = `${doctor.sector} ${doctor.title} ${doctor.excerpt}`.toLowerCase();
-    return selectedKeywords.some((keyword) => haystack.includes(keyword));
+    const sector = doctor.sector.toLowerCase();
+
+    return (
+      selectedSectorAliases.some((alias) => sector === alias.toLowerCase()) ||
+      selectedKeywords.some((keyword) => haystack.includes(keyword))
+    );
   });
 
-  const doctors = (doctorsBySpecialty.length > 0 ? doctorsBySpecialty : data.projects).filter((doctor) => {
+  const doctors = doctorsBySpecialty.filter((doctor) => {
     if (!query) {
       return true;
     }
