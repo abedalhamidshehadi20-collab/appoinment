@@ -1,6 +1,8 @@
 import { getAllDoctors, getAllServices, getSiteSettings } from "@/lib/db";
 import AppointmentForm from "@/components/AppointmentForm";
-import { requirePatient } from "@/lib/patient-auth";
+import { getPatientSession } from "@/lib/patient-auth";
+import { getSessionUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 type Props = {
   searchParams: Promise<{ sent?: string; doctor?: string; date?: string; time?: string }>;
@@ -8,7 +10,12 @@ type Props = {
 
 export default async function AppointmentsPage({ searchParams }: Props) {
   const query = await searchParams;
-  await requirePatient("/appointments");
+  const [patient, admin] = await Promise.all([getPatientSession(), getSessionUser()]);
+
+  if (!patient && !admin) {
+    redirect("/login?next=%2Fappointments");
+  }
+
   const [doctors, services, settings] = await Promise.all([
     getAllDoctors(),
     getAllServices(),

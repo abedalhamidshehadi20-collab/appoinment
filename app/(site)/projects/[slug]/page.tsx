@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getDoctorBySlug, getAllDoctors } from "@/lib/db";
 import BookingSlots from "@/components/BookingSlots";
 import { getPatientSession } from "@/lib/patient-auth";
+import { getSafeDoctorImageSrc } from "@/lib/image";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -32,7 +33,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
         <div className="flex-shrink-0">
           <div className="overflow-hidden rounded-xl bg-[#5f6fff]">
             <Image
-              src={doctor.cover_image}
+              src={getSafeDoctorImageSrc(doctor.cover_image)}
               alt={doctor.title}
               width={320}
               height={320}
@@ -101,7 +102,7 @@ export default async function ProjectDetailsPage({ params }: Props) {
             >
               <div className="overflow-hidden bg-[#eef2ff]">
                 <Image
-                  src={doc.cover_image}
+                  src={getSafeDoctorImageSrc(doc.cover_image)}
                   alt={doc.title}
                   width={300}
                   height={300}

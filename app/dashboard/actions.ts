@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { login, logout, requirePermission } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
+import { getSafeDoctorImageSrc } from "@/lib/image";
 import {
   nextId,
   slugify,
@@ -20,8 +21,39 @@ import {
 
 const refreshSite = () => {
   revalidatePath("/", "layout");
+  revalidatePath("/about");
+  revalidatePath("/contact");
+  revalidatePath("/doctors");
+  revalidatePath("/projects");
   revalidatePath("/dashboard", "layout");
+  revalidatePath("/dashboard/about");
+  revalidatePath("/dashboard/home");
+  revalidatePath("/dashboard/contacts");
 };
+
+async function upsertSiteSetting(key: "home" | "about" | "contact", value: unknown) {
+  const payload = { key, value, updated_at: new Date().toISOString() };
+
+  const { error } = await supabase
+    .from("site_settings")
+    .upsert(payload);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from("site_settings")
+      .upsert(payload);
+
+    if (adminError) {
+      throw adminError;
+    }
+
+    return;
+  }
+
+  if (error) {
+    throw error;
+  }
+}
 
 export async function loginAction(formData: FormData) {
   const identifier =
@@ -74,9 +106,7 @@ export async function updateHomeAction(formData: FormData) {
     ],
   };
 
-  await supabase
-    .from("site_settings")
-    .upsert({ key: "home", value: homeData, updated_at: new Date().toISOString() });
+  await upsertSiteSetting("home", homeData);
 
   refreshSite();
 }
@@ -92,9 +122,7 @@ export async function updateAboutAction(formData: FormData) {
     values: toList(formData.get("values")),
   };
 
-  await supabase
-    .from("site_settings")
-    .upsert({ key: "about", value: aboutData, updated_at: new Date().toISOString() });
+  await upsertSiteSetting("about", aboutData);
 
   refreshSite();
 }
@@ -115,9 +143,7 @@ export async function updateContactAction(formData: FormData) {
     },
   };
 
-  await supabase
-    .from("site_settings")
-    .upsert({ key: "contact", value: contactData, updated_at: new Date().toISOString() });
+  await upsertSiteSetting("contact", contactData);
 
   refreshSite();
 }
@@ -180,19 +206,116 @@ export async function saveProjectAction(formData: FormData) {
     sector: formData.get("sector")?.toString() ?? "",
     location: formData.get("location")?.toString() ?? "",
     status: formData.get("status")?.toString() ?? "",
-    cover_image: formData.get("coverImage")?.toString() ?? "",
+    cover_image: getSafeDoctorImageSrc(formData.get("coverImage")?.toString()),
     gallery: toList(formData.get("gallery")),
     details: toList(formData.get("details")),
     appointment_fee: parseFloat(formData.get("appointmentFee")?.toString() ?? "50") || 50,
     years_experience: parseInt(formData.get("yearsExperience")?.toString() ?? "0") || 0,
     available_times: availableTimes,
-    created_at: formData.get("createdAt")?.toString() || new Date().toISOString(),
+  };
+
+  const fallbackPayload = {
+    id: payload.id,
+    slug: payload.slug,
+    title: payload.title,
+    excerpt: payload.excerpt,
+    description: payload.description,
+    sector: payload.sector,
+    location: payload.location,
+    status: payload.status,
+    cover_image: payload.cover_image,
+    gallery: payload.gallery,
+    details: payload.details,
+  };
+
+  const isMissingColumnError = (error: { code?: string; message?: string } | null) => {
+    if (!error) {
+      return false;
+    }
+
+    if (error.code !== "PGRST204") {
+      return false;
+    }
+
+    const message = error.message?.toLowerCase() ?? "";
+    return (
+      message.includes("appointment_fee") ||
+      message.includes("years_experience") ||
+      message.includes("available_times")
+    );
   };
 
   if (id) {
-    await supabase.from("doctors").update(payload).eq("id", id);
+    const { error } = await supabase.from("doctors").update(payload).eq("id", id);
+
+    if (isMissingColumnError(error)) {
+      const { error: fallbackError } = await supabase
+        .from("doctors")
+        .update(fallbackPayload)
+        .eq("id", id);
+
+      if (fallbackError?.code === "42501" && supabaseAdmin) {
+        const { error: adminFallbackError } = await supabaseAdmin
+          .from("doctors")
+          .update(fallbackPayload)
+          .eq("id", id);
+
+        if (adminFallbackError) {
+          throw adminFallbackError;
+        }
+      } else if (fallbackError) {
+        throw fallbackError;
+      }
+
+      refreshSite();
+      return;
+    }
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin.from("doctors").update(payload).eq("id", id);
+      if (adminError) {
+        throw adminError;
+      }
+    } else if (error) {
+      throw error;
+    }
   } else {
-    await supabase.from("doctors").insert(payload);
+    const insertPayload = {
+      ...payload,
+      created_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase.from("doctors").insert(insertPayload);
+
+    if (isMissingColumnError(error)) {
+      const fallbackInsertPayload = {
+        ...fallbackPayload,
+        created_at: new Date().toISOString(),
+      };
+
+      const { error: fallbackError } = await supabase.from("doctors").insert(fallbackInsertPayload);
+
+      if (fallbackError?.code === "42501" && supabaseAdmin) {
+        const { error: adminFallbackError } = await supabaseAdmin.from("doctors").insert(fallbackInsertPayload);
+        if (adminFallbackError) {
+          throw adminFallbackError;
+        }
+      } else if (fallbackError) {
+        throw fallbackError;
+      }
+
+      refreshSite();
+      return;
+    }
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin.from("doctors").insert(insertPayload);
+      if (adminError) {
+        throw adminError;
+      }
+    } else if (error) {
+      throw error;
+    }
   }
 
   refreshSite();
@@ -204,7 +327,17 @@ export async function deleteProjectAction(formData: FormData) {
 
   if (!id) return;
 
-  await supabase.from("doctors").delete().eq("id", id);
+  const { error } = await supabase.from("doctors").delete().eq("id", id);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin.from("doctors").delete().eq("id", id);
+    if (adminError) {
+      throw adminError;
+    }
+  } else if (error) {
+    throw error;
+  }
+
   refreshSite();
 }
 

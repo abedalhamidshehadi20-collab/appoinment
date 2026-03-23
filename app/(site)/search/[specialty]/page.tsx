@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SpecialtyLink, getSpecialtyItems, defaultAllSpecialties } from "@/components/site/specialties";
 import { getAllDoctors, getAllSpecialties } from "@/lib/db";
+import { getSafeDoctorImageSrc } from "@/lib/image";
 
 type Props = {
   params: Promise<{ specialty: string }>;
@@ -110,7 +111,7 @@ export default async function SpecialtySearchPage({ params, searchParams }: Prop
             {doctors.map((doctor) => (
               <article key={doctor.id} className="card p-3">
                 <Image
-                  src={doctor.cover_image}
+                  src={getSafeDoctorImageSrc(doctor.cover_image)}
                   alt={doctor.title}
                   width={900}
                   height={700}

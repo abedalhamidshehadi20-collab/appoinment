@@ -6,7 +6,6 @@ import { ReactNode } from "react";
 import { patientLogoutAction } from "@/app/(site)/auth-actions";
 import {
   LayoutDashboard,
-  Calendar,
   PlusCircle,
   LogOut,
   Search,
@@ -106,13 +105,6 @@ export function PatientDashboardShell({
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/appointments"
-              className="inline-flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white transition hover:bg-blue-700"
-            >
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Book
-            </Link>
             <button className="relative flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
               <Bell className="h-5 w-5" />
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"></span>

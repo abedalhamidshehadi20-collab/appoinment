@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getAllDoctors } from "@/lib/db";
+import { getSafeDoctorImageSrc } from "@/lib/image";
 
 export default async function ProjectsPage() {
   const doctors = await getAllDoctors();
@@ -17,7 +18,7 @@ export default async function ProjectsPage() {
           {doctors.map((doctor) => (
             <article key={doctor.id} className="card overflow-hidden">
               <Image
-                src={doctor.cover_image}
+                src={getSafeDoctorImageSrc(doctor.cover_image)}
                 alt={doctor.title}
                 width={1200}
                 height={520}

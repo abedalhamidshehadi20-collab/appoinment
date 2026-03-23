@@ -332,6 +332,16 @@ export async function getAllDoctors() {
     .select('*')
     .order('created_at', { ascending: false });
 
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('doctors')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (adminError) throw adminError;
+    return adminData as Doctor[];
+  }
+
   if (error) throw error;
   return data as Doctor[];
 }
@@ -342,6 +352,17 @@ export async function getDoctorBySlug(slug: string) {
     .select('*')
     .eq('slug', slug)
     .single();
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('doctors')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+
+    if (adminError) return null;
+    return adminData as Doctor;
+  }
 
   if (error) return null;
   return data as Doctor;
@@ -354,6 +375,17 @@ export async function getDoctorById(id: string) {
     .eq('id', id)
     .single();
 
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('doctors')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (adminError) return null;
+    return adminData as Doctor;
+  }
+
   if (error) return null;
   return data as Doctor;
 }
@@ -364,6 +396,17 @@ export async function searchDoctorsBySpecialty(specialty: string) {
     .select('*')
     .ilike('sector', `%${specialty}%`)
     .order('created_at', { ascending: false });
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('doctors')
+      .select('*')
+      .ilike('sector', `%${specialty}%`)
+      .order('created_at', { ascending: false });
+
+    if (adminError) throw adminError;
+    return adminData as Doctor[];
+  }
 
   if (error) throw error;
   return data as Doctor[];

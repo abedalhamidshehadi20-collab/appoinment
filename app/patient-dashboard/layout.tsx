@@ -3,8 +3,7 @@ import { requirePatient } from "@/lib/patient-auth";
 import { PatientDashboardShell } from "@/components/patient/dashboard-shell";
 
 const navItems = [
-  { href: "/patient-dashboard", label: "Overview" },
-  { href: "/appointments", label: "Book Appointment" },
+  { href: "/patient-dashboard", label: "My Appointments" },
 ];
 
 export default async function PatientDashboardLayout({

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getAllDoctors, getSiteSettings, getFeaturedSpecialties } from "@/lib/db";
 import { SpecialtyLink, getSpecialtyItems, defaultHomepageSpecialties } from "@/components/site/specialties";
 import { getPatientSession } from "@/lib/patient-auth";
+import { getSafeDoctorImageSrc } from "@/lib/image";
 
 type Props = {
   searchParams: Promise<{ q?: string }>;
@@ -103,7 +104,7 @@ export default async function HomePage({ searchParams }: Props) {
             {popularDoctors.map((project) => (
               <article key={project.id} className="card overflow-hidden">
                 <Image
-                  src={project.cover_image}
+                  src={getSafeDoctorImageSrc(project.cover_image)}
                   alt={project.title}
                   width={1200}
                   height={520}

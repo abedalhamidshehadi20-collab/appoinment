@@ -27,7 +27,6 @@ function ProjectForm({
       <textarea name="gallery" defaultValue={item?.gallery?.join("\n")} rows={3} placeholder="Gallery URLs (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <textarea name="details" defaultValue={item?.details?.join("\n")} rows={3} placeholder="Doctor highlights (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <textarea name="availableTimes" defaultValue={item?.available_times?.join("\n") ?? "8:00 am\n8:30 am\n9:00 am\n9:30 am\n10:00 am\n10:30 am\n11:00 am\n11:30 am"} rows={4} placeholder="Available time slots (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <input name="createdAt" defaultValue={item?.created_at} placeholder="Created date ISO" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <button className="button button-primary w-fit">{item ? "Save Doctor" : "Add Doctor"}</button>
     </form>
   );

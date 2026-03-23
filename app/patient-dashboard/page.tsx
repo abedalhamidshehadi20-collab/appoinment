@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { requirePatient } from "@/lib/patient-auth";
 import { getAppointmentsForPatient } from "@/lib/db";
-import { Calendar, CheckCircle2, Clock3, CircleAlert, PlusCircle } from "lucide-react";
+import { Calendar, CheckCircle2, Clock3, CircleAlert } from "lucide-react";
 
 function normalizeStatus(status: string) {
   const value = status.toLowerCase();
@@ -69,14 +68,6 @@ export default async function PatientDashboardPage() {
             Welcome back, {patient.name}. Track your upcoming and previous appointments.
           </p>
         </div>
-
-        <Link
-          href="/appointments"
-          className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-        >
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Book New Appointment
-        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
