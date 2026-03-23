@@ -16,10 +16,10 @@ export default async function ContactPage({ searchParams }: Props) {
   ]);
 
   const contactInfo = settings.contact || {
-    address: "123 Main Street, Springfield",
-    city: "IL 62704, United States",
-    phone: "+1 (555) 123-4567",
-    email: "contact@shmed.com"
+    address: "Eastern Highway",
+    city: "Saida|Lebanon",
+    phone: "+961 81865142",
+    email: "abedalhamidshehadi20@gmail.com"
   };
 
   return (

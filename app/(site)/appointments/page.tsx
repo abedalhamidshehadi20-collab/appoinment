@@ -16,10 +16,10 @@ export default async function AppointmentsPage({ searchParams }: Props) {
   ]);
 
   const contactInfo = settings.contact || {
-    address: "123 Main Street, Springfield",
-    city: "IL 62704, United States",
-    email: "contact@shmed.com",
-    phone: "+1 (555) 123-4567",
+    address: "Eastern Highway",
+    city: "Saida|Lebanon",
+    email: "abedalhamidshehadi20@gmail.com",
+    phone: "+961 81865142",
     mapUrl: "https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
   };
 

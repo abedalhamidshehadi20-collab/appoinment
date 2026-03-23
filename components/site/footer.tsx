@@ -2,6 +2,32 @@
 
 import Link from "next/link";
 
+function FacebookIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M13.5 21v-7h2.3l.4-3h-2.7V9.1c0-.9.3-1.6 1.6-1.6H16V4.8c-.4-.1-1.3-.2-2.4-.2-2.4 0-4 1.4-4 4.2V11H7v3h2.5v7h4Z" />
+    </svg>
+  );
+}
+
+function InstagramIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="3.75" y="3.75" width="16.5" height="16.5" rx="4.25" />
+      <circle cx="12" cy="12" r="3.75" />
+      <circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function WhatsAppIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M12 4.8a7.2 7.2 0 0 0-6.2 10.9l-.8 3 3.1-.8A7.2 7.2 0 1 0 12 4.8Zm0 12.9c-1.1 0-2.3-.3-3.2-.9l-.2-.1-1.8.5.5-1.7-.1-.2A5.8 5.8 0 1 1 12 17.7Zm3.2-4.2c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1l-.4.5c-.1.1-.2.1-.4 0a4.7 4.7 0 0 1-2.3-2c-.1-.2 0-.3.1-.4l.3-.4.2-.3v-.4c-.1-.1-.5-1.1-.7-1.5-.1-.3-.3-.3-.5-.3h-.4c-.1 0-.4.1-.6.3s-.8.8-.8 1.9  .8 2.2.9 2.4c.1.1 1.5 2.3 3.7 3.2 2.1.8 2.1.5 2.5.5.4-.1 1.2-.5 1.4-1 .2-.5.2-1 .1-1.1 0-.1-.2-.1-.4-.2Z" />
+    </svg>
+  );
+}
+
 export function SiteFooter() {
   const showFooterLocation = true;
 
@@ -56,10 +82,25 @@ export function SiteFooter() {
             <p className="text-sm leading-4.5 text-[var(--muted)]">+91 12345 67890</p>
 
             <p className="mt-1 text-sm font-bold text-[var(--brand-deep)]">Connect With Us</p>
-            <div className="mt-0.5 flex gap-1.5 text-xs">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded border border-[#bfdbfe] text-[10px] text-[var(--brand)]">f</span>
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded border border-[#bfdbfe] text-[10px] text-[var(--brand)]">ig</span>
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded border border-[#bfdbfe] text-[10px] text-[var(--brand)]">wa</span>
+            <div className="mt-1 flex gap-2 text-xs">
+              <span
+                aria-label="Facebook"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#bfdbfe] text-[var(--brand)]"
+              >
+                <FacebookIcon />
+              </span>
+              <span
+                aria-label="Instagram"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#bfdbfe] text-[var(--brand)]"
+              >
+                <InstagramIcon />
+              </span>
+              <span
+                aria-label="WhatsApp"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#bfdbfe] text-[var(--brand)]"
+              >
+                <WhatsAppIcon />
+              </span>
             </div>
           </article>
 

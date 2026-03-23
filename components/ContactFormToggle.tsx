@@ -2,6 +2,24 @@
 
 import { useState } from "react";
 
+function FacebookIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="currentColor">
+      <path d="M13.5 21v-7h2.3l.4-3h-2.7V9.1c0-.9.3-1.6 1.6-1.6H16V4.8c-.4-.1-1.3-.2-2.4-.2-2.4 0-4 1.4-4 4.2V11H7v3h2.5v7h4Z" />
+    </svg>
+  );
+}
+
+function InstagramIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="3.75" y="3.75" width="16.5" height="16.5" rx="4.25" />
+      <circle cx="12" cy="12" r="3.75" />
+      <circle cx="17.3" cy="6.7" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 type Doctor = {
   id: string;
   title: string;
@@ -73,11 +91,17 @@ export default function ContactFormToggle({ showSuccess, isPatientLoggedIn }: Pr
             <div className="mt-8">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/85">Stay Connected</p>
               <div className="mt-3 flex gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/18 bg-white/10 text-sm font-bold text-white">
-                  f
+                <span
+                  aria-label="Facebook"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/18 bg-white/10 text-white"
+                >
+                  <FacebookIcon />
                 </span>
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/18 bg-white/10 text-sm font-bold text-white">
-                  ig
+                <span
+                  aria-label="Instagram"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white/18 bg-white/10 text-white"
+                >
+                  <InstagramIcon />
                 </span>
               </div>
             </div>
