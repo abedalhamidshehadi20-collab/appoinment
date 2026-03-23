@@ -9,6 +9,18 @@
   --accent: #2377e7;
   --muted: #6b7280;
   --line: #e5e7eb;
+
+  /* Dashboard specific colors */
+  --sidebar-bg: #1e2139;
+  --sidebar-hover: #282d4a;
+  --sidebar-active: #3b82f6;
+  --header-bg: #ffffff;
+  --stat-blue: #3b82f6;
+  --stat-purple: #8b5cf6;
+  --stat-cyan: #22d3ee;
+  --stat-green: #22c55e;
+  --stat-orange: #f97316;
+  --stat-pink: #ec4899;
 }
 
 @theme inline {

@@ -310,6 +310,59 @@ export async function getDashboardCounts() {
   };
 }
 
+export async function getDashboardStats() {
+  const [services, doctors, blogs, news, contacts, appointments, patients] = await Promise.all([
+    getAllServices(),
+    getAllDoctors(),
+    getAllBlogs(),
+    getAllNews(),
+    getAllContacts(),
+    getAllAppointments(),
+    getAllPatients(),
+  ]);
+
+  // Get today's appointments
+  const today = new Date().toISOString().slice(0, 10);
+  const todayAppointments = appointments.filter(
+    (apt) => apt.appointment_date === today
+  );
+
+  // Get this month's appointments
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  const monthAppointments = appointments.filter(
+    (apt) => apt.appointment_date?.startsWith(thisMonth)
+  );
+
+  // Get new patients this month
+  const newPatientsThisMonth = patients.filter(
+    (p) => p.created_at?.startsWith(thisMonth)
+  );
+
+  // Calculate revenue (sum of completed appointments * average fee)
+  const completedAppointments = appointments.filter(
+    (apt) => apt.status === "Completed"
+  );
+
+  return {
+    todayAppointments: todayAppointments.length,
+    totalPatients: patients.length,
+    totalDoctors: doctors.length,
+    newPatientsThisMonth: newPatientsThisMonth.length,
+    monthlyAppointments: monthAppointments.length,
+    totalAppointments: appointments.length,
+    completedAppointments: completedAppointments.length,
+    services: services.length,
+    blogs: blogs.length,
+    news: news.length,
+    contacts: contacts.length,
+  };
+}
+
+export async function getRecentAppointments(limit = 5) {
+  const appointments = await getAllAppointments();
+  return appointments.slice(0, limit);
+}
+
 // ============================================
 // Patient Management Actions
 // ============================================
