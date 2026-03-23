@@ -9,6 +9,7 @@ import {
   nextId,
   slugify,
   toList,
+  isDoctorTimeSlotAvailable,
   getAllServices,
   getAllDoctors,
   getAllBlogs,
@@ -628,6 +629,22 @@ export async function savePatientAction(formData: FormData) {
 export async function savePatientWithAppointmentAction(formData: FormData) {
   await requirePermission("patients");
 
+  const includeAppointment = formData.get("includeAppointment")?.toString() === "true";
+  const doctorId = formData.get("doctorId")?.toString() ?? "";
+  const appointmentDate = formData.get("appointmentDate")?.toString() ?? "";
+  const appointmentTime = formData.get("appointmentTime")?.toString() ?? "";
+
+  if (includeAppointment) {
+    if (!doctorId || !appointmentDate || !appointmentTime) {
+      redirect("/dashboard/patients?error=missing_appointment_fields");
+    }
+
+    const isAvailable = await isDoctorTimeSlotAvailable(doctorId, appointmentDate, appointmentTime);
+    if (!isAvailable) {
+      redirect("/dashboard/patients?error=slot_unavailable");
+    }
+  }
+
   // Create patient
   const patientId = nextId("pat");
   const patient = {
@@ -645,10 +662,7 @@ export async function savePatientWithAppointmentAction(formData: FormData) {
   await supabase.from("patients").insert(patient);
 
   // Add appointment if requested
-  const includeAppointment = formData.get("includeAppointment")?.toString() === "true";
   if (includeAppointment) {
-    const doctorId = formData.get("doctorId")?.toString();
-
     if (doctorId) {
       // Get doctor info
       const { data: doctor } = await supabase
@@ -668,15 +682,22 @@ export async function savePatientWithAppointmentAction(formData: FormData) {
           phone: patient.phone,
           location: "",
           service: "",
-          appointment_date: formData.get("appointmentDate")?.toString() ?? "",
-          appointment_time: formData.get("appointmentTime")?.toString() ?? "",
+          appointment_date: appointmentDate,
+          appointment_time: appointmentTime,
           message: formData.get("appointmentNotes")?.toString() ?? "",
           status: "Scheduled",
           notes: "",
           created_at: new Date().toISOString(),
         };
 
-        await supabase.from("appointments").insert(appointment);
+        const { error } = await supabase.from("appointments").insert(appointment);
+        if (error?.code === "23505") {
+          redirect("/dashboard/patients?error=slot_unavailable");
+        }
+
+        if (error) {
+          redirect("/dashboard/patients?error=appointment_create_failed");
+        }
       }
     }
   }
@@ -698,8 +719,17 @@ export async function addAppointmentAction(formData: FormData) {
   await requirePermission("patients");
   const patientId = formData.get("patientId")?.toString();
   const doctorId = formData.get("doctorId")?.toString();
+  const appointmentDate = formData.get("date")?.toString() ?? "";
+  const appointmentTime = formData.get("time")?.toString() ?? "";
 
-  if (!patientId || !doctorId) return;
+  if (!patientId || !doctorId || !appointmentDate || !appointmentTime) {
+    redirect("/dashboard/patients?error=missing_appointment_fields");
+  }
+
+  const isAvailable = await isDoctorTimeSlotAvailable(doctorId, appointmentDate, appointmentTime);
+  if (!isAvailable) {
+    redirect("/dashboard/patients?error=slot_unavailable");
+  }
 
   // Get patient and doctor info
   const [patientResult, doctorResult] = await Promise.all([
@@ -719,15 +749,23 @@ export async function addAppointmentAction(formData: FormData) {
     phone: patientResult.data.phone || "",
     location: "",
     service: "",
-    appointment_date: formData.get("date")?.toString() ?? "",
-    appointment_time: formData.get("time")?.toString() ?? "",
+    appointment_date: appointmentDate,
+    appointment_time: appointmentTime,
     message: formData.get("notes")?.toString() ?? "",
     status: "Scheduled",
     notes: "",
     created_at: new Date().toISOString(),
   };
 
-  await supabase.from("appointments").insert(appointment);
+  const { error } = await supabase.from("appointments").insert(appointment);
+  if (error?.code === "23505") {
+    redirect("/dashboard/patients?error=slot_unavailable");
+  }
+
+  if (error) {
+    redirect("/dashboard/patients?error=appointment_create_failed");
+  }
+
   refreshSite();
 }
 

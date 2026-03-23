@@ -1,7 +1,6 @@
 import {
   savePatientAction,
   deletePatientAction,
-  addAppointmentAction,
   updateAppointmentStatusAction,
   deleteAppointmentAction,
 } from "@/app/dashboard/actions";
@@ -9,6 +8,7 @@ import { requirePermission } from "@/lib/auth";
 import { getAllPatients, getAllDoctors, getAllAppointments } from "@/lib/db";
 import AppointmentStatusSelector from "@/components/AppointmentStatusSelector";
 import PatientWithAppointmentForm from "@/components/PatientWithAppointmentForm";
+import AddPatientAppointmentForm from "@/components/dashboard/add-patient-appointment-form";
 
 function PatientForm({
   patient,
@@ -95,69 +95,27 @@ function PatientForm({
   );
 }
 
-function AppointmentForm({
-  patientId,
-  doctors,
-}: {
-  patientId: string;
-  doctors: { id: string; title: string }[];
-}) {
-  return (
-    <form action={addAppointmentAction} className="mt-3 grid gap-3 rounded-lg border border-[var(--line)] bg-[#f9fafb] p-4">
-      <input type="hidden" name="patientId" value={patientId} />
-
-      <p className="text-sm font-semibold text-[var(--brand-deep)]">Add New Appointment</p>
-
-      <div className="grid gap-3 md:grid-cols-3">
-        <select
-          name="doctorId"
-          required
-          className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm"
-        >
-          <option value="">Select Doctor</option>
-          {doctors.map((doctor) => (
-            <option key={doctor.id} value={doctor.id}>
-              {doctor.title}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="date"
-          name="date"
-          required
-          className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm"
-        />
-
-        <input
-          type="time"
-          name="time"
-          required
-          className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm"
-        />
-      </div>
-
-      <textarea
-        name="notes"
-        rows={2}
-        placeholder="Appointment notes"
-        className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm"
-      />
-
-      <button className="button button-primary w-fit text-sm">
-        Add Appointment
-      </button>
-    </form>
-  );
+function errorMessage(code: string | undefined) {
+  if (!code) return "";
+  if (code === "slot_unavailable") return "Selected slot is no longer available. Please choose another time.";
+  if (code === "missing_appointment_fields") return "Please select doctor, date, and time before submitting.";
+  return "Could not create appointment. Please try again.";
 }
 
-export default async function DashboardPatientsPage() {
+type Props = {
+  searchParams: Promise<{ error?: string }>;
+};
+
+export default async function DashboardPatientsPage({ searchParams }: Props) {
   await requirePermission("patients");
+  const query = await searchParams;
   const [patients, doctors, allAppointments] = await Promise.all([
     getAllPatients(),
     getAllDoctors(),
     getAllAppointments(),
   ]);
+
+  const formError = errorMessage(query.error);
 
   // Group appointments by patient
   const appointmentsByPatient = allAppointments.reduce((acc, apt) => {
@@ -177,6 +135,11 @@ export default async function DashboardPatientsPage() {
         <p className="mt-2 text-sm text-[var(--muted)]">
           Create a patient record for phone bookings or walk-ins
         </p>
+        {formError ? (
+          <p className="mt-3 rounded-lg border border-[#fecaca] bg-[#fef2f2] px-3 py-2 text-sm text-[#991b1b]">
+            {formError}
+          </p>
+        ) : null}
         <div className="mt-4">
           <PatientWithAppointmentForm doctors={doctors} />
         </div>
@@ -272,7 +235,7 @@ export default async function DashboardPatientsPage() {
                   </div>
                 )}
 
-                <AppointmentForm patientId={patient.id} doctors={doctors} />
+                <AddPatientAppointmentForm patientId={patient.id} doctors={doctors} />
               </div>
 
               {/* Patient Actions */}

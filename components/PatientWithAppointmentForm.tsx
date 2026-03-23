@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { savePatientWithAppointmentAction } from "@/app/dashboard/actions";
 
 type Props = {
@@ -10,7 +10,10 @@ type Props = {
 export default function PatientWithAppointmentForm({ doctors }: Props) {
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState("");
+  const [selectedDoctor, setSelectedDoctor] = useState("");
   const [includeAppointment, setIncludeAppointment] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   // Generate next 7 days
   const days = Array.from({ length: 7 }, (_, i) => {
@@ -22,25 +25,61 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
       fullDate: date.toISOString().split("T")[0],
     };
   });
+  const selectedDateValue = days[selectedDate]?.fullDate ?? "";
 
-  const timeSlots = [
-    "8:00 am",
-    "8:30 am",
-    "9:00 am",
-    "9:30 am",
-    "10:00 am",
-    "10:30 am",
-    "11:00 am",
-    "11:30 am",
-    "1:00 pm",
-    "1:30 pm",
-    "2:00 pm",
-    "2:30 pm",
-    "3:00 pm",
-    "3:30 pm",
-    "4:00 pm",
-    "4:30 pm",
-  ];
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadSlots() {
+      if (!includeAppointment || !selectedDoctor) {
+        setAvailableSlots([]);
+        setSelectedTime("");
+        return;
+      }
+
+      const date = selectedDateValue;
+      if (!date) {
+        setAvailableSlots([]);
+        setSelectedTime("");
+        return;
+      }
+
+      try {
+        setIsLoadingSlots(true);
+        const query = new URLSearchParams({ doctorId: selectedDoctor, date });
+        const response = await fetch(`/api/public/doctors/available-slots?${query.toString()}`, {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load slots");
+        }
+
+        const body = await response.json() as { availableSlots?: string[] };
+        const slots = body.availableSlots ?? [];
+
+        if (!ignore) {
+          setAvailableSlots(slots);
+          setSelectedTime((previous) => (slots.includes(previous) ? previous : ""));
+        }
+      } catch {
+        if (!ignore) {
+          setAvailableSlots([]);
+          setSelectedTime("");
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoadingSlots(false);
+        }
+      }
+    }
+
+    loadSlots();
+
+    return () => {
+      ignore = true;
+    };
+  }, [includeAppointment, selectedDoctor, selectedDateValue]);
 
   return (
     <form action={savePatientWithAppointmentAction} className="grid gap-4">
@@ -125,6 +164,8 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
           <select
             name="doctorId"
             required={includeAppointment}
+            value={selectedDoctor}
+            onChange={(e) => setSelectedDoctor(e.target.value)}
             className="rounded-lg border border-[var(--line)] px-3 py-2"
           >
             <option value="">Select Doctor</option>
@@ -155,14 +196,14 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
                 </button>
               ))}
             </div>
-            <input type="hidden" name="appointmentDate" value={days[selectedDate].fullDate} />
+            <input type="hidden" name="appointmentDate" value={selectedDateValue} />
           </div>
 
           {/* Time Selection */}
           <div className="grid gap-2">
             <label className="text-sm font-semibold text-[var(--brand-deep)]">Select Time</label>
             <div className="flex flex-wrap gap-2">
-              {timeSlots.map((time) => (
+              {availableSlots.map((time) => (
                 <button
                   key={time}
                   type="button"
@@ -177,6 +218,15 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
                 </button>
               ))}
             </div>
+            <p className="text-xs text-[var(--muted)]">
+              {!selectedDoctor
+                ? "Select doctor first"
+                : isLoadingSlots
+                  ? "Loading available slots..."
+                  : availableSlots.length === 0
+                    ? "No available slots for this date"
+                    : "Pick one of the available slots"}
+            </p>
             <input type="hidden" name="appointmentTime" value={selectedTime} />
           </div>
 
@@ -192,7 +242,11 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
 
       <input type="hidden" name="includeAppointment" value={includeAppointment ? "true" : "false"} />
 
-      <button type="submit" className="button button-primary w-fit">
+      <button
+        type="submit"
+        disabled={includeAppointment && (!selectedDoctor || !selectedTime || isLoadingSlots)}
+        className="button button-primary w-fit disabled:cursor-not-allowed disabled:opacity-60"
+      >
         {includeAppointment ? "Add Patient & Book Appointment" : "Add Patient"}
       </button>
     </form>

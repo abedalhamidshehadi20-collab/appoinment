@@ -37,6 +37,11 @@ type Props = {
   searchParams: Promise<{ reminder?: string }>;
 };
 
+type ReminderState = {
+  eligible: boolean;
+  alreadySent: boolean;
+};
+
 export default async function DashboardInterestsPage({ searchParams }: Props) {
   await requirePermission("interests");
   const query = await searchParams;
@@ -55,15 +60,15 @@ export default async function DashboardInterestsPage({ searchParams }: Props) {
   }
 
   const appointments = await getAllAppointments();
-  const reminderStates = await Promise.all(
+  const reminderStates: Array<[string, ReminderState]> = await Promise.all(
     appointments.map(async (item) => {
       const eligible = isEligibleForManualReminder(item);
       if (!eligible) {
-        return [item.id, { eligible: false, alreadySent: false }] as const;
+        return [item.id, { eligible: false, alreadySent: false }];
       }
 
       const alreadySent = await hasSentAppointmentReminder(item.id, item.appointment_date);
-      return [item.id, { eligible: true, alreadySent }] as const;
+      return [item.id, { eligible: true, alreadySent }];
     }),
   );
 

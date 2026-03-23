@@ -217,7 +217,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
   if (error) throw error;
 
-  const settings: any = {};
+  const settings: Record<string, unknown> = {};
   data?.forEach((row) => {
     settings[row.key] = row.value;
   });
@@ -225,7 +225,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   return settings as SiteSettings;
 }
 
-export async function updateSiteSettings(key: 'home' | 'about', value: any) {
+export async function updateSiteSettings(key: 'home' | 'about', value: unknown) {
   const { error } = await supabase
     .from('site_settings')
     .upsert({ key, value, updated_at: new Date().toISOString() });
