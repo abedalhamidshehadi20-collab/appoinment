@@ -41,7 +41,7 @@ export default function ContactFormToggle({ showSuccess, isPatientLoggedIn }: Pr
         <div className="flex justify-center">
           <button
             onClick={() => setIsFormVisible(true)}
-            className="rounded-lg border border-[#1f2937] px-8 py-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#1f2937] hover:text-white"
+            className="rounded-lg border border-[#1f2937] px-8 py-3 text-sm font-medium text-[#1f2937] transition hover:border-[var(--brand)] hover:bg-[var(--brand)] hover:text-white"
           >
             Contact Form
           </button>
@@ -52,7 +52,7 @@ export default function ContactFormToggle({ showSuccess, isPatientLoggedIn }: Pr
         <div className="flex justify-center">
           <a
             href="/login?next=%2Fcontact"
-            className="rounded-lg border border-[#1f2937] px-8 py-3 text-sm font-medium text-[#1f2937] transition hover:bg-[#1f2937] hover:text-white"
+            className="rounded-lg border border-[#1f2937] px-8 py-3 text-sm font-medium text-[#1f2937] transition hover:border-[var(--brand)] hover:bg-[var(--brand)] hover:text-white"
           >
             Login as patient to contact us
           </a>
