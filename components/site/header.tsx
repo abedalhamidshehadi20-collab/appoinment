@@ -28,9 +28,13 @@ type Props = {
     name: string;
     role: string;
   } | null;
+  patient?: {
+    name: string;
+    email: string;
+  } | null;
 };
 
-export function SiteHeader({ admin }: Props) {
+export function SiteHeader({ admin, patient }: Props) {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
   const heroBottomRef = useRef<number>(0);
@@ -115,6 +119,7 @@ export function SiteHeader({ admin }: Props) {
   }, []);
 
   const adminInitial = admin?.name.trim().charAt(0).toUpperCase() ?? "A";
+  const patientInitial = patient?.name.trim().charAt(0).toUpperCase() ?? "P";
 
   return (
     <header
@@ -145,7 +150,18 @@ export function SiteHeader({ admin }: Props) {
             ))}
           </ul>
           <div className="flex items-center">
-            {admin ? (
+            {patient ? (
+              <Link
+                href="/patient-dashboard"
+                aria-label="Open patient account"
+                title={patient.name}
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2377e7_0%,#1d4f91_100%)] text-sm font-extrabold text-white shadow-[0_18px_30px_-24px_rgba(29,79,145,0.8)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_34px_-24px_rgba(29,79,145,0.95)]"
+              >
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/14 text-sm font-extrabold text-white">
+                  {patientInitial}
+                </span>
+              </Link>
+            ) : admin ? (
               <Link
                 href="/dashboard"
                 aria-label="Open admin dashboard"

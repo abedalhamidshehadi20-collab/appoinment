@@ -7,15 +7,21 @@ type AdminInfo = {
   role: string;
 };
 
+type PatientInfo = {
+  name: string;
+  email: string;
+};
+
 type Props = {
   children: ReactNode;
   admin?: AdminInfo | null;
+  patient?: PatientInfo | null;
 };
 
-export function SiteShell({ children, admin }: Props) {
+export function SiteShell({ children, admin, patient }: Props) {
   return (
     <>
-      <SiteHeader admin={admin} />
+      <SiteHeader admin={admin} patient={patient} />
       {children}
       <SiteFooter />
     </>

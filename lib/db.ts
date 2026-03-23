@@ -436,6 +436,65 @@ export async function getAppointmentsByPatientId(patientId: string) {
   return data as Appointment[];
 }
 
+export async function getAppointmentsForPatient(patientId: string, email: string) {
+  const { data: byPatientId, error: byPatientIdError } = await supabase
+    .from('appointments')
+    .select('*')
+    .eq('patient_id', patientId)
+    .order('created_at', { ascending: false });
+
+  const { data: byEmail, error: byEmailError } = await supabase
+    .from('appointments')
+    .select('*')
+    .ilike('email', email)
+    .order('created_at', { ascending: false });
+
+  const canUseAdmin = byPatientIdError?.code === '42501' || byEmailError?.code === '42501';
+  if (canUseAdmin && supabaseAdmin) {
+    const { data: adminByPatientId, error: adminByPatientIdError } = await supabaseAdmin
+      .from('appointments')
+      .select('*')
+      .eq('patient_id', patientId)
+      .order('created_at', { ascending: false });
+
+    const { data: adminByEmail, error: adminByEmailError } = await supabaseAdmin
+      .from('appointments')
+      .select('*')
+      .ilike('email', email)
+      .order('created_at', { ascending: false });
+
+    if (adminByPatientIdError && adminByEmailError) {
+      throw adminByPatientIdError;
+    }
+
+    const mergedAdmin = [
+      ...(adminByPatientId ?? []),
+      ...(adminByEmail ?? []),
+    ];
+
+    const dedupedAdmin = Array.from(
+      new Map(mergedAdmin.map((item) => [item.id, item])).values(),
+    );
+
+    return dedupedAdmin as Appointment[];
+  }
+
+  if (byPatientIdError && byEmailError) {
+    throw byPatientIdError;
+  }
+
+  const merged = [
+    ...(byPatientId ?? []),
+    ...(byEmail ?? []),
+  ];
+
+  const deduped = Array.from(
+    new Map(merged.map((item) => [item.id, item])).values(),
+  );
+
+  return deduped as Appointment[];
+}
+
 export async function createAppointment(appointment: Omit<Appointment, 'id' | 'created_at'>) {
   const newAppointment = {
     ...appointment,
