@@ -1,6 +1,20 @@
 import { notFound } from "next/navigation";
 import { getBlogBySlug } from "@/lib/db";
 
+function formatPublishedDate(dateValue: string) {
+  const parsed = new Date(dateValue);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return dateValue;
+  }
+
+  return parsed.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -16,7 +30,7 @@ export default async function BlogDetailsPage({ params }: Props) {
   return (
     <main className="container fade-up pb-8">
       <article className="card p-8 md:p-10">
-        <p className="text-xs text-[var(--muted)]">{post.published_at} • {post.author}</p>
+        <p className="text-xs text-[var(--muted)]">{formatPublishedDate(post.published_at)} • {post.author}</p>
         <h1 className="mt-2 text-4xl font-extrabold">{post.title}</h1>
         <p className="mt-5 leading-7 text-[var(--muted)]">{post.content}</p>
         <div className="mt-6 flex flex-wrap gap-2">
