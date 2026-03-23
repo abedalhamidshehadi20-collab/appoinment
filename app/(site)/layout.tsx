@@ -1,14 +1,12 @@
 import { ReactNode } from "react";
 import { SiteShell } from "@/components/site/shell";
-import { getPatientSession } from "@/lib/patient-auth";
+import { getSessionUser } from "@/lib/auth";
 
 export default async function PublicLayout({ children }: { children: ReactNode }) {
-  const patient = await getPatientSession();
+  const admin = await getSessionUser();
 
   return (
-    <SiteShell
-      patient={patient ? { name: patient.name, email: patient.email } : null}
-    >
+    <SiteShell admin={admin ? { name: admin.name, role: admin.role } : null}>
       {children}
     </SiteShell>
   );

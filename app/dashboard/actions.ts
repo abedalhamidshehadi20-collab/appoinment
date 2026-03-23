@@ -29,18 +29,19 @@ export async function loginAction(formData: FormData) {
     formData.get("username")?.toString() ??
     "";
   const password = formData.get("password")?.toString() ?? "";
+  const next = formData.get("next")?.toString() || "/dashboard";
 
   const ok = await login(identifier, password);
   if (!ok) {
-    redirect("/dashboard/login?error=1");
+    redirect(`/dashboard/login?error=1&next=${encodeURIComponent(next)}`);
   }
 
-  redirect("/dashboard");
+  redirect(next);
 }
 
 export async function logoutAction() {
   await logout();
-  redirect("/dashboard/login");
+  redirect("/");
 }
 
 // ============================================

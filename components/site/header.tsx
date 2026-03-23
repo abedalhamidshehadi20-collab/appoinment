@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { patientLogoutAction } from "@/app/(site)/auth-actions";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -25,20 +24,18 @@ function isActivePath(pathname: string, href: string) {
 }
 
 type Props = {
-  patient?: {
+  admin?: {
     name: string;
-    email: string;
+    role: string;
   } | null;
 };
 
-export function SiteHeader({ patient }: Props) {
+export function SiteHeader({ admin }: Props) {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
-  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const heroBottomRef = useRef<number>(0);
   const mouseHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isVisibleRef = useRef(true);
-  const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const setHeaderVisible = (value: boolean) => {
@@ -117,24 +114,7 @@ export function SiteHeader({ patient }: Props) {
     };
   }, []);
 
-  useEffect(() => {
-    const handlePointerDown = (event: MouseEvent) => {
-      if (!accountMenuRef.current) {
-        return;
-      }
-
-      if (!accountMenuRef.current.contains(event.target as Node)) {
-        setIsAccountMenuOpen(false);
-      }
-    };
-
-    window.addEventListener("mousedown", handlePointerDown);
-    return () => {
-      window.removeEventListener("mousedown", handlePointerDown);
-    };
-  }, []);
-
-  const patientInitial = patient?.name.trim().charAt(0).toUpperCase() ?? "P";
+  const adminInitial = admin?.name.trim().charAt(0).toUpperCase() ?? "A";
 
   return (
     <header
@@ -165,56 +145,20 @@ export function SiteHeader({ patient }: Props) {
             ))}
           </ul>
           <div className="flex items-center">
-            {patient ? (
-              <div className="relative" ref={accountMenuRef}>
-                <button
-                  type="button"
-                  onClick={() => setIsAccountMenuOpen((current) => !current)}
-                  className="flex items-center gap-3 rounded-2xl bg-[linear-gradient(135deg,#2377e7_0%,#1d4f91_100%)] px-4 py-3 text-left text-white shadow-[0_18px_30px_-24px_rgba(29,79,145,0.8)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_34px_-24px_rgba(29,79,145,0.95)]"
-                >
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/14 text-sm font-extrabold text-white">
-                    {patientInitial}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block max-w-[170px] truncate text-sm font-extrabold">
-                      {patient.name}
-                    </span>
-                    <span className="block text-xs font-medium text-white/75">
-                      Patient account
-                    </span>
-                  </span>
-                </button>
-
-                {isAccountMenuOpen ? (
-                  <div className="absolute right-0 top-[calc(100%+0.75rem)] w-64 rounded-3xl border border-[#dbe9ff] bg-white p-3 text-[var(--brand-deep)] shadow-[0_24px_50px_-30px_rgba(15,23,42,0.45)]">
-                    <div className="rounded-2xl bg-[#f5f9ff] px-4 py-3">
-                      <p className="truncate text-sm font-bold">{patient.name}</p>
-                      <p className="truncate text-xs text-[var(--muted)]">{patient.email}</p>
-                    </div>
-
-                    <Link
-                      href="/appointments"
-                      onClick={() => setIsAccountMenuOpen(false)}
-                      className="mt-3 flex h-11 items-center rounded-2xl px-4 text-sm font-semibold transition hover:bg-[#eef5ff]"
-                    >
-                      My Appointments
-                    </Link>
-
-                    <form action={patientLogoutAction} className="mt-2">
-                      <button
-                        type="submit"
-                        className="flex h-11 w-full items-center rounded-2xl px-4 text-sm font-semibold text-[#b42318] transition hover:bg-[#fff1ef]"
-                      >
-                        Logout
-                      </button>
-                    </form>
-                  </div>
-                ) : null}
-              </div>
+            {admin ? (
+              <Link
+                href="/dashboard"
+                aria-label="Open admin dashboard"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2377e7_0%,#1d4f91_100%)] text-sm font-extrabold text-white shadow-[0_18px_30px_-24px_rgba(29,79,145,0.8)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_34px_-24px_rgba(29,79,145,0.95)]"
+              >
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/14 text-sm font-extrabold text-white">
+                  {adminInitial}
+                </span>
+              </Link>
             ) : (
               <Link
                 href="/login"
-                className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-5 text-sm font-bold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
+                className="inline-flex h-11 items-center justify-center rounded-full border border-[#cfe0ff] px-8 text-sm font-bold text-[var(--brand-deep)] transition hover:border-[#9ec5ff] hover:bg-[#f3f8ff]"
               >
                 Login
               </Link>

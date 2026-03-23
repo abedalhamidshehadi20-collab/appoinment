@@ -94,7 +94,7 @@ export default async function LoginPage({ searchParams }: Props) {
           </p>
           <p className="mt-2 text-sm text-[var(--muted)]">
             Admin login?{" "}
-            <Link href="/dashboard/login" className="font-semibold text-[var(--brand)]">
+            <Link href="/dashboard/login?next=/" className="font-semibold text-[var(--brand)]">
               Click here
             </Link>
           </p>

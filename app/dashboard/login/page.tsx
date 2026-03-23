@@ -1,11 +1,18 @@
+import { redirect } from "next/navigation";
 import { loginAction } from "../actions";
+import { getSessionUser } from "@/lib/auth";
 
 type Props = {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 };
 
 export default async function DashboardLoginPage({ searchParams }: Props) {
   const query = await searchParams;
+  const user = await getSessionUser();
+
+  if (user) {
+    redirect(query.next || "/");
+  }
 
   return (
     <main className="container flex min-h-[80vh] items-center justify-center py-10">
@@ -21,6 +28,7 @@ export default async function DashboardLoginPage({ searchParams }: Props) {
         ) : null}
 
         <form action={loginAction} className="mt-5 grid gap-3">
+          <input type="hidden" name="next" value={query.next || "/"} />
           <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
             Email Address
             <input name="email" type="email" required placeholder="admin@shmed.com" className="rounded-lg border border-[var(--line)] px-3 py-2" />
