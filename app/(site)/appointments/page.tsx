@@ -5,7 +5,7 @@ import { getSessionUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 type Props = {
-  searchParams: Promise<{ sent?: string; doctor?: string; date?: string; time?: string }>;
+  searchParams: Promise<{ sent?: string; doctor?: string; date?: string; time?: string; error?: string }>;
 };
 
 export default async function AppointmentsPage({ searchParams }: Props) {
@@ -73,6 +73,7 @@ export default async function AppointmentsPage({ searchParams }: Props) {
             doctors={doctors}
             services={services}
             showSuccess={query.sent === "1"}
+            errorCode={query.error}
             preselectedDoctor={query.doctor}
             preselectedDate={query.date}
             preselectedTime={query.time}

@@ -82,6 +82,24 @@ export type Appointment = {
   created_at: string;
 };
 
+const DEFAULT_DOCTOR_TIME_SLOTS = [
+  "8:00 am",
+  "8:30 am",
+  "9:00 am",
+  "9:30 am",
+  "10:00 am",
+  "10:30 am",
+  "11:00 am",
+  "11:30 am",
+  "2:00 pm",
+  "2:30 pm",
+  "3:00 pm",
+  "3:30 pm",
+  "4:00 pm",
+  "4:30 pm",
+  "5:00 pm",
+];
+
 export type Service = {
   id: string;
   title: string;
@@ -479,6 +497,103 @@ export async function getAppointmentsByPatientId(patientId: string) {
   return data as Appointment[];
 }
 
+function normalizeSlotValue(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function normalizeAppointmentStatus(status: string) {
+  const value = status.toLowerCase();
+  if (value === 'canceled') {
+    return 'cancelled';
+  }
+  if (value === 'confirmed') {
+    return 'scheduled';
+  }
+  if (value === 'done') {
+    return 'completed';
+  }
+  return value;
+}
+
+function isBlockedStatus(status: string) {
+  const normalized = normalizeAppointmentStatus(status);
+  return normalized !== 'cancelled';
+}
+
+export async function getDoctorAvailableTimeSlots(doctorId: string) {
+  const doctor = await getDoctorById(doctorId);
+  if (!doctor) {
+    return [] as string[];
+  }
+
+  const doctorTimes = doctor.available_times?.map((slot) => slot.trim()).filter(Boolean) ?? [];
+  if (doctorTimes.length > 0) {
+    return doctorTimes;
+  }
+
+  return DEFAULT_DOCTOR_TIME_SLOTS;
+}
+
+export async function getDoctorBookedTimeSlots(doctorId: string, appointmentDate: string) {
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('appointment_time,status')
+    .eq('doctor_id', doctorId)
+    .eq('appointment_date', appointmentDate);
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('appointments')
+      .select('appointment_time,status')
+      .eq('doctor_id', doctorId)
+      .eq('appointment_date', appointmentDate);
+
+    if (adminError) throw adminError;
+
+    return (adminData ?? [])
+      .filter((item) => isBlockedStatus(item.status ?? ''))
+      .map((item) => normalizeSlotValue(item.appointment_time ?? ''))
+      .filter(Boolean);
+  }
+
+  if (error) throw error;
+
+  return (data ?? [])
+    .filter((item) => isBlockedStatus(item.status ?? ''))
+    .map((item) => normalizeSlotValue(item.appointment_time ?? ''))
+    .filter(Boolean);
+}
+
+export async function getAvailableDoctorTimeSlots(doctorId: string, appointmentDate: string) {
+  const [availableSlots, bookedSlots] = await Promise.all([
+    getDoctorAvailableTimeSlots(doctorId),
+    getDoctorBookedTimeSlots(doctorId, appointmentDate),
+  ]);
+
+  if (availableSlots.length === 0) {
+    return [] as string[];
+  }
+
+  const bookedSet = new Set(bookedSlots);
+  return availableSlots.filter((slot) => !bookedSet.has(normalizeSlotValue(slot)));
+}
+
+export async function isDoctorTimeSlotAvailable(doctorId: string, appointmentDate: string, appointmentTime: string) {
+  const [availableSlots, bookedSlots] = await Promise.all([
+    getDoctorAvailableTimeSlots(doctorId),
+    getDoctorBookedTimeSlots(doctorId, appointmentDate),
+  ]);
+
+  const normalizedSelected = normalizeSlotValue(appointmentTime);
+  const normalizedAvailable = new Set(availableSlots.map(normalizeSlotValue));
+  const normalizedBooked = new Set(bookedSlots);
+
+  const isWithinDoctorSchedule = normalizedAvailable.has(normalizedSelected);
+  const isAlreadyBooked = normalizedBooked.has(normalizedSelected);
+
+  return isWithinDoctorSchedule && !isAlreadyBooked;
+}
+
 export async function getAppointmentsForPatient(patientId: string, email: string) {
   const { data: byPatientId, error: byPatientIdError } = await supabase
     .from('appointments')
@@ -546,6 +661,12 @@ export async function createAppointment(appointment: Omit<Appointment, 'id' | 'c
   };
 
   const { error } = await supabase.from('appointments').insert(newAppointment);
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin.from('appointments').insert(newAppointment);
+    if (adminError) throw adminError;
+    return newAppointment;
+  }
 
   if (error) throw error;
   return newAppointment;
