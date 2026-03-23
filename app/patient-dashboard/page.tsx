@@ -1,6 +1,5 @@
 import { requirePatient } from "@/lib/patient-auth";
-import { findPatientByEmail, getAppointmentsForPatient } from "@/lib/db";
-import { cookies } from "next/headers";
+import { findPatientByEmail, getAppointmentsForPatient, updatePatientReminderPreference } from "@/lib/db";
 import Link from "next/link";
 import { Calendar, CheckCircle2, Clock3, CircleAlert, BellRing, UserRound, PlusCircle } from "lucide-react";
 
@@ -79,21 +78,13 @@ export default async function PatientDashboardPage() {
     findPatientByEmail(patient.email),
   ]);
 
-  const cookieStore = await cookies();
-  const remindersEnabled = cookieStore.get("patient_reminder_opt_in")?.value !== "0";
+  const remindersEnabled = patientRecord?.reminder_opt_in ?? true;
 
   async function updateReminderPreference(formData: FormData) {
     "use server";
 
     const enabled = formData.get("reminders") === "on";
-    const store = await cookies();
-    store.set("patient_reminder_opt_in", enabled ? "1" : "0", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365,
-    });
+    await updatePatientReminderPreference(patient.id, enabled);
   }
 
   const today = new Date();

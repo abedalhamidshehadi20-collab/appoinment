@@ -27,6 +27,7 @@ export type Patient = {
   name: string;
   email: string;
   password?: string;
+  reminder_opt_in?: boolean;
   phone: string;
   address: string;
   date_of_birth: string;
@@ -79,6 +80,17 @@ export type Appointment = {
   message: string;
   status: string;
   notes: string;
+  created_at: string;
+};
+
+export type AppointmentReminder = {
+  id: string;
+  appointment_id: string;
+  reminder_date: string;
+  recipient_email: string;
+  status: 'sent' | 'failed';
+  error_message: string | null;
+  sent_at: string;
   created_at: string;
 };
 
@@ -340,6 +352,83 @@ export async function createPatient(patient: Omit<Patient, 'id' | 'created_at'>)
   return newPatient;
 }
 
+export async function updatePatientReminderPreference(patientId: string, enabled: boolean) {
+  const { error } = await supabase
+    .from('patients')
+    .update({ reminder_opt_in: enabled })
+    .eq('id', patientId);
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from('patients')
+      .update({ reminder_opt_in: enabled })
+      .eq('id', patientId);
+
+    if (adminError) throw adminError;
+    return;
+  }
+
+  if (error) throw error;
+}
+
+export async function isPatientReminderEnabled(patientId: string | null, email: string) {
+  if (patientId) {
+    const { data, error } = await supabase
+      .from('patients')
+      .select('reminder_opt_in')
+      .eq('id', patientId)
+      .single();
+
+    if (error?.code === '42501' && supabaseAdmin) {
+      const { data: adminData, error: adminError } = await supabaseAdmin
+        .from('patients')
+        .select('reminder_opt_in')
+        .eq('id', patientId)
+        .single();
+
+      if (adminError) {
+        return true;
+      }
+
+      return adminData?.reminder_opt_in ?? true;
+    }
+
+    if (!error) {
+      return data?.reminder_opt_in ?? true;
+    }
+  }
+
+  if (!email) {
+    return true;
+  }
+
+  const { data, error } = await supabase
+    .from('patients')
+    .select('reminder_opt_in')
+    .ilike('email', email)
+    .single();
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('patients')
+      .select('reminder_opt_in')
+      .ilike('email', email)
+      .single();
+
+    if (adminError) {
+      return true;
+    }
+
+    return adminData?.reminder_opt_in ?? true;
+  }
+
+  if (error) {
+    return true;
+  }
+
+  return data?.reminder_opt_in ?? true;
+}
+
 // ============================================
 // Doctors (previously Projects)
 // ============================================
@@ -497,6 +586,28 @@ export async function getAppointmentsByPatientId(patientId: string) {
   return data as Appointment[];
 }
 
+export async function getAppointmentById(id: string) {
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('appointments')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (adminError) return null;
+    return adminData as Appointment;
+  }
+
+  if (error) return null;
+  return data as Appointment;
+}
+
 function normalizeSlotValue(value: string) {
   return value.trim().toLowerCase();
 }
@@ -651,6 +762,91 @@ export async function getAppointmentsForPatient(patientId: string, email: string
   );
 
   return deduped as Appointment[];
+}
+
+export async function getAppointmentsForReminderDate(appointmentDate: string) {
+  const { data, error } = await supabase
+    .from('appointments')
+    .select('id,patient_id,name,email,doctor_name,service,appointment_date,appointment_time,status')
+    .in('status', ['pending', 'scheduled', 'confirmed'])
+    .eq('appointment_date', appointmentDate)
+    .order('appointment_time', { ascending: true });
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('appointments')
+      .select('id,patient_id,name,email,doctor_name,service,appointment_date,appointment_time,status')
+      .in('status', ['pending', 'scheduled', 'confirmed'])
+      .eq('appointment_date', appointmentDate)
+      .order('appointment_time', { ascending: true });
+
+    if (adminError) throw adminError;
+
+    return adminData ?? [];
+  }
+
+  if (error) throw error;
+
+  return data ?? [];
+}
+
+export async function hasSentAppointmentReminder(appointmentId: string, reminderDate: string) {
+  const { data, error } = await supabase
+    .from('appointment_reminders')
+    .select('id')
+    .eq('appointment_id', appointmentId)
+    .eq('reminder_date', reminderDate)
+    .eq('status', 'sent')
+    .limit(1);
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('appointment_reminders')
+      .select('id')
+      .eq('appointment_id', appointmentId)
+      .eq('reminder_date', reminderDate)
+      .eq('status', 'sent')
+      .limit(1);
+
+    if (adminError) throw adminError;
+
+    return (adminData?.length ?? 0) > 0;
+  }
+
+  if (error) throw error;
+
+  return (data?.length ?? 0) > 0;
+}
+
+export async function createAppointmentReminderLog(input: {
+  appointmentId: string;
+  reminderDate: string;
+  recipientEmail: string;
+  status: 'sent' | 'failed';
+  errorMessage?: string;
+}) {
+  const payload = {
+    id: nextId('rmd'),
+    appointment_id: input.appointmentId,
+    reminder_date: input.reminderDate,
+    recipient_email: input.recipientEmail,
+    status: input.status,
+    error_message: input.errorMessage ?? null,
+    sent_at: new Date().toISOString(),
+  };
+
+  const { error } = await supabase.from('appointment_reminders').insert(payload);
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from('appointment_reminders')
+      .insert(payload);
+
+    if (adminError) throw adminError;
+    return;
+  }
+
+  if (error) throw error;
 }
 
 export async function createAppointment(appointment: Omit<Appointment, 'id' | 'created_at'>) {
