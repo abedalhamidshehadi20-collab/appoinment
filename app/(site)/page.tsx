@@ -118,7 +118,7 @@ export default async function HomePage({ searchParams }: Props) {
                     href={`/doctors/${project.slug}`}
                     className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]"
                   >
-                    Book now
+                    View profile
                   </Link>
                 </div>
               </article>

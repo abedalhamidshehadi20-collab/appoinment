@@ -125,7 +125,7 @@ export default async function SpecialtySearchPage({ params, searchParams }: Prop
                   <p className="mt-1 text-sm text-[var(--muted)]">{doctor.location}</p>
                   <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
                   <Link href={`/doctors/${doctor.slug}`} className="button button-secondary mt-4 w-full">
-                    Book Now
+                    View profile
                   </Link>
                 </div>
               </article>

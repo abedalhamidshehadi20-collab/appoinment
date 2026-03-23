@@ -40,7 +40,7 @@ export function SiteFooter() {
             <p className="mt-1 text-sm leading-5 text-slate-300">
               Your health doesn&apos;t wait, and neither do we. Call to reach out to us now.
             </p>
-            <p className="mt-1 text-sm font-semibold text-[#60a5fa]">+91 12345 67890</p>
+            <p className="mt-1 text-sm font-semibold text-[#60a5fa]">+961 81865142</p>
           </article>
 
           <article>
@@ -48,13 +48,13 @@ export function SiteFooter() {
             <p className="mt-1 text-sm leading-5 text-slate-300">
               We look forward to helping you achieve better health. Reach out to us now.
             </p>
-            <p className="mt-1 text-sm font-semibold text-[#60a5fa]">contact@example.com</p>
+            <p className="mt-1 text-sm font-semibold text-[#60a5fa]">abedalhamidshehadi20@gmail.com</p>
           </article>
 
           <article>
             <h3 className="text-lg font-bold">Location</h3>
             <p className="mt-1 text-sm leading-5 text-slate-300">
-              270, Amit Plaza, Skyline Avenue, Heritage Enclave, West Gujarat, 370001.
+              Eastern Highway, Saida|Lebanon
             </p>
             <a
               href="https://maps.google.com"
