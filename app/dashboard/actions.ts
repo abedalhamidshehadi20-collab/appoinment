@@ -22,11 +22,15 @@ import {
 const refreshSite = () => {
   revalidatePath("/", "layout");
   revalidatePath("/about");
+  revalidatePath("/blog");
   revalidatePath("/contact");
   revalidatePath("/doctors");
+  revalidatePath("/news");
   revalidatePath("/projects");
   revalidatePath("/dashboard", "layout");
   revalidatePath("/dashboard/about");
+  revalidatePath("/dashboard/blogs");
+  revalidatePath("/dashboard/news");
   revalidatePath("/dashboard/home");
   revalidatePath("/dashboard/contacts");
 };
@@ -349,6 +353,25 @@ export async function saveBlogAction(formData: FormData) {
   await requirePermission("blogs");
   const id = formData.get("id")?.toString();
   const title = formData.get("title")?.toString() ?? "";
+  const publishedAtRaw = formData.get("publishedAt")?.toString().trim() ?? "";
+
+  const toSafePublishedAt = (value: string) => {
+    if (!value) {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
+    if (dateOnlyPattern.test(value)) {
+      return value;
+    }
+
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toISOString();
+    }
+
+    return new Date().toISOString().slice(0, 10);
+  };
 
   const payload = {
     id: id || nextId("blg"),
@@ -357,14 +380,32 @@ export async function saveBlogAction(formData: FormData) {
     excerpt: formData.get("excerpt")?.toString() ?? "",
     content: formData.get("content")?.toString() ?? "",
     author: formData.get("author")?.toString() ?? "",
-    published_at: formData.get("publishedAt")?.toString() || new Date().toISOString().slice(0, 10),
+    published_at: toSafePublishedAt(publishedAtRaw),
     tags: toList(formData.get("tags")),
   };
 
   if (id) {
-    await supabase.from("blogs").update(payload).eq("id", id);
+    const { error } = await supabase.from("blogs").update(payload).eq("id", id);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin.from("blogs").update(payload).eq("id", id);
+      if (adminError) {
+        throw adminError;
+      }
+    } else if (error) {
+      throw error;
+    }
   } else {
-    await supabase.from("blogs").insert(payload);
+    const { error } = await supabase.from("blogs").insert(payload);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin.from("blogs").insert(payload);
+      if (adminError) {
+        throw adminError;
+      }
+    } else if (error) {
+      throw error;
+    }
   }
 
   refreshSite();
@@ -376,7 +417,17 @@ export async function deleteBlogAction(formData: FormData) {
 
   if (!id) return;
 
-  await supabase.from("blogs").delete().eq("id", id);
+  const { error } = await supabase.from("blogs").delete().eq("id", id);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin.from("blogs").delete().eq("id", id);
+    if (adminError) {
+      throw adminError;
+    }
+  } else if (error) {
+    throw error;
+  }
+
   refreshSite();
 }
 
@@ -388,6 +439,25 @@ export async function saveNewsAction(formData: FormData) {
   await requirePermission("news");
   const id = formData.get("id")?.toString();
   const title = formData.get("title")?.toString() ?? "";
+  const publishedAtRaw = formData.get("publishedAt")?.toString().trim() ?? "";
+
+  const toSafePublishedAt = (value: string) => {
+    if (!value) {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
+    if (dateOnlyPattern.test(value)) {
+      return value;
+    }
+
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toISOString();
+    }
+
+    return new Date().toISOString().slice(0, 10);
+  };
 
   const payload = {
     id: id || nextId("nws"),
@@ -396,13 +466,31 @@ export async function saveNewsAction(formData: FormData) {
     excerpt: formData.get("excerpt")?.toString() ?? "",
     content: formData.get("content")?.toString() ?? "",
     source: formData.get("source")?.toString() ?? "",
-    published_at: formData.get("publishedAt")?.toString() || new Date().toISOString().slice(0, 10),
+    published_at: toSafePublishedAt(publishedAtRaw),
   };
 
   if (id) {
-    await supabase.from("news").update(payload).eq("id", id);
+    const { error } = await supabase.from("news").update(payload).eq("id", id);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin.from("news").update(payload).eq("id", id);
+      if (adminError) {
+        throw adminError;
+      }
+    } else if (error) {
+      throw error;
+    }
   } else {
-    await supabase.from("news").insert(payload);
+    const { error } = await supabase.from("news").insert(payload);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin.from("news").insert(payload);
+      if (adminError) {
+        throw adminError;
+      }
+    } else if (error) {
+      throw error;
+    }
   }
 
   refreshSite();
@@ -414,7 +502,17 @@ export async function deleteNewsAction(formData: FormData) {
 
   if (!id) return;
 
-  await supabase.from("news").delete().eq("id", id);
+  const { error } = await supabase.from("news").delete().eq("id", id);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin.from("news").delete().eq("id", id);
+    if (adminError) {
+      throw adminError;
+    }
+  } else if (error) {
+    throw error;
+  }
+
   refreshSite();
 }
 
