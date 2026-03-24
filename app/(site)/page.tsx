@@ -112,14 +112,9 @@ export default async function HomePage({ searchParams }: Props) {
                   />
                 </div>
                 <div className="p-4">
-                  <p className="text-xs font-semibold uppercase text-[var(--brand)]">{project.sector}</p>
-                  <h3 className="mt-2 text-xl font-bold">{project.title}</h3>
-                  <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
-                  <p className="mt-2 text-xs font-semibold text-[var(--brand-deep)]">{project.location}</p>
-
                   {/* Availability Badge */}
                   {project.status && (
-                    <p className="mt-2 flex items-center gap-1 text-sm font-medium">
+                    <p className="mb-2 flex items-center gap-1 text-sm font-medium">
                       <span className={`inline-block h-2 w-2 rounded-full ${
                         project.status.toLowerCase() === 'available'
                           ? 'bg-[#10b981]'
@@ -142,6 +137,11 @@ export default async function HomePage({ searchParams }: Props) {
                       </span>
                     </p>
                   )}
+
+                  <p className="text-xs font-semibold uppercase text-[var(--brand)]">{project.sector}</p>
+                  <h3 className="mt-2 text-xl font-bold">{project.title}</h3>
+                  <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
+                  <p className="mt-2 text-xs font-semibold text-[var(--brand-deep)]">{project.location}</p>
 
                   <Link
                     href={`/doctors/${project.slug}`}

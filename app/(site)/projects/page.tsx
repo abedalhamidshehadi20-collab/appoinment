@@ -26,13 +26,9 @@ export default async function ProjectsPage() {
                 />
               </div>
               <div className="p-5">
-                <p className="text-xs font-semibold uppercase text-[var(--accent)]">{doctor.sector}</p>
-                <h2 className="mt-2 text-xl font-bold">{doctor.title}</h2>
-                <p className="mt-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
-
                 {/* Availability Badge */}
                 {doctor.status && (
-                  <p className="mt-2 flex items-center gap-1 text-sm font-medium">
+                  <p className="mb-2 flex items-center gap-1 text-sm font-medium">
                     <span className={`inline-block h-2 w-2 rounded-full ${
                       doctor.status.toLowerCase() === 'available'
                         ? 'bg-[#10b981]'
@@ -55,6 +51,10 @@ export default async function ProjectsPage() {
                     </span>
                   </p>
                 )}
+
+                <p className="text-xs font-semibold uppercase text-[var(--accent)]">{doctor.sector}</p>
+                <h2 className="mt-2 text-xl font-bold">{doctor.title}</h2>
+                <p className="mt-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
 
                 <Link href={`/doctors/${doctor.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
                   View profile
