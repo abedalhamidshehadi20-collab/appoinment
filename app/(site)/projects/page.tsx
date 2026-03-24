@@ -17,13 +17,14 @@ export default async function ProjectsPage() {
         <div className="grid-cards mt-6">
           {doctors.map((doctor) => (
             <article key={doctor.id} className="card overflow-hidden">
-              <Image
-                src={getSafeDoctorImageSrc(doctor.cover_image)}
-                alt={doctor.title}
-                width={1200}
-                height={520}
-                className="h-44 w-full object-cover"
-              />
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100">
+                <Image
+                  src={getSafeDoctorImageSrc(doctor.cover_image)}
+                  alt={doctor.title}
+                  fill
+                  className="object-cover object-top transition-transform duration-300 hover:scale-105"
+                />
+              </div>
               <div className="p-5">
                 <p className="text-xs font-semibold uppercase text-[var(--accent)]">{doctor.sector}</p>
                 <h2 className="mt-2 text-xl font-bold">{doctor.title}</h2>

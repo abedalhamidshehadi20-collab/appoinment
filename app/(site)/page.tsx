@@ -103,13 +103,14 @@ export default async function HomePage({ searchParams }: Props) {
           <div className="grid-cards">
             {popularDoctors.map((project) => (
               <article key={project.id} className="card overflow-hidden">
-                <Image
-                  src={getSafeDoctorImageSrc(project.cover_image)}
-                  alt={project.title}
-                  width={1200}
-                  height={520}
-                  className="h-52 w-full object-cover"
-                />
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100">
+                  <Image
+                    src={getSafeDoctorImageSrc(project.cover_image)}
+                    alt={project.title}
+                    fill
+                    className="object-cover object-top transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
                 <div className="p-4">
                   <p className="text-xs font-semibold uppercase text-[var(--brand)]">{project.sector}</p>
                   <h3 className="mt-2 text-xl font-bold">{project.title}</h3>

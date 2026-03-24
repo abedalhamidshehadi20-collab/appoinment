@@ -17,7 +17,12 @@ function ProjectForm({
       <div className="grid gap-3 md:grid-cols-3">
         <input name="sector" defaultValue={item?.sector} placeholder="Specialty" className="rounded-lg border border-[var(--line)] px-3 py-2" />
         <input name="location" defaultValue={item?.location} placeholder="Clinic location" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-        <input name="status" defaultValue={item?.status} placeholder="Availability" className="rounded-lg border border-[var(--line)] px-3 py-2" />
+        <select name="status" defaultValue={item?.status || 'Available'} className="rounded-lg border border-[var(--line)] px-3 py-2 bg-white">
+          <option value="Available">Available</option>
+          <option value="Unavailable">Unavailable</option>
+          <option value="On Leave">On Leave</option>
+          <option value="Booked">Booked</option>
+        </select>
       </div>
       <div className="grid gap-3 md:grid-cols-2">
         <input name="appointmentFee" type="number" step="0.01" defaultValue={item?.appointment_fee ?? 50} placeholder="Appointment Fee ($)" className="rounded-lg border border-[var(--line)] px-3 py-2" />

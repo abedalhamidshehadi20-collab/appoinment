@@ -31,13 +31,13 @@ export default async function ProjectDetailsPage({ params }: Props) {
       <section className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-start">
         {/* Doctor Image */}
         <div className="flex-shrink-0">
-          <div className="overflow-hidden rounded-xl bg-[#5f6fff]">
+          <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 lg:w-80">
             <Image
               src={getSafeDoctorImageSrc(doctor.cover_image)}
               alt={doctor.title}
-              width={320}
-              height={320}
-              className="h-72 w-full object-cover lg:h-80 lg:w-72"
+              fill
+              className="object-cover object-top"
+              priority
             />
           </div>
         </div>
@@ -59,6 +59,18 @@ export default async function ProjectDetailsPage({ params }: Props) {
               {yearsOfExperience} Years
             </span>
           </div>
+
+          {/* Availability Badge */}
+          {doctor.status && (
+            <div className="mt-3">
+              <p className="flex items-center gap-1 text-sm font-medium">
+                <span className={`inline-block h-2 w-2 rounded-full ${doctor.status.toLowerCase() === 'available' ? 'bg-[#10b981]' : 'bg-[#ef4444]'}`}></span>
+                <span className={doctor.status.toLowerCase() === 'available' ? 'text-[#10b981]' : 'text-[#ef4444]'}>
+                  {doctor.status}
+                </span>
+              </p>
+            </div>
+          )}
 
           <div className="mt-5">
             <div className="flex items-center gap-1">
@@ -100,13 +112,12 @@ export default async function ProjectDetailsPage({ params }: Props) {
               href={`/doctors/${doc.slug}`}
               className="group overflow-hidden rounded-xl border border-[#e5e7eb] bg-white transition hover:translate-y-[-10px]"
             >
-              <div className="overflow-hidden bg-[#eef2ff]">
+              <div className="relative aspect-square w-full overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100">
                 <Image
                   src={getSafeDoctorImageSrc(doc.cover_image)}
                   alt={doc.title}
-                  width={300}
-                  height={300}
-                  className="h-48 w-full object-cover transition group-hover:scale-105"
+                  fill
+                  className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
               <div className="p-4">
