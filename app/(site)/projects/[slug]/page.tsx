@@ -64,8 +64,24 @@ export default async function ProjectDetailsPage({ params }: Props) {
           {doctor.status && (
             <div className="mt-3">
               <p className="flex items-center gap-1 text-sm font-medium">
-                <span className={`inline-block h-2 w-2 rounded-full ${doctor.status.toLowerCase() === 'available' ? 'bg-[#10b981]' : 'bg-[#ef4444]'}`}></span>
-                <span className={doctor.status.toLowerCase() === 'available' ? 'text-[#10b981]' : 'text-[#ef4444]'}>
+                <span className={`inline-block h-2 w-2 rounded-full ${
+                  doctor.status.toLowerCase() === 'available'
+                    ? 'bg-[#10b981]'
+                    : doctor.status.toLowerCase() === 'unavailable'
+                    ? 'bg-[#ef4444]'
+                    : doctor.status.toLowerCase() === 'on leave'
+                    ? 'bg-[#f59e0b]'
+                    : 'bg-[#6b7280]'
+                }`}></span>
+                <span className={
+                  doctor.status.toLowerCase() === 'available'
+                    ? 'text-[#10b981]'
+                    : doctor.status.toLowerCase() === 'unavailable'
+                    ? 'text-[#ef4444]'
+                    : doctor.status.toLowerCase() === 'on leave'
+                    ? 'text-[#f59e0b]'
+                    : 'text-[#6b7280]'
+                }>
                   {doctor.status}
                 </span>
               </p>
@@ -121,9 +137,27 @@ export default async function ProjectDetailsPage({ params }: Props) {
                 />
               </div>
               <div className="p-4">
-                <p className="flex items-center gap-1 text-sm text-[#10b981]">
-                  <span className="inline-block h-2 w-2 rounded-full bg-[#10b981]"></span>
-                  Available
+                <p className="flex items-center gap-1 text-sm font-medium">
+                  <span className={`inline-block h-2 w-2 rounded-full ${
+                    doc.status?.toLowerCase() === 'available'
+                      ? 'bg-[#10b981]'
+                      : doc.status?.toLowerCase() === 'unavailable'
+                      ? 'bg-[#ef4444]'
+                      : doc.status?.toLowerCase() === 'on leave'
+                      ? 'bg-[#f59e0b]'
+                      : 'bg-[#6b7280]'
+                  }`}></span>
+                  <span className={
+                    doc.status?.toLowerCase() === 'available'
+                      ? 'text-[#10b981]'
+                      : doc.status?.toLowerCase() === 'unavailable'
+                      ? 'text-[#ef4444]'
+                      : doc.status?.toLowerCase() === 'on leave'
+                      ? 'text-[#f59e0b]'
+                      : 'text-[#6b7280]'
+                  }>
+                    {doc.status || 'Available'}
+                  </span>
                 </p>
                 <p className="mt-2 font-medium text-[#1f2937]">{doc.title}</p>
                 <p className="text-xs text-[#6b7280]">{doc.sector}</p>

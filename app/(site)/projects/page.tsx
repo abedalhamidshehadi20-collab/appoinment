@@ -29,6 +29,33 @@ export default async function ProjectsPage() {
                 <p className="text-xs font-semibold uppercase text-[var(--accent)]">{doctor.sector}</p>
                 <h2 className="mt-2 text-xl font-bold">{doctor.title}</h2>
                 <p className="mt-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
+
+                {/* Availability Badge */}
+                {doctor.status && (
+                  <p className="mt-2 flex items-center gap-1 text-sm font-medium">
+                    <span className={`inline-block h-2 w-2 rounded-full ${
+                      doctor.status.toLowerCase() === 'available'
+                        ? 'bg-[#10b981]'
+                        : doctor.status.toLowerCase() === 'unavailable'
+                        ? 'bg-[#ef4444]'
+                        : doctor.status.toLowerCase() === 'on leave'
+                        ? 'bg-[#f59e0b]'
+                        : 'bg-[#6b7280]'
+                    }`}></span>
+                    <span className={
+                      doctor.status.toLowerCase() === 'available'
+                        ? 'text-[#10b981]'
+                        : doctor.status.toLowerCase() === 'unavailable'
+                        ? 'text-[#ef4444]'
+                        : doctor.status.toLowerCase() === 'on leave'
+                        ? 'text-[#f59e0b]'
+                        : 'text-[#6b7280]'
+                    }>
+                      {doctor.status}
+                    </span>
+                  </p>
+                )}
+
                 <Link href={`/doctors/${doctor.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
                   View profile
                 </Link>

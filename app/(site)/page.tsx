@@ -116,6 +116,33 @@ export default async function HomePage({ searchParams }: Props) {
                   <h3 className="mt-2 text-xl font-bold">{project.title}</h3>
                   <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
                   <p className="mt-2 text-xs font-semibold text-[var(--brand-deep)]">{project.location}</p>
+
+                  {/* Availability Badge */}
+                  {project.status && (
+                    <p className="mt-2 flex items-center gap-1 text-sm font-medium">
+                      <span className={`inline-block h-2 w-2 rounded-full ${
+                        project.status.toLowerCase() === 'available'
+                          ? 'bg-[#10b981]'
+                          : project.status.toLowerCase() === 'unavailable'
+                          ? 'bg-[#ef4444]'
+                          : project.status.toLowerCase() === 'on leave'
+                          ? 'bg-[#f59e0b]'
+                          : 'bg-[#6b7280]'
+                      }`}></span>
+                      <span className={
+                        project.status.toLowerCase() === 'available'
+                          ? 'text-[#10b981]'
+                          : project.status.toLowerCase() === 'unavailable'
+                          ? 'text-[#ef4444]'
+                          : project.status.toLowerCase() === 'on leave'
+                          ? 'text-[#f59e0b]'
+                          : 'text-[#6b7280]'
+                      }>
+                        {project.status}
+                      </span>
+                    </p>
+                  )}
+
                   <Link
                     href={`/doctors/${project.slug}`}
                     className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]"
