@@ -20,8 +20,12 @@ function ProjectForm({
         <select name="status" defaultValue={item?.status || 'Available'} className="rounded-lg border border-[var(--line)] px-3 py-2 bg-white">
           <option value="Available">Available</option>
           <option value="Unavailable">Unavailable</option>
-          <option value="On Leave">On Leave</option>
-          <option value="Booked">Booked</option>
+          {item && (
+            <>
+              <option value="Booked">Booked</option>
+              <option value="On Leave">On Leave</option>
+            </>
+          )}
         </select>
       </div>
       <div className="grid gap-3 md:grid-cols-2">
