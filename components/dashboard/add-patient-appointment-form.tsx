@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { addAppointmentAction } from "@/app/dashboard/actions";
+import {
+  DoctorFormField,
+  inputClassName,
+  textareaClassName,
+} from "@/components/dashboard/doctor-form-ui";
 
 type Props = {
   patientId: string;
@@ -9,9 +14,9 @@ type Props = {
 };
 
 function getNextDays() {
-  return Array.from({ length: 7 }, (_, i) => {
+  return Array.from({ length: 7 }, (_, index) => {
     const date = new Date();
-    date.setDate(date.getDate() + i);
+    date.setDate(date.getDate() + index);
     return {
       day: date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
       date: date.getDate(),
@@ -20,7 +25,10 @@ function getNextDays() {
   });
 }
 
-export default function AddPatientAppointmentForm({ patientId, doctors }: Props) {
+export default function AddPatientAppointmentForm({
+  patientId,
+  doctors,
+}: Props) {
   const days = getNextDays();
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedDate, setSelectedDate] = useState(days[0]?.fullDate ?? "");
@@ -40,21 +48,29 @@ export default function AddPatientAppointmentForm({ patientId, doctors }: Props)
 
       try {
         setIsLoadingSlots(true);
-        const query = new URLSearchParams({ doctorId: selectedDoctor, date: selectedDate });
-        const response = await fetch(`/api/public/doctors/available-slots?${query.toString()}`, {
-          cache: "no-store",
+        const query = new URLSearchParams({
+          doctorId: selectedDoctor,
+          date: selectedDate,
         });
+        const response = await fetch(
+          `/api/public/doctors/available-slots?${query.toString()}`,
+          {
+            cache: "no-store",
+          },
+        );
 
         if (!response.ok) {
           throw new Error("Failed to load slots");
         }
 
-        const body = await response.json() as { availableSlots?: string[] };
+        const body = (await response.json()) as { availableSlots?: string[] };
         const slots = body.availableSlots ?? [];
 
         if (!ignore) {
           setAvailableSlots(slots);
-          setSelectedTime((previous) => (slots.includes(previous) ? previous : ""));
+          setSelectedTime((previous) =>
+            slots.includes(previous) ? previous : "",
+          );
         }
       } catch {
         if (!ignore) {
@@ -76,40 +92,54 @@ export default function AddPatientAppointmentForm({ patientId, doctors }: Props)
   }, [selectedDoctor, selectedDate]);
 
   return (
-    <form action={addAppointmentAction} className="mt-3 grid gap-3 rounded-lg border border-[var(--line)] bg-[#f9fafb] p-4">
+    <form
+      action={addAppointmentAction}
+      className="grid gap-5 rounded-[24px] border border-[#dce8fb] bg-[#f8fbff] p-5"
+    >
       <input type="hidden" name="patientId" value={patientId} />
       <input type="hidden" name="date" value={selectedDate} />
       <input type="hidden" name="time" value={selectedTime} />
 
-      <p className="text-sm font-semibold text-[var(--brand-deep)]">Add New Appointment</p>
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
+          Appointment
+        </p>
+        <h3 className="mt-1 text-lg font-bold text-[var(--brand-deep)]">
+          Add New Appointment
+        </h3>
+      </div>
 
-      <select
-        name="doctorId"
-        required
-        value={selectedDoctor}
-        onChange={(e) => setSelectedDoctor(e.target.value)}
-        className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm"
-      >
-        <option value="">Select Doctor</option>
-        {doctors.map((doctor) => (
-          <option key={doctor.id} value={doctor.id}>
-            {doctor.title}
-          </option>
-        ))}
-      </select>
+      <DoctorFormField label="Select Doctor">
+        <select
+          name="doctorId"
+          required
+          value={selectedDoctor}
+          onChange={(event) => setSelectedDoctor(event.target.value)}
+          className={inputClassName}
+        >
+          <option value="">Select Doctor</option>
+          {doctors.map((doctor) => (
+            <option key={doctor.id} value={doctor.id}>
+              {doctor.title}
+            </option>
+          ))}
+        </select>
+      </DoctorFormField>
 
-      <div className="grid gap-2">
-        <label className="text-sm font-semibold text-[var(--brand-deep)]">Select Date</label>
+      <div className="grid gap-3">
+        <p className="text-sm font-semibold text-[var(--brand-deep)]">
+          Select Date
+        </p>
         <div className="flex gap-2 overflow-x-auto pb-2">
           {days.map((day) => (
             <button
               key={day.fullDate}
               type="button"
               onClick={() => setSelectedDate(day.fullDate)}
-              className={`flex min-w-[70px] flex-shrink-0 flex-col items-center rounded-full px-4 py-3 text-sm transition ${
+              className={`flex min-w-[76px] flex-shrink-0 flex-col items-center rounded-full px-4 py-3 text-sm transition ${
                 selectedDate === day.fullDate
                   ? "bg-[#5f6fff] text-white"
-                  : "border border-[var(--line)] text-[#6b7280] hover:border-[#5f6fff]"
+                  : "border border-[#d8e5fb] bg-white text-[var(--muted)] hover:border-[#5f6fff]"
               }`}
             >
               <span className="text-xs font-medium">{day.day}</span>
@@ -119,8 +149,10 @@ export default function AddPatientAppointmentForm({ patientId, doctors }: Props)
         </div>
       </div>
 
-      <div className="grid gap-2">
-        <label className="text-sm font-semibold text-[var(--brand-deep)]">Select Time</label>
+      <div className="grid gap-3">
+        <p className="text-sm font-semibold text-[var(--brand-deep)]">
+          Select Time
+        </p>
         <div className="flex flex-wrap gap-2">
           {availableSlots.map((time) => (
             <button
@@ -130,7 +162,7 @@ export default function AddPatientAppointmentForm({ patientId, doctors }: Props)
               className={`rounded-full px-5 py-2 text-sm transition ${
                 selectedTime === time
                   ? "bg-[#5f6fff] text-white"
-                  : "border border-[var(--line)] text-[#6b7280] hover:border-[#5f6fff]"
+                  : "border border-[#d8e5fb] bg-white text-[var(--muted)] hover:border-[#5f6fff]"
               }`}
             >
               {time}
@@ -148,19 +180,23 @@ export default function AddPatientAppointmentForm({ patientId, doctors }: Props)
         </p>
       </div>
 
-      <textarea
-        name="notes"
-        rows={2}
-        placeholder="Appointment notes"
-        className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm"
-      />
+      <DoctorFormField label="Appointment Notes">
+        <textarea
+          name="notes"
+          rows={3}
+          placeholder="Appointment notes"
+          className={textareaClassName}
+        />
+      </DoctorFormField>
 
-      <button
-        disabled={!selectedDoctor || !selectedDate || !selectedTime || isLoadingSlots}
-        className="button button-primary w-fit text-sm disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        Add Appointment
-      </button>
+      <div className="flex justify-end">
+        <button
+          disabled={!selectedDoctor || !selectedDate || !selectedTime || isLoadingSlots}
+          className="button button-primary rounded-xl px-5 py-2.5 text-sm disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Add Appointment
+        </button>
+      </div>
     </form>
   );
 }

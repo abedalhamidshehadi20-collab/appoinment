@@ -2,12 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { savePatientWithAppointmentAction } from "@/app/dashboard/actions";
+import {
+  DoctorFormField,
+  inputClassName,
+  textareaClassName,
+} from "@/components/dashboard/doctor-form-ui";
 
 type Props = {
   doctors: { id: string; title: string }[];
+  onCancel?: () => void;
 };
 
-export default function PatientWithAppointmentForm({ doctors }: Props) {
+export default function PatientWithAppointmentForm({
+  doctors,
+  onCancel,
+}: Props) {
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState("");
@@ -15,10 +24,9 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
-  // Generate next 7 days
-  const days = Array.from({ length: 7 }, (_, i) => {
+  const days = Array.from({ length: 7 }, (_, index) => {
     const date = new Date();
-    date.setDate(date.getDate() + i);
+    date.setDate(date.getDate() + index);
     return {
       day: date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
       date: date.getDate(),
@@ -37,8 +45,7 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
         return;
       }
 
-      const date = selectedDateValue;
-      if (!date) {
+      if (!selectedDateValue) {
         setAvailableSlots([]);
         setSelectedTime("");
         return;
@@ -46,21 +53,29 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
 
       try {
         setIsLoadingSlots(true);
-        const query = new URLSearchParams({ doctorId: selectedDoctor, date });
-        const response = await fetch(`/api/public/doctors/available-slots?${query.toString()}`, {
-          cache: "no-store",
+        const query = new URLSearchParams({
+          doctorId: selectedDoctor,
+          date: selectedDateValue,
         });
+        const response = await fetch(
+          `/api/public/doctors/available-slots?${query.toString()}`,
+          {
+            cache: "no-store",
+          },
+        );
 
         if (!response.ok) {
           throw new Error("Failed to load slots");
         }
 
-        const body = await response.json() as { availableSlots?: string[] };
+        const body = (await response.json()) as { availableSlots?: string[] };
         const slots = body.availableSlots ?? [];
 
         if (!ignore) {
           setAvailableSlots(slots);
-          setSelectedTime((previous) => (slots.includes(previous) ? previous : ""));
+          setSelectedTime((previous) =>
+            slots.includes(previous) ? previous : "",
+          );
         }
       } catch {
         if (!ignore) {
@@ -82,173 +97,212 @@ export default function PatientWithAppointmentForm({ doctors }: Props) {
   }, [includeAppointment, selectedDoctor, selectedDateValue]);
 
   return (
-    <form action={savePatientWithAppointmentAction} className="grid gap-4">
-      {/* Patient Information */}
-      <div className="grid gap-3">
-        <h3 className="font-semibold text-[var(--brand-deep)]">Patient Information</h3>
-
-        <div className="grid gap-3 md:grid-cols-2">
+    <form action={savePatientWithAppointmentAction} className="grid gap-6">
+      <div className="grid gap-6 md:grid-cols-2">
+        <DoctorFormField label="Full Name">
           <input
             name="name"
             required
             placeholder="Full Name"
-            className="rounded-lg border border-[var(--line)] px-3 py-2"
+            className={inputClassName}
           />
+        </DoctorFormField>
+
+        <DoctorFormField label="Email Address">
           <input
             type="email"
             name="email"
             required
             placeholder="Email Address"
-            className="rounded-lg border border-[var(--line)] px-3 py-2"
+            className={inputClassName}
           />
+        </DoctorFormField>
+
+        <div className="grid gap-6 md:col-span-2 md:grid-cols-3">
+          <DoctorFormField label="Phone Number">
+            <input
+              name="phone"
+              required
+              placeholder="Phone Number"
+              className={inputClassName}
+            />
+          </DoctorFormField>
+
+          <DoctorFormField label="Date of Birth">
+            <input
+              type="date"
+              name="dateOfBirth"
+              className={inputClassName}
+            />
+          </DoctorFormField>
+
+          <DoctorFormField label="Gender">
+            <select name="gender" className={inputClassName}>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </DoctorFormField>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-3">
-          <input
-            name="phone"
-            required
-            placeholder="Phone Number"
-            className="rounded-lg border border-[var(--line)] px-3 py-2"
-          />
-          <input
-            type="date"
-            name="dateOfBirth"
-            placeholder="Date of Birth"
-            className="rounded-lg border border-[var(--line)] px-3 py-2"
-          />
-          <select
-            name="gender"
-            className="rounded-lg border border-[var(--line)] px-3 py-2"
-          >
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
+        <div className="md:col-span-2">
+          <DoctorFormField label="Address">
+            <input
+              name="address"
+              placeholder="Address"
+              className={inputClassName}
+            />
+          </DoctorFormField>
         </div>
 
-        <input
-          name="address"
-          placeholder="Address"
-          className="rounded-lg border border-[var(--line)] px-3 py-2"
-        />
-
-        <textarea
-          name="medicalHistory"
-          rows={2}
-          placeholder="Medical History / Notes"
-          className="rounded-lg border border-[var(--line)] px-3 py-2"
-        />
+        <div className="md:col-span-2">
+          <DoctorFormField label="Medical History / Notes">
+            <textarea
+              name="medicalHistory"
+              rows={4}
+              placeholder="Medical History / Notes"
+              className={textareaClassName}
+            />
+          </DoctorFormField>
+        </div>
       </div>
 
-      {/* Appointment Checkbox */}
-      <div className="flex items-center gap-2 border-t border-[var(--line)] pt-4">
-        <input
-          type="checkbox"
-          id="includeAppointment"
-          checked={includeAppointment}
-          onChange={(e) => setIncludeAppointment(e.target.checked)}
-          className="h-4 w-4"
-        />
-        <label htmlFor="includeAppointment" className="text-sm font-semibold text-[var(--brand-deep)]">
+      <div className="rounded-[24px] border border-[#dce8fb] bg-[#f8fbff] p-5">
+        <label className="flex items-center gap-3 text-sm font-semibold text-[var(--brand-deep)]">
+          <input
+            type="checkbox"
+            id="includeAppointment"
+            checked={includeAppointment}
+            onChange={(event) => setIncludeAppointment(event.target.checked)}
+            className="h-4 w-4 rounded border-[#bfd5ff]"
+          />
           Book appointment now
         </label>
+
+        {includeAppointment ? (
+          <div className="mt-5 grid gap-5">
+            <div className="grid gap-6 md:grid-cols-2">
+              <DoctorFormField label="Select Doctor">
+                <select
+                  name="doctorId"
+                  required
+                  value={selectedDoctor}
+                  onChange={(event) => setSelectedDoctor(event.target.value)}
+                  className={inputClassName}
+                >
+                  <option value="">Select Doctor</option>
+                  {doctors.map((doctor) => (
+                    <option key={doctor.id} value={doctor.id}>
+                      {doctor.title}
+                    </option>
+                  ))}
+                </select>
+              </DoctorFormField>
+            </div>
+
+            <div className="grid gap-3">
+              <p className="text-sm font-semibold text-[var(--brand-deep)]">
+                Select Date
+              </p>
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {days.map((day, index) => (
+                  <button
+                    key={day.fullDate}
+                    type="button"
+                    onClick={() => setSelectedDate(index)}
+                    className={`flex min-w-[76px] flex-shrink-0 flex-col items-center rounded-full px-4 py-3 text-sm transition ${
+                      selectedDate === index
+                        ? "bg-[#5f6fff] text-white"
+                        : "border border-[#d8e5fb] bg-white text-[var(--muted)] hover:border-[#5f6fff]"
+                    }`}
+                  >
+                    <span className="text-xs font-medium">{day.day}</span>
+                    <span className="mt-1 text-lg font-semibold">{day.date}</span>
+                  </button>
+                ))}
+              </div>
+              <input
+                type="hidden"
+                name="appointmentDate"
+                value={selectedDateValue}
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <p className="text-sm font-semibold text-[var(--brand-deep)]">
+                Select Time
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {availableSlots.map((time) => (
+                  <button
+                    key={time}
+                    type="button"
+                    onClick={() => setSelectedTime(time)}
+                    className={`rounded-full px-5 py-2 text-sm transition ${
+                      selectedTime === time
+                        ? "bg-[#5f6fff] text-white"
+                        : "border border-[#d8e5fb] bg-white text-[var(--muted)] hover:border-[#5f6fff]"
+                    }`}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-[var(--muted)]">
+                {!selectedDoctor
+                  ? "Select doctor first"
+                  : isLoadingSlots
+                    ? "Loading available slots..."
+                    : availableSlots.length === 0
+                      ? "No available slots for this date"
+                      : "Pick one of the available slots"}
+              </p>
+              <input type="hidden" name="appointmentTime" value={selectedTime} />
+            </div>
+
+            <DoctorFormField label="Appointment Notes">
+              <textarea
+                name="appointmentNotes"
+                rows={3}
+                placeholder="Appointment notes (optional)"
+                className={textareaClassName}
+              />
+            </DoctorFormField>
+          </div>
+        ) : null}
       </div>
 
-      {/* Appointment Details */}
-      {includeAppointment && (
-        <div className="grid gap-3 rounded-lg border border-[var(--line)] bg-[#f9fafb] p-4">
-          <h3 className="font-semibold text-[var(--brand-deep)]">Appointment Details</h3>
+      <input
+        type="hidden"
+        name="includeAppointment"
+        value={includeAppointment ? "true" : "false"}
+      />
 
-          {/* Doctor Selection */}
-          <select
-            name="doctorId"
-            required={includeAppointment}
-            value={selectedDoctor}
-            onChange={(e) => setSelectedDoctor(e.target.value)}
-            className="rounded-lg border border-[var(--line)] px-3 py-2"
+      <div className="border-t border-[#edf2fb] pt-2">
+        <div className="flex flex-wrap justify-end gap-3">
+          {onCancel ? (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="rounded-xl border border-[#d8e5fb] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
+            >
+              Cancel
+            </button>
+          ) : null}
+
+          <button
+            type="submit"
+            disabled={
+              includeAppointment &&
+              (!selectedDoctor || !selectedTime || isLoadingSlots)
+            }
+            className="button button-primary rounded-xl px-5 py-2.5 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <option value="">Select Doctor</option>
-            {doctors.map((doctor) => (
-              <option key={doctor.id} value={doctor.id}>
-                {doctor.title}
-              </option>
-            ))}
-          </select>
-
-          {/* Date Selection */}
-          <div className="grid gap-2">
-            <label className="text-sm font-semibold text-[var(--brand-deep)]">Select Date</label>
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {days.map((day, index) => (
-                <button
-                  key={day.fullDate}
-                  type="button"
-                  onClick={() => setSelectedDate(index)}
-                  className={`flex min-w-[70px] flex-shrink-0 flex-col items-center rounded-full px-4 py-3 text-sm transition ${
-                    selectedDate === index
-                      ? "bg-[#5f6fff] text-white"
-                      : "border border-[var(--line)] text-[#6b7280] hover:border-[#5f6fff]"
-                  }`}
-                >
-                  <span className="text-xs font-medium">{day.day}</span>
-                  <span className="mt-1 text-lg font-semibold">{day.date}</span>
-                </button>
-              ))}
-            </div>
-            <input type="hidden" name="appointmentDate" value={selectedDateValue} />
-          </div>
-
-          {/* Time Selection */}
-          <div className="grid gap-2">
-            <label className="text-sm font-semibold text-[var(--brand-deep)]">Select Time</label>
-            <div className="flex flex-wrap gap-2">
-              {availableSlots.map((time) => (
-                <button
-                  key={time}
-                  type="button"
-                  onClick={() => setSelectedTime(time)}
-                  className={`rounded-full px-5 py-2 text-sm transition ${
-                    selectedTime === time
-                      ? "bg-[#5f6fff] text-white"
-                      : "border border-[var(--line)] text-[#6b7280] hover:border-[#5f6fff]"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-            <p className="text-xs text-[var(--muted)]">
-              {!selectedDoctor
-                ? "Select doctor first"
-                : isLoadingSlots
-                  ? "Loading available slots..."
-                  : availableSlots.length === 0
-                    ? "No available slots for this date"
-                    : "Pick one of the available slots"}
-            </p>
-            <input type="hidden" name="appointmentTime" value={selectedTime} />
-          </div>
-
-          {/* Appointment Notes */}
-          <textarea
-            name="appointmentNotes"
-            rows={2}
-            placeholder="Appointment notes (optional)"
-            className="rounded-lg border border-[var(--line)] px-3 py-2"
-          />
+            {includeAppointment ? "Add Patient & Book Appointment" : "Add Patient"}
+          </button>
         </div>
-      )}
-
-      <input type="hidden" name="includeAppointment" value={includeAppointment ? "true" : "false"} />
-
-      <button
-        type="submit"
-        disabled={includeAppointment && (!selectedDoctor || !selectedTime || isLoadingSlots)}
-        className="button button-primary w-fit disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {includeAppointment ? "Add Patient & Book Appointment" : "Add Patient"}
-      </button>
+      </div>
     </form>
   );
 }
