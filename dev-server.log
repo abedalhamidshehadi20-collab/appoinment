@@ -111,3 +111,609 @@ Error [TimeoutError]: The operation was aborted due to timeout
  GET /doctors 200 in 564ms (compile: 3ms, render: 561ms)
  GET / 200 in 1794ms (compile: 3ms, render: 1790ms)
  GET /search/Dentist 200 in 1562ms (compile: 709ms, render: 853ms)
+ GET /search/Dentist 200 in 976ms (compile: 164ms, render: 812ms)
+ GET /search/Dentist 200 in 473ms (compile: 8ms, render: 465ms)
+ GET /dashboard 200 in 1148ms (compile: 8ms, render: 1140ms)
+ GET /dashboard 200 in 1050ms (compile: 252ms, render: 798ms)
+ GET /dashboard 200 in 146ms (compile: 6ms, render: 140ms)
+ GET /search/Dentist 200 in 66ms (compile: 13ms, render: 53ms)
+ GET / 200 in 1681ms (compile: 71ms, render: 1611ms)
+ GET /doctors?specialty=Dentist 200 in 969ms (compile: 4ms, render: 965ms)
+ GET /doctors?specialty=Dentist 200 in 1063ms (compile: 5ms, render: 1058ms)
+ GET /search/Dentist 307 in 2.1s (compile: 17ms, render: 2.1s)
+ GET / 200 in 5.3s (compile: 218ms, render: 5.0s)
+ GET /doctors?specialty=Dentist 200 in 6.0s (compile: 152ms, render: 5.8s)
+ GET / 200 in 18.0s (compile: 181ms, render: 17.8s)
+ GET /doctors?specialty=Dentist 200 in 1695ms (compile: 4ms, render: 1691ms)
+ GET /search/Dentist 307 in 1891ms (compile: 9ms, render: 1882ms)
+ HEAD /search/Dentist 307 in 76ms (compile: 9ms, render: 67ms)
+ GET /doctors 200 in 1134ms (compile: 3ms, render: 1131ms)
+ GET /doctors?specialty=Dentist 200 in 1653ms (compile: 3ms, render: 1650ms)
+ GET /doctors?specialty=Cardiologist 200 in 806ms (compile: 3ms, render: 803ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.3s (compile: 7.2s, render: 44ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.3s (compile: 7.2s, render: 44ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.3s (compile: 7.2s, render: 14ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.3s (compile: 7.2s, render: 14ms)
+ GET /doctors?specialty=Orthopedic 200 in 575ms (compile: 4ms, render: 571ms)
+ GET /doctors?specialty=Dentist 200 in 383ms (compile: 4ms, render: 379ms)
+ GET /doctors 200 in 377ms (compile: 3ms, render: 374ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr4.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHI0LnBuZyIsImlhdCI6MTc3NDM1NjgwOCwiZXhwIjoxODA1ODkyODA4fQ.FPd_k4kk2aM-T3ej7L_WC2A82_dPpvzGSWEU87pFiqk&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 59ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr4.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHI0LnBuZyIsImlhdCI6MTc3NDM1NjgwOCwiZXhwIjoxODA1ODkyODA4fQ.FPd_k4kk2aM-T3ej7L_WC2A82_dPpvzGSWEU87pFiqk&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 59ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fd5.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZDUucG5nIiwiaWF0IjoxNzc0MzU2ODI3LCJleHAiOjE4MDU4OTI4Mjd9.nnCiufOB8kGRCoQydZXTNLe-42E8bGTzKCYz78mzytg&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 47ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fd5.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZDUucG5nIiwiaWF0IjoxNzc0MzU2ODI3LCJleHAiOjE4MDU4OTI4Mjd9.nnCiufOB8kGRCoQydZXTNLe-42E8bGTzKCYz78mzytg&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 47ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr2.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIyLnBuZyIsImlhdCI6MTc3NDM1NjY4NywiZXhwIjoxODA1ODkyNjg3fQ._fLG_i4Tr-Ip_dCoxK-L0HeBQH6z7eu10LLF-rLGMhQ&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 37ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr2.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIyLnBuZyIsImlhdCI6MTc3NDM1NjY4NywiZXhwIjoxODA1ODkyNjg3fQ._fLG_i4Tr-Ip_dCoxK-L0HeBQH6z7eu10LLF-rLGMhQ&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 37ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr3.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIzLnBuZyIsImlhdCI6MTc3NDM1Njc3OCwiZXhwIjoxODA1ODkyNzc4fQ.7uYpP886oqHIbP3DJdtV4ITVIPDMqoRO0IP4W5Wx090&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 25ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr3.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIzLnBuZyIsImlhdCI6MTc3NDM1Njc3OCwiZXhwIjoxODA1ODkyNzc4fQ.7uYpP886oqHIbP3DJdtV4ITVIPDMqoRO0IP4W5Wx090&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 25ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 26ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 26ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.2s (compile: 7.2s, render: 11ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.2s (compile: 7.2s, render: 12ms)
+ GET /doctors 200 in 1204ms (compile: 3ms, render: 1200ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fd5.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZDUucG5nIiwiaWF0IjoxNzc0MzU2ODI3LCJleHAiOjE4MDU4OTI4Mjd9.nnCiufOB8kGRCoQydZXTNLe-42E8bGTzKCYz78mzytg&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 71ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fd5.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZDUucG5nIiwiaWF0IjoxNzc0MzU2ODI3LCJleHAiOjE4MDU4OTI4Mjd9.nnCiufOB8kGRCoQydZXTNLe-42E8bGTzKCYz78mzytg&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 71ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr4.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHI0LnBuZyIsImlhdCI6MTc3NDM1NjgwOCwiZXhwIjoxODA1ODkyODA4fQ.FPd_k4kk2aM-T3ej7L_WC2A82_dPpvzGSWEU87pFiqk&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 58ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr4.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHI0LnBuZyIsImlhdCI6MTc3NDM1NjgwOCwiZXhwIjoxODA1ODkyODA4fQ.FPd_k4kk2aM-T3ej7L_WC2A82_dPpvzGSWEU87pFiqk&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 58ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr3.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIzLnBuZyIsImlhdCI6MTc3NDM1Njc3OCwiZXhwIjoxODA1ODkyNzc4fQ.7uYpP886oqHIbP3DJdtV4ITVIPDMqoRO0IP4W5Wx090&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 65ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr3.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIzLnBuZyIsImlhdCI6MTc3NDM1Njc3OCwiZXhwIjoxODA1ODkyNzc4fQ.7uYpP886oqHIbP3DJdtV4ITVIPDMqoRO0IP4W5Wx090&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 65ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr2.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIyLnBuZyIsImlhdCI6MTc3NDM1NjY4NywiZXhwIjoxODA1ODkyNjg3fQ._fLG_i4Tr-Ip_dCoxK-L0HeBQH6z7eu10LLF-rLGMhQ&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 51ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2Fdr2.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvZHIyLnBuZyIsImlhdCI6MTc3NDM1NjY4NywiZXhwIjoxODA1ODkyNjg3fQ._fLG_i4Tr-Ip_dCoxK-L0HeBQH6z7eu10LLF-rLGMhQ&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 51ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 37ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 37ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.2s (compile: 7.2s, render: 23ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.2s (compile: 7.2s, render: 23ms)
+ GET / 200 in 1028ms (compile: 3ms, render: 1025ms)
+ GET /doctors?specialty=Dentist 200 in 424ms (compile: 3ms, render: 421ms)
+ GET /doctors 200 in 708ms (compile: 3ms, render: 706ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 59ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fsign%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png%3Ftoken%3DeyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81MDkxNjAzMS1kMmJmLTRjN2QtOTg3OC1iYmJjY2MzMDJkZGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhcHBvaW50bWVudHBpY3MvU21pbGluZyBkb2N0b3IgaW4gbW9kZXJuIGNsaW5pYy5wbmciLCJpYXQiOjE3NzQzNTM5OTgsImV4cCI6MTgwNTg4OTk5OH0.cjfLnGK2EjQOGxCwXlPY32-gNEjV5wKqFr4lzrYlvk0&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 59ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 41ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.2s (compile: 7.1s, render: 41ms)
+ GET /doctors/q 200 in 14.1s (compile: 762ms, render: 13.3s)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 11ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 11ms)
+ GET /dashboard 200 in 2.6s (compile: 3ms, render: 2.6s)
+ GET /dashboard/projects 200 in 980ms (compile: 79ms, render: 901ms)
+ POST /dashboard/projects 200 in 1410ms (compile: 3ms, render: 1407ms)
+ GET /doctors?specialty=Dentist 200 in 567ms (compile: 3ms, render: 564ms)
+ GET /doctors?specialty=Cardiologist 200 in 4.6s (compile: 3ms, render: 4.6s)
+ POST /dashboard/projects 200 in 969ms (compile: 3ms, render: 965ms)
+ GET /doctors?specialty=Cardiologist 200 in 966ms (compile: 3ms, render: 963ms)
+ GET /doctors?specialty=Orthopedic 200 in 537ms (compile: 3ms, render: 533ms)
+ POST /dashboard/projects 200 in 948ms (compile: 3ms, render: 945ms)
+ GET /doctors?specialty=Orthopedic 200 in 694ms (compile: 3ms, render: 691ms)
+ GET /doctors?specialty=Neurologist 200 in 591ms (compile: 3ms, render: 589ms)
+ POST /dashboard/projects 200 in 1207ms (compile: 3ms, render: 1204ms)
+ GET /doctors?specialty=Neurologist 200 in 651ms (compile: 4ms, render: 647ms)
+ GET /doctors?specialty=Otology 200 in 1022ms (compile: 3ms, render: 1019ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 20ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 21ms)
+ GET /doctors?specialty=Otology 200 in 853ms (compile: 3ms, render: 850ms)
+ POST /dashboard/projects 200 in 1092ms (compile: 3ms, render: 1089ms)
+ GET /doctors?specialty=Otology 200 in 1363ms (compile: 3ms, render: 1360ms)
+ GET /doctors?specialty=General+Doctor 200 in 935ms (compile: 3ms, render: 933ms)
+ GET /doctors?specialty=Orthopedic 200 in 511ms (compile: 3ms, render: 508ms)
+ GET /doctors?specialty=Neurologist 200 in 599ms (compile: 3ms, render: 597ms)
+ GET /doctors?specialty=Eye+Specialist 200 in 388ms (compile: 3ms, render: 384ms)

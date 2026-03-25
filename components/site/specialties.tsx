@@ -57,7 +57,7 @@ export function getSpecialtyItems(
 }
 
 export function specialtyHref(label: string) {
-  return `/search/${encodeURIComponent(label)}`;
+  return `/doctors?specialty=${encodeURIComponent(label)}`;
 }
 
 export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
