@@ -23,6 +23,7 @@ import {
 const refreshSite = () => {
   revalidatePath("/", "layout");
   revalidatePath("/about");
+  revalidatePath("/appointments");
   revalidatePath("/blog");
   revalidatePath("/contact");
   revalidatePath("/doctors");
@@ -133,7 +134,7 @@ export async function updateAboutAction(formData: FormData) {
 }
 
 export async function updateContactAction(formData: FormData) {
-  await requirePermission("contacts");
+  await requirePermission("home");
 
   const contactData = {
     address: formData.get("address")?.toString() ?? "",
@@ -141,10 +142,32 @@ export async function updateContactAction(formData: FormData) {
     phone: formData.get("phone")?.toString() ?? "",
     email: formData.get("email")?.toString() ?? "",
     mapUrl: formData.get("mapUrl")?.toString() ?? "",
+    mapLinkUrl: formData.get("mapLinkUrl")?.toString() ?? "",
+    mapLinkLabel: formData.get("mapLinkLabel")?.toString() ?? "",
     workingHours: {
       weekdays: formData.get("weekdaysHours")?.toString() ?? "",
       saturday: formData.get("saturdayHours")?.toString() ?? "",
       sunday: formData.get("sundayHours")?.toString() ?? "",
+    },
+    topBar: {
+      phoneTitle: formData.get("phoneTitle")?.toString() ?? "",
+      phoneText: formData.get("phoneText")?.toString() ?? "",
+      emailTitle: formData.get("emailTitle")?.toString() ?? "",
+      emailText: formData.get("emailText")?.toString() ?? "",
+      locationTitle: formData.get("locationTitle")?.toString() ?? "",
+      locationText: formData.get("locationText")?.toString() ?? "",
+    },
+    footer: {
+      brandName: formData.get("brandName")?.toString() ?? "",
+      connectTitle: formData.get("connectTitle")?.toString() ?? "",
+      quickLinksTitle: formData.get("quickLinksTitle")?.toString() ?? "",
+      treatmentsTitle: formData.get("treatmentsTitle")?.toString() ?? "",
+      treatments: toList(formData.get("treatments")),
+      mapSectionTitle: formData.get("mapSectionTitle")?.toString() ?? "",
+      copyright: formData.get("copyright")?.toString() ?? "",
+      facebookUrl: formData.get("facebookUrl")?.toString() ?? "",
+      instagramUrl: formData.get("instagramUrl")?.toString() ?? "",
+      whatsappUrl: formData.get("whatsappUrl")?.toString() ?? "",
     },
   };
 

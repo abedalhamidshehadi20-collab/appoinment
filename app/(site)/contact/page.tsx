@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ContactFormToggle from "@/components/ContactFormToggle";
 import { getPatientSession } from "@/lib/patient-auth";
-import { getAllDoctors, getSiteSettings } from "@/lib/db";
+import { getAllDoctors, getSiteSettings, normalizeContactSettings } from "@/lib/db";
 
 type Props = {
   searchParams: Promise<{ sent?: string; error?: string }>;
@@ -15,12 +15,7 @@ export default async function ContactPage({ searchParams }: Props) {
     getSiteSettings()
   ]);
 
-  const contactInfo = settings.contact || {
-    address: "Eastern Highway",
-    city: "Saida|Lebanon",
-    phone: "+961 81865142",
-    email: "abedalhamidshehadi20@gmail.com"
-  };
+  const contactInfo = normalizeContactSettings(settings.contact);
 
   return (
     <main className="container fade-up pb-16 pt-10">

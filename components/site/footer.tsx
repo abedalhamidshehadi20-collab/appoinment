@@ -1,6 +1,6 @@
-"use client";
-
+import { ReactNode } from "react";
 import Link from "next/link";
+import { getSiteSettings, normalizeContactSettings } from "@/lib/db";
 
 function FacebookIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
   return (
@@ -23,46 +23,87 @@ function InstagramIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
 function WhatsAppIcon({ className = "h-4.5 w-4.5" }: { className?: string }) {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="currentColor">
-      <path d="M12 4.8a7.2 7.2 0 0 0-6.2 10.9l-.8 3 3.1-.8A7.2 7.2 0 1 0 12 4.8Zm0 12.9c-1.1 0-2.3-.3-3.2-.9l-.2-.1-1.8.5.5-1.7-.1-.2A5.8 5.8 0 1 1 12 17.7Zm3.2-4.2c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1l-.4.5c-.1.1-.2.1-.4 0a4.7 4.7 0 0 1-2.3-2c-.1-.2 0-.3.1-.4l.3-.4.2-.3v-.4c-.1-.1-.5-1.1-.7-1.5-.1-.3-.3-.3-.5-.3h-.4c-.1 0-.4.1-.6.3s-.8.8-.8 1.9  .8 2.2.9 2.4c.1.1 1.5 2.3 3.7 3.2 2.1.8 2.1.5 2.5.5.4-.1 1.2-.5 1.4-1 .2-.5.2-1 .1-1.1 0-.1-.2-.1-.4-.2Z" />
+      <path d="M12 4.8a7.2 7.2 0 0 0-6.2 10.9l-.8 3 3.1-.8A7.2 7.2 0 1 0 12 4.8Zm0 12.9c-1.1 0-2.3-.3-3.2-.9l-.2-.1-1.8.5.5-1.7-.1-.2A5.8 5.8 0 1 1 12 17.7Zm3.2-4.2c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1l-.4.5c-.1.1-.2.1-.4 0a4.7 4.7 0 0 1-2.3-2c-.1-.2 0-.3.1-.4l.3-.4.2-.3v-.4c-.1-.1-.5-1.1-.7-1.5-.1-.3-.3-.3-.5-.3h-.4c-.1 0-.4.1-.6.3s-.8.8-.8 1.9.8 2.2.9 2.4c.1.1 1.5 2.3 3.7 3.2 2.1.8 2.1.5 2.5.5.4-.1 1.2-.5 1.4-1 .2-.5.2-1 .1-1.1 0-.1-.2-.1-.4-.2Z" />
     </svg>
   );
 }
 
-export function SiteFooter() {
-  const showFooterLocation = true;
+function SocialLink({
+  href,
+  label,
+  children,
+}: {
+  href?: string;
+  label: string;
+  children: ReactNode;
+}) {
+  const className =
+    "inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#bfdbfe] text-[var(--brand)]";
+
+  if (!href) {
+    return (
+      <span aria-label={label} className={className}>
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={label}
+      className={className}
+    >
+      {children}
+    </a>
+  );
+}
+
+export async function SiteFooter() {
+  const settings = await getSiteSettings();
+  const contactInfo = normalizeContactSettings(settings.contact);
+  const showFooterLocation = Boolean(contactInfo.mapUrl);
+  const footerAddress = [contactInfo.address, contactInfo.city].filter(Boolean).join(", ");
+  const copyright = contactInfo.footer.copyright.replace(
+    /\{year\}/g,
+    String(new Date().getFullYear()),
+  );
+  const brandInitials =
+    contactInfo.footer.brandName
+      .split(/\s+/)
+      .map((item) => item.charAt(0))
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "SH";
 
   return (
     <footer className="mt-14 border-t border-[var(--line)] bg-white">
       <section className="bg-[#0f172a] py-5 text-white">
         <div className="container grid gap-8 md:grid-cols-3 md:gap-12">
           <article className="space-y-2">
-            <h3 className="text-lg font-bold">Phone</h3>
-            <p className="text-sm leading-6 text-slate-300">
-              Your health doesn&apos;t wait, and neither do we. Call to reach out to us now.
-            </p>
-            <p className="text-sm font-semibold text-[#60a5fa]">+961 81865142</p>
+            <h3 className="text-lg font-bold">{contactInfo.topBar.phoneTitle}</h3>
+            <p className="text-sm leading-6 text-slate-300">{contactInfo.topBar.phoneText}</p>
+            <p className="text-sm font-semibold text-[#60a5fa]">{contactInfo.phone}</p>
           </article>
 
           <article className="space-y-2">
-            <h3 className="text-lg font-bold">Email</h3>
-            <p className="text-sm leading-6 text-slate-300">
-              We look forward to helping you achieve better health. Reach out to us now.
-            </p>
-            <p className="text-sm font-semibold text-[#60a5fa]">abedalhamidshehadi20@gmail.com</p>
+            <h3 className="text-lg font-bold">{contactInfo.topBar.emailTitle}</h3>
+            <p className="text-sm leading-6 text-slate-300">{contactInfo.topBar.emailText}</p>
+            <p className="text-sm font-semibold text-[#60a5fa]">{contactInfo.email}</p>
           </article>
 
           <article className="space-y-2">
-            <h3 className="text-lg font-bold">Location</h3>
-            <p className="text-sm leading-6 text-slate-300">
-              Eastern Highway, Saida|Lebanon
-            </p>
+            <h3 className="text-lg font-bold">{contactInfo.topBar.locationTitle}</h3>
+            <p className="text-sm leading-6 text-slate-300">{contactInfo.topBar.locationText}</p>
             <a
-              href="https://maps.google.com"
+              href={contactInfo.mapLinkUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-block text-sm font-semibold text-[#60a5fa]"
             >
-              View On Google Map
+              {contactInfo.mapLinkLabel}
             </a>
           </article>
         </div>
@@ -72,40 +113,31 @@ export function SiteFooter() {
         <div className={`container grid gap-8 ${showFooterLocation ? "md:grid-cols-4 md:gap-10" : "md:grid-cols-3 md:gap-10"}`}>
           <article className="space-y-2.5">
             <div className="flex items-center gap-2 text-2xl font-black text-[var(--brand)]">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand)] text-sm text-white">SH</span>
-              Sh-Med
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--brand)] text-sm text-white">
+                {brandInitials}
+              </span>
+              {contactInfo.footer.brandName}
             </div>
-            <p className="text-sm leading-6 text-[var(--muted)]">
-              2nd Floor, Prime Square, Airport Road, Heritage District, Gujarat 370001
-            </p>
-            <p className="text-sm leading-6 text-[var(--muted)]">contact@example.com</p>
-            <p className="text-sm leading-6 text-[var(--muted)]">+91 12345 67890</p>
+            <p className="text-sm leading-6 text-[var(--muted)]">{footerAddress}</p>
+            <p className="text-sm leading-6 text-[var(--muted)]">{contactInfo.email}</p>
+            <p className="text-sm leading-6 text-[var(--muted)]">{contactInfo.phone}</p>
 
-            <p className="pt-1 text-sm font-bold text-[var(--brand-deep)]">Connect With Us</p>
+            <p className="pt-1 text-sm font-bold text-[var(--brand-deep)]">{contactInfo.footer.connectTitle}</p>
             <div className="flex gap-2 text-xs">
-              <span
-                aria-label="Facebook"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#bfdbfe] text-[var(--brand)]"
-              >
+              <SocialLink href={contactInfo.footer.facebookUrl} label="Facebook">
                 <FacebookIcon />
-              </span>
-              <span
-                aria-label="Instagram"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#bfdbfe] text-[var(--brand)]"
-              >
+              </SocialLink>
+              <SocialLink href={contactInfo.footer.instagramUrl} label="Instagram">
                 <InstagramIcon />
-              </span>
-              <span
-                aria-label="WhatsApp"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[#bfdbfe] text-[var(--brand)]"
-              >
+              </SocialLink>
+              <SocialLink href={contactInfo.footer.whatsappUrl} label="WhatsApp">
                 <WhatsAppIcon />
-              </span>
+              </SocialLink>
             </div>
           </article>
 
           <article className="space-y-3">
-            <h4 className="text-lg font-bold text-[var(--brand-deep)]">Quick Links</h4>
+            <h4 className="text-lg font-bold text-[var(--brand-deep)]">{contactInfo.footer.quickLinksTitle}</h4>
             <ul className="space-y-2 text-sm leading-6 text-[var(--muted)]">
               <li><Link href="/">Home</Link></li>
               <li><Link href="/about">About Us</Link></li>
@@ -118,22 +150,20 @@ export function SiteFooter() {
           </article>
 
           <article className="space-y-3">
-            <h4 className="text-lg font-bold text-[var(--brand-deep)]">Treatments</h4>
+            <h4 className="text-lg font-bold text-[var(--brand-deep)]">{contactInfo.footer.treatmentsTitle}</h4>
             <ul className="space-y-2 text-sm leading-6 text-[var(--muted)]">
-              <li>Hearing Loss</li>
-              <li>Ear Infection</li>
-              <li>Dizziness &amp; Vertigo</li>
-              <li>Allergy Rhinitis</li>
-              <li>Swallowing Disorders</li>
+              {contactInfo.footer.treatments.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </article>
 
           {showFooterLocation ? (
             <article className="space-y-3">
-              <h4 className="text-lg font-bold text-[var(--brand-deep)]">Location</h4>
+              <h4 className="text-lg font-bold text-[var(--brand-deep)]">{contactInfo.footer.mapSectionTitle}</h4>
               <iframe
                 title="Footer location map"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
+                src={contactInfo.mapUrl}
                 className="h-24 w-full rounded border border-[var(--line)] bg-white"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -143,7 +173,7 @@ export function SiteFooter() {
         </div>
 
         <div className="container mt-6 border-t border-[var(--line)] pt-4 text-center text-xs text-[var(--muted)]">
-          &copy; {new Date().getFullYear()} Sh-Med. All rights reserved. This site is protected by reCAPTCHA and the Google Terms and Sitemap.
+          {copyright}
         </div>
       </section>
     </footer>

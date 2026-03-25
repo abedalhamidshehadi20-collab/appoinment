@@ -1,0 +1,22 @@
+
+> appoinment@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.7 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.10.39:3000
+- Environments: .env.local, .env
+
+✓ Starting...
+Creating turbopack project { dir: 'C:\\Users\\pc\\Desktop\\clinic\\appoinments', testMode: true }
+✓ Ready in 1238ms
+ GET /dashboard/home 200 in 2.8s (compile: 697ms, render: 2.1s)
+ GET / 200 in 2.8s (compile: 898ms, render: 1929ms)
+ GET /dashboard/home 200 in 1090ms (compile: 6ms, render: 1084ms)
+ POST /dashboard/home 200 in 941ms (compile: 3ms, render: 938ms)
+ GET / 200 in 1244ms (compile: 4ms, render: 1241ms)
+ POST /dashboard/home 200 in 4.0s (compile: 3ms, render: 4.0s)
+ GET /services 200 in 1525ms (compile: 50ms, render: 1476ms)
+ GET /doctors 200 in 644ms (compile: 47ms, render: 597ms)
+ GET /dashboard/interests 200 in 1094ms (compile: 66ms, render: 1028ms)
+ GET / 200 in 635ms (compile: 6ms, render: 630ms)

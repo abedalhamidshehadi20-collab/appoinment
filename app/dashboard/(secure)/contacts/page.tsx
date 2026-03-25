@@ -17,7 +17,7 @@ export default async function DashboardContactsPage() {
           contacts.map((item) => (
             <article key={item.id} className="rounded-xl border border-[var(--line)] bg-[#fbfdff] p-4 text-sm">
               <p className="font-semibold text-[var(--brand-deep)]">{item.name}</p>
-              <p className="text-[var(--muted)]">{item.email} {item.phone ? `• ${item.phone}` : ""}</p>
+              <p className="text-[var(--muted)]">{item.email}{item.phone ? ` | ${item.phone}` : ""}</p>
               <p className="mt-2">{item.message}</p>
               <p className="mt-2 text-xs text-[var(--muted)]">{new Date(item.created_at).toLocaleString()}</p>
             </article>

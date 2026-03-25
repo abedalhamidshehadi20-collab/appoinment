@@ -149,6 +149,41 @@ export type Contact = {
   created_at: string;
 };
 
+export type ContactSettings = {
+  address: string;
+  city: string;
+  phone: string;
+  email: string;
+  mapUrl: string;
+  mapLinkUrl: string;
+  mapLinkLabel: string;
+  workingHours: {
+    weekdays: string;
+    saturday: string;
+    sunday: string;
+  };
+  topBar: {
+    phoneTitle: string;
+    phoneText: string;
+    emailTitle: string;
+    emailText: string;
+    locationTitle: string;
+    locationText: string;
+  };
+  footer: {
+    brandName: string;
+    connectTitle: string;
+    quickLinksTitle: string;
+    treatmentsTitle: string;
+    treatments: string[];
+    mapSectionTitle: string;
+    copyright: string;
+    facebookUrl: string;
+    instagramUrl: string;
+    whatsappUrl: string;
+  };
+};
+
 export type SiteSettings = {
   home: {
     headline: string;
@@ -166,19 +201,91 @@ export type SiteSettings = {
     vision: string;
     values: string[];
   };
-  contact: {
-    address: string;
-    city: string;
-    phone: string;
-    email: string;
-    mapUrl: string;
-    workingHours: {
-      weekdays: string;
-      saturday: string;
-      sunday: string;
-    };
-  };
+  contact: ContactSettings;
 };
+
+export const defaultContactSettings: ContactSettings = {
+  address: "Eastern Highway",
+  city: "Saida, Lebanon",
+  phone: "+961 81865142",
+  email: "abedalhamidshehadi20@gmail.com",
+  mapUrl: "https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik",
+  mapLinkUrl: "https://maps.google.com",
+  mapLinkLabel: "View On Google Map",
+  workingHours: {
+    weekdays: "8:00 AM - 6:00 PM",
+    saturday: "9:00 AM - 2:00 PM",
+    sunday: "Closed",
+  },
+  topBar: {
+    phoneTitle: "Phone",
+    phoneText: "Your health doesn't wait, and neither do we. Call to reach out to us now.",
+    emailTitle: "Email",
+    emailText: "We look forward to helping you achieve better health. Reach out to us now.",
+    locationTitle: "Location",
+    locationText: "Eastern Highway, Saida, Lebanon",
+  },
+  footer: {
+    brandName: "Sh-Med",
+    connectTitle: "Connect With Us",
+    quickLinksTitle: "Quick Links",
+    treatmentsTitle: "Treatments",
+    treatments: [
+      "Hearing Loss",
+      "Ear Infection",
+      "Dizziness & Vertigo",
+      "Allergy Rhinitis",
+      "Swallowing Disorders",
+    ],
+    mapSectionTitle: "Location",
+    copyright: "Copyright {year} Sh-Med. All rights reserved. This site is protected by reCAPTCHA and the Google Terms and Sitemap.",
+    facebookUrl: "",
+    instagramUrl: "",
+    whatsappUrl: "",
+  },
+};
+
+export function normalizeContactSettings(
+  value: Partial<ContactSettings> | null | undefined,
+): ContactSettings {
+  const source: Partial<ContactSettings> =
+    value && typeof value === "object" ? value : {};
+  const workingHours: Partial<ContactSettings["workingHours"]> = source.workingHours ?? {};
+  const topBar: Partial<ContactSettings["topBar"]> = source.topBar ?? {};
+  const footer: Partial<ContactSettings["footer"]> = source.footer ?? {};
+
+  const mergedBase = {
+    ...defaultContactSettings,
+    ...source,
+    workingHours: {
+      ...defaultContactSettings.workingHours,
+      ...workingHours,
+    },
+  };
+
+  const locationText =
+    topBar.locationText?.toString().trim() ||
+    [mergedBase.address, mergedBase.city].filter(Boolean).join(", ") ||
+    defaultContactSettings.topBar.locationText;
+
+  const treatments = Array.isArray(footer.treatments)
+    ? footer.treatments.map((item) => item.toString().trim()).filter(Boolean)
+    : defaultContactSettings.footer.treatments;
+
+  return {
+    ...mergedBase,
+    topBar: {
+      ...defaultContactSettings.topBar,
+      ...topBar,
+      locationText,
+    },
+    footer: {
+      ...defaultContactSettings.footer,
+      ...footer,
+      treatments: treatments.length > 0 ? treatments : defaultContactSettings.footer.treatments,
+    },
+  };
+}
 
 // ============================================
 // Helper Functions
@@ -225,7 +332,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   return settings as SiteSettings;
 }
 
-export async function updateSiteSettings(key: 'home' | 'about', value: unknown) {
+export async function updateSiteSettings(key: 'home' | 'about' | 'contact', value: unknown) {
   const { error } = await supabase
     .from('site_settings')
     .upsert({ key, value, updated_at: new Date().toISOString() });
