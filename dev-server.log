@@ -9,82 +9,105 @@
 
 ✓ Starting...
 Creating turbopack project { dir: 'C:\\Users\\pc\\Desktop\\clinic\\appoinments', testMode: true }
-✓ Ready in 1238ms
- GET /dashboard/home 200 in 2.8s (compile: 697ms, render: 2.1s)
- GET / 200 in 2.8s (compile: 898ms, render: 1929ms)
- GET /dashboard/home 200 in 1090ms (compile: 6ms, render: 1084ms)
- POST /dashboard/home 200 in 941ms (compile: 3ms, render: 938ms)
- GET / 200 in 1244ms (compile: 4ms, render: 1241ms)
- POST /dashboard/home 200 in 4.0s (compile: 3ms, render: 4.0s)
- GET /services 200 in 1525ms (compile: 50ms, render: 1476ms)
- GET /doctors 200 in 644ms (compile: 47ms, render: 597ms)
- GET /dashboard/interests 200 in 1094ms (compile: 66ms, render: 1028ms)
- GET / 200 in 635ms (compile: 6ms, render: 630ms)
- GET / 200 in 748ms (compile: 4ms, render: 745ms)
- GET /patient-dashboard 200 in 1216ms (compile: 141ms, render: 1075ms)
- GET /patient-dashboard 200 in 717ms (compile: 3ms, render: 714ms)
- GET / 200 in 507ms (compile: 5ms, render: 502ms)
- POST /patient-dashboard 303 in 531ms (compile: 3ms, render: 528ms)
- GET / 200 in 614ms (compile: 2ms, render: 611ms)
- POST /patient-dashboard 303 in 632ms (compile: 3ms, render: 629ms)
- GET /dashboard 200 in 881ms (compile: 30ms, render: 851ms)
- GET /dashboard 200 in 704ms (compile: 3ms, render: 701ms)
- GET /contact 200 in 2.1s (compile: 43ms, render: 2.0s)
- GET /login?next=%2Fcontact 200 in 1573ms (compile: 122ms, render: 1451ms)
- GET / 200 in 1051ms (compile: 4ms, render: 1046ms)
- GET /login 200 in 23ms (compile: 4ms, render: 20ms)
- GET / 200 in 1169ms (compile: 3ms, render: 1166ms)
- POST /login 303 in 2.3s (compile: 3ms, render: 2.3s)
- GET /patient-dashboard 200 in 888ms (compile: 3ms, render: 885ms)
- GET /dashboard 200 in 762ms (compile: 3ms, render: 759ms)
- GET /patient-dashboard 200 in 760ms (compile: 5ms, render: 755ms)
-✓ Compiled in 351ms
-⨯ Error: Module [project]/node_modules/next/dist/esm/lib/framework/boundary-components.js [app-ssr] (ecmascript) was instantiated because it was required from module [project]/node_modules/next/dist/esm/build/templates/app-page.js?page=/dashboard/(secure)/page { GLOBAL_ERROR_MODULE => "[project]/node_modules/next/dist/client/components/builtin/global-error.js [app-rsc] (ecmascript, Next.js Server Component)", METADATA_0 => "[project]/app/favicon.ico.mjs { IMAGE => \"[project]/app/favicon.ico (static in ecmascript, tag client)\" } [app-rsc] (structured image object, ecmascript, Next.js Server Component)", MODULE_1 => "[project]/app/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_2 => "[project]/node_modules/next/dist/client/components/builtin/not-found.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_3 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_4 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_5 => "[project]/node_modules/next/dist/client/components/builtin/global-error.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_6 => "[project]/app/dashboard/(secure)/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_7 => "[project]/app/dashboard/(secure)/page.tsx [app-rsc] (ecmascript, Next.js Server Component)" } [app-rsc] (ecmascript) <locals>, but the module factory is not available.
+✓ Ready in 1269ms
+ GET /login?next=%2Fcontact 200 in 9.7s (compile: 344ms, render: 9.3s)
+ GET /patient-dashboard 200 in 9.7s (compile: 88ms, render: 9.6s)
+ GET /dashboard 200 in 12.0s (compile: 569ms, render: 11.4s)
+ GET / 200 in 1736ms (compile: 39ms, render: 1697ms)
+ GET /dashboard 200 in 1610ms (compile: 5ms, render: 1605ms)
+ GET /appointments 200 in 469ms (compile: 4ms, render: 465ms)
+ GET /appointments 200 in 3.2s (compile: 303ms, render: 2.9s)
+ GET /doctors 200 in 487ms (compile: 123ms, render: 364ms)
+Error [TimeoutError]: The operation was aborted due to timeout
     at ignore-listed frames {
-  digest: '1193455003'
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
 }
- GET /patient-dashboard 200 in 738ms (compile: 45ms, render: 692ms)
- GET /patient-dashboard 200 in 109ms (compile: 9ms, render: 100ms)
- GET /patient-dashboard 200 in 1267ms (compile: 6ms, render: 1261ms)
- GET /patient-dashboard 200 in 888ms (compile: 12ms, render: 875ms)
- GET /dashboard 200 in 1405ms (compile: 230ms, render: 1176ms)
- GET /dashboard 200 in 1052ms (compile: 65ms, render: 987ms)
- GET /dashboard 200 in 949ms (compile: 132ms, render: 818ms)
- GET /dashboard 200 in 430ms (compile: 36ms, render: 394ms)
- GET /dashboard 200 in 350ms (compile: 6ms, render: 344ms)
- GET /dashboard 200 in 320ms (compile: 5ms, render: 315ms)
- GET /dashboard 200 in 303ms (compile: 8ms, render: 295ms)
- GET /dashboard 200 in 249ms (compile: 5ms, render: 244ms)
- GET /dashboard 200 in 253ms (compile: 4ms, render: 249ms)
- GET /dashboard 200 in 304ms (compile: 4ms, render: 300ms)
- GET /dashboard 200 in 292ms (compile: 4ms, render: 289ms)
- GET /dashboard 200 in 280ms (compile: 6ms, render: 274ms)
- GET /dashboard 200 in 226ms (compile: 7ms, render: 219ms)
- GET /dashboard 200 in 165ms (compile: 4ms, render: 161ms)
- GET /dashboard 200 in 115ms (compile: 4ms, render: 112ms)
- GET /dashboard 200 in 60ms (compile: 3ms, render: 57ms)
- GET /patient-dashboard 500 in 4.5s (compile: 10ms, render: 4.5s)
- GET /dashboard 200 in 4.6s (compile: 27ms, render: 4.5s)
-✓ Compiled in 48ms
- GET /patient-dashboard 200 in 555ms (compile: 12ms, render: 543ms)
- GET /dashboard 200 in 620ms (compile: 10ms, render: 611ms)
- GET /patient-dashboard 200 in 401ms (compile: 12ms, render: 389ms)
- GET /dashboard 200 in 563ms (compile: 31ms, render: 531ms)
- GET /dashboard 200 in 474ms (compile: 19ms, render: 454ms)
- GET /patient-dashboard 200 in 305ms (compile: 13ms, render: 292ms)
- GET /dashboard 200 in 503ms (compile: 32ms, render: 471ms)
- GET /dashboard 200 in 424ms (compile: 19ms, render: 405ms)
- GET /patient-dashboard 200 in 298ms (compile: 7ms, render: 291ms)
- GET /dashboard 200 in 420ms (compile: 29ms, render: 390ms)
- GET /patient-dashboard 200 in 282ms (compile: 4ms, render: 278ms)
- GET /dashboard 200 in 223ms (compile: 5ms, render: 218ms)
- GET /dashboard 200 in 179ms (compile: 12ms, render: 167ms)
- GET /dashboard 200 in 130ms (compile: 11ms, render: 119ms)
- GET /dashboard 200 in 70ms (compile: 6ms, render: 63ms)
- GET /login?next=%2Fcontact 200 in 942ms (compile: 135ms, render: 807ms)
- GET / 200 in 993ms (compile: 130ms, render: 863ms)
-✓ Compiled in 70ms
-✓ Compiled in 71ms
- GET / 200 in 2.1s (compile: 119ms, render: 1936ms)
-✓ Compiled in 61ms
- GET /patient-dashboard 200 in 1933ms (compile: 7ms, render: 1926ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET / 200 in 2.4s (compile: 3ms, render: 2.4s)
+ GET /dashboard 200 in 3.4s (compile: 4ms, render: 3.3s)
+ GET / 200 in 1330ms (compile: 3ms, render: 1327ms)
+ GET /doctors 200 in 564ms (compile: 3ms, render: 561ms)
+ GET / 200 in 1794ms (compile: 3ms, render: 1790ms)
+ GET /search/Dentist 200 in 1562ms (compile: 709ms, render: 853ms)

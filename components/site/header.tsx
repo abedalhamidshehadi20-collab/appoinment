@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { LogOut, UserRound } from "lucide-react";
-import { logoutAction } from "@/app/dashboard/actions";
-import { patientLogoutAction } from "@/app/(site)/auth-actions";
+import { AccountDropdown } from "./AccountDropdown";
+
+type FormAction = (formData: FormData) => void | Promise<void>;
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -36,9 +36,11 @@ type Props = {
     name: string;
     email: string;
   } | null;
+  adminLogoutAction?: FormAction;
+  patientLogoutAction?: FormAction;
 };
 
-export function SiteHeader({ admin, patient }: Props) {
+export function SiteHeader({ admin, patient, adminLogoutAction, patientLogoutAction }: Props) {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(true);
   const heroBottomRef = useRef<number>(0);
@@ -136,7 +138,7 @@ export function SiteHeader({ admin, patient }: Props) {
           email: admin.email,
           href: "/dashboard",
           ariaLabel: "Open admin dashboard",
-          logoutAction,
+          logoutAction: adminLogoutAction,
         }
       : null;
 
@@ -169,33 +171,13 @@ export function SiteHeader({ admin, patient }: Props) {
             ))}
           </ul>
           <div className="flex items-center">
-            {account ? (
-              <div className="flex flex-wrap items-center justify-end gap-1.5">
-                <Link
-                  href={account.href}
-                  aria-label={account.ariaLabel}
-                  className="flex min-w-[164px] items-center gap-1.5 rounded-full border border-[#dbe4f0] bg-white px-2 py-1 text-left shadow-sm transition hover:border-[#c3d3ea] hover:bg-[#f8fbff]"
-                >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9e7ff] bg-[#f4f8ff] text-[var(--brand)]">
-                    <UserRound className="h-3.5 w-3.5" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-[12px] font-semibold leading-4 text-[var(--brand-deep)]">
-                      {account.name}
-                    </span>
-                    <span className="block truncate text-[10px] leading-4 text-[var(--muted)]">
-                      {account.email}
-                    </span>
-                  </span>
-                </Link>
-
-                <form action={account.logoutAction}>
-                  <button className="inline-flex h-9 items-center gap-1 rounded-xl border border-[#dbe4f0] bg-white px-3 text-[12px] font-semibold text-[var(--brand-deep)] shadow-sm transition hover:border-[#c3d3ea] hover:bg-[#f8fbff]">
-                    <LogOut className="h-3 w-3" />
-                    Logout
-                  </button>
-                </form>
-              </div>
+            {account && account.logoutAction ? (
+              <AccountDropdown
+                name={account.name}
+                email={account.email}
+                dashboardHref={account.href}
+                logoutAction={account.logoutAction}
+              />
             ) : (
               <Link
                 href="/login"

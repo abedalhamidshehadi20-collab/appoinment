@@ -1,4 +1,6 @@
 import { ReactNode } from "react";
+import { logoutAction } from "@/app/dashboard/actions";
+import { patientLogoutAction } from "@/app/(site)/auth-actions";
 import { SiteFooter } from "./footer";
 import { SiteHeader } from "./header";
 
@@ -22,7 +24,12 @@ type Props = {
 export function SiteShell({ children, admin, patient }: Props) {
   return (
     <>
-      <SiteHeader admin={admin} patient={patient} />
+      <SiteHeader
+        admin={admin}
+        patient={patient}
+        adminLogoutAction={logoutAction}
+        patientLogoutAction={patientLogoutAction}
+      />
       {children}
       <SiteFooter />
     </>
