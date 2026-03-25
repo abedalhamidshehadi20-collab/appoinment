@@ -124,7 +124,7 @@ export function DoctorsManagementClient({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 pt-16 lg:pt-20">
             <button
               type="button"
               onClick={() => {
