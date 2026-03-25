@@ -840,3 +840,101 @@ export async function deleteInterestAction(formData: FormData) {
   await supabase.from("appointments").delete().eq("id", id);
   refreshSite();
 }
+
+// ============================================
+// Employee Management Actions
+// ============================================
+
+export async function saveEmployeeAction(formData: FormData) {
+  await requirePermission("employees");
+  const id = formData.get("id")?.toString();
+
+  const name = formData.get("name")?.toString() ?? "";
+  const email = formData.get("email")?.toString() ?? "";
+  const username = formData.get("username")?.toString() ?? "";
+  const password = formData.get("password")?.toString() ?? "";
+  const role = formData.get("role")?.toString() ?? "blog_manager";
+
+  // Get permissions from role using rbac helper
+  const { getRolePermissions } = await import("@/lib/rbac");
+  const permissions = getRolePermissions(role);
+
+  if (id) {
+    // Update existing employee
+    const updates: Record<string, unknown> = {
+      name,
+      email,
+      username,
+      role,
+      permissions,
+    };
+
+    // Only update password if provided
+    if (password) {
+      updates.password = password;
+    }
+
+    const { error } = await supabase.from("users").update(updates).eq("id", id);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin
+        .from("users")
+        .update(updates)
+        .eq("id", id);
+      if (adminError) throw adminError;
+    } else if (error) {
+      throw error;
+    }
+  } else {
+    // Create new employee
+    if (!password) {
+      redirect("/dashboard/employees?error=password_required");
+    }
+
+    const payload = {
+      id: nextId("usr"),
+      name,
+      email,
+      username,
+      password,
+      role,
+      permissions,
+    };
+
+    const { error } = await supabase.from("users").insert(payload);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin
+        .from("users")
+        .insert(payload);
+      if (adminError) throw adminError;
+    } else if (error) {
+      throw error;
+    }
+  }
+
+  revalidatePath("/dashboard/employees");
+  redirect("/dashboard/employees?success=1");
+}
+
+export async function deleteEmployeeAction(formData: FormData) {
+  await requirePermission("employees");
+  const id = formData.get("id")?.toString();
+
+  if (!id) return;
+
+  const { error } = await supabase.from("users").delete().eq("id", id);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from("users")
+      .delete()
+      .eq("id", id);
+    if (adminError) throw adminError;
+  } else if (error) {
+    throw error;
+  }
+
+  revalidatePath("/dashboard/employees");
+  redirect("/dashboard/employees?deleted=1");
+}

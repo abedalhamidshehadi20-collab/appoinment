@@ -14,6 +14,7 @@ const sections: { href: string; label: string; permission?: Permission }[] = [
   { href: "/dashboard/news", label: "News", permission: "news" },
   { href: "/dashboard/contacts", label: "Messages", permission: "contacts" },
   { href: "/dashboard/interests", label: "Appointments", permission: "interests" },
+  { href: "/dashboard/employees", label: "Employees", permission: "employees" },
 ];
 
 export default async function SecureDashboardLayout({

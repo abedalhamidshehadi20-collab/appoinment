@@ -19,6 +19,7 @@ import {
   Search,
   Bell,
   Settings,
+  UserCog,
 } from "lucide-react";
 
 type NavItem = {
@@ -37,6 +38,7 @@ const iconMap: Record<string, React.ElementType> = {
   "/dashboard/news": Newspaper,
   "/dashboard/contacts": Mail,
   "/dashboard/interests": Calendar,
+  "/dashboard/employees": UserCog,
 };
 
 type User = {

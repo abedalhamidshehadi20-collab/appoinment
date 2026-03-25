@@ -10,7 +10,8 @@ export type Permission =
   | 'news'
   | 'contacts'
   | 'interests'
-  | 'patients';
+  | 'patients'
+  | 'employees';
 
 export type User = {
   id: string;
@@ -20,6 +21,7 @@ export type User = {
   password: string;
   role: string;
   permissions: Permission[];
+  created_at?: string;
 };
 
 export type Patient = {
@@ -372,6 +374,35 @@ export async function createUser(user: Omit<User, 'id'>) {
 
   if (error) throw error;
   return newUser;
+}
+
+export async function getUserById(id: string) {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) return null;
+  return data as User;
+}
+
+export async function updateUser(id: string, updates: Partial<Omit<User, 'id'>>) {
+  const { error } = await supabase
+    .from('users')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+export async function deleteUser(id: string) {
+  const { error } = await supabase
+    .from('users')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
 }
 
 // ============================================
