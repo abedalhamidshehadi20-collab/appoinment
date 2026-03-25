@@ -11,6 +11,7 @@ type SessionPayload = {
   id: string;
   username: string;
   name: string;
+  email: string;
   role: string;
   permissions: Permission[];
   exp: number;
@@ -71,6 +72,7 @@ export async function login(username: string, password: string) {
     id: user.id,
     username: user.username,
     name: user.name,
+    email: user.email,
     role: user.role,
     permissions: user.permissions,
     exp: Date.now() + SESSION_TTL_MS,

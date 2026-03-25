@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { LogOut, UserRound } from "lucide-react";
+import { logoutAction } from "@/app/dashboard/actions";
+import { patientLogoutAction } from "@/app/(site)/auth-actions";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -26,6 +29,7 @@ function isActivePath(pathname: string, href: string) {
 type Props = {
   admin?: {
     name: string;
+    email: string;
     role: string;
   } | null;
   patient?: {
@@ -118,8 +122,23 @@ export function SiteHeader({ admin, patient }: Props) {
     };
   }, []);
 
-  const adminInitial = admin?.name.trim().charAt(0).toUpperCase() ?? "A";
-  const patientInitial = patient?.name.trim().charAt(0).toUpperCase() ?? "P";
+  const account = patient
+    ? {
+        name: patient.name,
+        email: patient.email,
+        href: "/patient-dashboard",
+        ariaLabel: "Open patient account",
+        logoutAction: patientLogoutAction,
+      }
+    : admin
+      ? {
+          name: admin.name,
+          email: admin.email,
+          href: "/dashboard",
+          ariaLabel: "Open admin dashboard",
+          logoutAction,
+        }
+      : null;
 
   return (
     <header
@@ -150,27 +169,33 @@ export function SiteHeader({ admin, patient }: Props) {
             ))}
           </ul>
           <div className="flex items-center">
-            {patient ? (
-              <Link
-                href="/patient-dashboard"
-                aria-label="Open patient account"
-                title={patient.name}
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2377e7_0%,#1d4f91_100%)] text-sm font-extrabold text-white shadow-[0_18px_30px_-24px_rgba(29,79,145,0.8)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_34px_-24px_rgba(29,79,145,0.95)]"
-              >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/14 text-sm font-extrabold text-white">
-                  {patientInitial}
-                </span>
-              </Link>
-            ) : admin ? (
-              <Link
-                href="/dashboard"
-                aria-label="Open admin dashboard"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#2377e7_0%,#1d4f91_100%)] text-sm font-extrabold text-white shadow-[0_18px_30px_-24px_rgba(29,79,145,0.8)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_34px_-24px_rgba(29,79,145,0.95)]"
-              >
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/14 text-sm font-extrabold text-white">
-                  {adminInitial}
-                </span>
-              </Link>
+            {account ? (
+              <div className="flex flex-wrap items-center justify-end gap-1.5">
+                <Link
+                  href={account.href}
+                  aria-label={account.ariaLabel}
+                  className="flex min-w-[164px] items-center gap-1.5 rounded-full border border-[#dbe4f0] bg-white px-2 py-1 text-left shadow-sm transition hover:border-[#c3d3ea] hover:bg-[#f8fbff]"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d9e7ff] bg-[#f4f8ff] text-[var(--brand)]">
+                    <UserRound className="h-3.5 w-3.5" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-[12px] font-semibold leading-4 text-[var(--brand-deep)]">
+                      {account.name}
+                    </span>
+                    <span className="block truncate text-[10px] leading-4 text-[var(--muted)]">
+                      {account.email}
+                    </span>
+                  </span>
+                </Link>
+
+                <form action={account.logoutAction}>
+                  <button className="inline-flex h-9 items-center gap-1 rounded-xl border border-[#dbe4f0] bg-white px-3 text-[12px] font-semibold text-[var(--brand-deep)] shadow-sm transition hover:border-[#c3d3ea] hover:bg-[#f8fbff]">
+                    <LogOut className="h-3 w-3" />
+                    Logout
+                  </button>
+                </form>
+              </div>
             ) : (
               <Link
                 href="/login"

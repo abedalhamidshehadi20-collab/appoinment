@@ -4,6 +4,7 @@ import { SiteHeader } from "./header";
 
 type AdminInfo = {
   name: string;
+  email: string;
   role: string;
 };
 
