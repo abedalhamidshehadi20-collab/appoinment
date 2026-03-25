@@ -191,35 +191,42 @@ export function MedicalIcon({ type }: { type: SpecialtyIcon }) {
 export function SpecialtyLink({
   item,
   active = false,
+  compact = false,
 }: {
   item: SpecialtyItem;
   active?: boolean;
+  compact?: boolean;
 }) {
-  return (
-    <Link
-      href={specialtyHref(item.label)}
-      className={`group relative flex min-h-[132px] flex-col justify-between rounded-[22px] px-5 py-5 text-left transition-all duration-200 ${
+  const baseClasses = compact
+    ? `group relative flex items-center gap-3 rounded-[18px] border px-3.5 py-3 text-left transition-all duration-200 ${
+        active
+          ? "border-[#cfe0ff] bg-[linear-gradient(180deg,#f4f8ff_0%,#e7f0ff_100%)] text-[var(--brand-deep)] shadow-[0_14px_24px_-20px_rgba(35,119,231,0.45)]"
+          : "border-[#edf2fb] bg-white text-[var(--brand-deep)] hover:-translate-y-0.5 hover:border-[#d8e5fb] hover:bg-[#fbfdff] hover:shadow-[0_14px_24px_-20px_rgba(17,24,39,0.2)]"
+      }`
+    : `group relative flex min-h-[132px] flex-col justify-between rounded-[22px] px-5 py-5 text-left transition-all duration-200 ${
         active
           ? "bg-[linear-gradient(180deg,#eef5ff_0%,#dbeafe_100%)] text-[var(--brand-deep)] shadow-[0_16px_28px_-22px_rgba(35,119,231,0.65)]"
           : "bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] text-[var(--brand-deep)] hover:-translate-y-1 hover:border-[#c7ddff] hover:shadow-[0_18px_30px_-22px_rgba(17,24,39,0.22)]"
-      }`}
-    >
+      }`;
+
+  return (
+    <Link href={specialtyHref(item.label)} className={baseClasses}>
       <span
-        className={`absolute right-5 top-5 h-2 w-2 rounded-full transition-opacity ${
+        className={`absolute ${compact ? "right-4 top-4" : "right-5 top-5"} h-2 w-2 rounded-full transition-opacity ${
           active ? "bg-[var(--brand)] opacity-100" : "bg-[#c7d2fe] opacity-0 group-hover:opacity-100"
         }`}
       />
 
       <div className="relative w-fit">
         <div
-          className={`absolute -inset-1 rounded-[20px] transition-opacity ${
+          className={`absolute ${compact ? "-inset-0.5 rounded-[16px]" : "-inset-1 rounded-[20px]"} transition-opacity ${
             active
               ? "bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.95),rgba(219,234,254,0.55))] opacity-100"
               : "bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.92),rgba(239,246,255,0.8))] opacity-0 group-hover:opacity-100"
           }`}
         />
         <div
-          className={`relative flex h-[62px] w-[62px] items-center justify-center rounded-[18px] border shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-all ${
+          className={`relative flex ${compact ? "h-12 w-12 rounded-[15px]" : "h-[62px] w-[62px] rounded-[18px]"} items-center justify-center border shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] transition-all ${
             active
               ? "border-white/80 bg-[linear-gradient(180deg,#ffffff_0%,#edf4ff_100%)]"
               : "border-[#e7eef9] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4fc_100%)] group-hover:border-[#d5e4fb] group-hover:bg-[linear-gradient(180deg,#ffffff_0%,#f1f6ff_100%)]"
@@ -229,10 +236,12 @@ export function SpecialtyLink({
         </div>
       </div>
 
-      <div className="mt-5">
-        <span className="block text-lg font-bold leading-tight tracking-[-0.02em]">{item.label}</span>
-        <span className="mt-2 block text-xs font-medium uppercase tracking-[0.14em] text-[var(--muted)]">
-          Explore specialty
+      <div className={compact ? "min-w-0 flex-1" : "mt-5"}>
+        <span className={`block leading-tight tracking-[-0.02em] ${compact ? "text-[15px] font-semibold" : "text-lg font-bold"}`}>
+          {item.label}
+        </span>
+        <span className={`block font-medium uppercase text-[var(--muted)] ${compact ? "mt-1 text-[10px] tracking-[0.18em]" : "mt-2 text-xs tracking-[0.14em]"}`}>
+          {compact ? "Browse doctors" : "Explore specialty"}
         </span>
       </div>
     </Link>

@@ -717,3 +717,109 @@ Error [TimeoutError]: The operation was aborted due to timeout
  GET /doctors?specialty=Orthopedic 200 in 511ms (compile: 3ms, render: 508ms)
  GET /doctors?specialty=Neurologist 200 in 599ms (compile: 3ms, render: 597ms)
  GET /doctors?specialty=Eye+Specialist 200 in 388ms (compile: 3ms, render: 384ms)
+ GET /dashboard/projects 200 in 509ms (compile: 246ms, render: 263ms)
+ GET /dashboard/projects 200 in 171ms (compile: 79ms, render: 92ms)
+ GET /doctors?specialty=Eye+Specialist 200 in 1148ms (compile: 15ms, render: 1133ms)
+ GET /doctors 200 in 1476ms (compile: 220ms, render: 1256ms)
+ GET /doctors?specialty=Eye+Specialist 200 in 1521ms (compile: 159ms, render: 1362ms)
+ GET /doctors 200 in 1289ms (compile: 60ms, render: 1229ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 13ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 13ms)
+ GET /doctors?specialty=Dentist 200 in 3.5s (compile: 3ms, render: 3.5s)
+ GET /doctors?specialty=Eye+Specialist 200 in 546ms (compile: 4ms, render: 542ms)
+ GET /doctors?specialty=Surgeon 200 in 435ms (compile: 4ms, render: 431ms)
+ GET /doctors?specialty=General+Doctor 200 in 891ms (compile: 3ms, render: 888ms)
+ GET /doctors?specialty=Orthopedic 200 in 548ms (compile: 3ms, render: 545ms)
+ GET /doctors?specialty=Dentist 200 in 770ms (compile: 3ms, render: 767ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 10ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.1s (compile: 7.1s, render: 10ms)
+ GET /doctors 200 in 1482ms (compile: 4ms, render: 1479ms)
+Error [TimeoutError]: The operation was aborted due to timeout
+    at ignore-listed frames {
+  code: 23,
+  INDEX_SIZE_ERR: 1,
+  DOMSTRING_SIZE_ERR: 2,
+  HIERARCHY_REQUEST_ERR: 3,
+  WRONG_DOCUMENT_ERR: 4,
+  INVALID_CHARACTER_ERR: 5,
+  NO_DATA_ALLOWED_ERR: 6,
+  NO_MODIFICATION_ALLOWED_ERR: 7,
+  NOT_FOUND_ERR: 8,
+  NOT_SUPPORTED_ERR: 9,
+  INUSE_ATTRIBUTE_ERR: 10,
+  INVALID_STATE_ERR: 11,
+  SYNTAX_ERR: 12,
+  INVALID_MODIFICATION_ERR: 13,
+  NAMESPACE_ERR: 14,
+  INVALID_ACCESS_ERR: 15,
+  VALIDATION_ERR: 16,
+  TYPE_MISMATCH_ERR: 17,
+  SECURITY_ERR: 18,
+  NETWORK_ERR: 19,
+  ABORT_ERR: 20,
+  URL_MISMATCH_ERR: 21,
+  QUOTA_EXCEEDED_ERR: 22,
+  TIMEOUT_ERR: 23,
+  INVALID_NODE_TYPE_ERR: 24,
+  DATA_CLONE_ERR: 25
+}
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.5s (compile: 7.5s, render: 15ms)
+ GET /_next/image?url=https%3A%2F%2Ffpqckpprlcofmhqgedep.supabase.co%2Fstorage%2Fv1%2Fobject%2Fpublic%2Fappointmentpics%2FSmiling%2520doctor%2520in%2520modern%2520clinic.png&w=1080&q=75 500 in 7.5s (compile: 7.5s, render: 15ms)
