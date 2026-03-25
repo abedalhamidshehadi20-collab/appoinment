@@ -1,39 +1,19 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent } from "react";
 import { saveProjectAction } from "@/app/dashboard/actions";
+import {
+  DoctorFormField,
+  defaultAvailableTimes,
+  inputClassName,
+  textareaClassName,
+} from "@/components/dashboard/doctor-form-ui";
 import { Modal } from "@/components/ui/Modal";
 
 type DraftCredential = {
   email: string;
   password: string;
 };
-
-const defaultAvailableTimes =
-  "8:00 am\n8:30 am\n9:00 am\n9:30 am\n10:00 am\n10:30 am\n11:00 am\n11:30 am";
-
-const inputClassName =
-  "h-12 w-full rounded-2xl border border-[#dfe8f8] bg-[#f8fbff] px-4 text-sm text-[var(--brand-deep)] outline-none transition placeholder:text-[#8da0be] focus:border-[#bfd5ff] focus:bg-white focus:ring-4 focus:ring-[#e8f0ff]";
-
-const textareaClassName =
-  "w-full rounded-2xl border border-[#dfe8f8] bg-[#f8fbff] px-4 py-3 text-sm text-[var(--brand-deep)] outline-none transition placeholder:text-[#8da0be] focus:border-[#bfd5ff] focus:bg-white focus:ring-4 focus:ring-[#e8f0ff]";
-
-function Field({
-  label,
-  children,
-}: {
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <label className="grid gap-2">
-      <span className="text-sm font-semibold text-[var(--brand-deep)]">
-        {label}
-      </span>
-      {children}
-    </label>
-  );
-}
 
 export function NewDoctorForm({
   onCancel,
@@ -79,34 +59,34 @@ export function NewDoctorForm({
           </>
         ) : null}
 
-        <Field label="Title">
+        <DoctorFormField label="Title">
           <input
             name="title"
             required
             placeholder="Title"
             className={inputClassName}
           />
-        </Field>
+        </DoctorFormField>
 
-        <Field label="Slug">
+        <DoctorFormField label="Slug">
           <input
             name="slug"
             placeholder="Slug (optional)"
             className={inputClassName}
           />
-        </Field>
+        </DoctorFormField>
 
-        <Field label="Doctor Summary">
+        <DoctorFormField label="Doctor Summary">
           <input
             name="excerpt"
             required
             placeholder="Doctor summary"
             className={inputClassName}
           />
-        </Field>
+        </DoctorFormField>
 
         <div className="md:col-span-2">
-          <Field label="Doctor Bio">
+          <DoctorFormField label="Doctor Bio">
             <textarea
               name="description"
               required
@@ -114,27 +94,27 @@ export function NewDoctorForm({
               placeholder="Doctor bio"
               className={textareaClassName}
             />
-          </Field>
+          </DoctorFormField>
         </div>
 
         <div className="grid gap-6 md:col-span-2 md:grid-cols-3">
-          <Field label="Specialty">
+          <DoctorFormField label="Specialty">
             <input
               name="sector"
               placeholder="Specialty"
               className={inputClassName}
             />
-          </Field>
+          </DoctorFormField>
 
-          <Field label="Clinic Location">
+          <DoctorFormField label="Clinic Location">
             <input
               name="location"
               placeholder="Clinic location"
               className={inputClassName}
             />
-          </Field>
+          </DoctorFormField>
 
-          <Field label="Status">
+          <DoctorFormField label="Status">
             <select
               name="status"
               defaultValue="Available"
@@ -143,11 +123,11 @@ export function NewDoctorForm({
               <option value="Available">Available</option>
               <option value="Unavailable">Unavailable</option>
             </select>
-          </Field>
+          </DoctorFormField>
         </div>
 
         <div className="grid gap-6 md:col-span-2 md:grid-cols-2">
-          <Field label="Appointment Fee">
+          <DoctorFormField label="Appointment Fee">
             <input
               name="appointmentFee"
               type="number"
@@ -156,9 +136,9 @@ export function NewDoctorForm({
               placeholder="Appointment Fee ($)"
               className={inputClassName}
             />
-          </Field>
+          </DoctorFormField>
 
-          <Field label="Years of Experience">
+          <DoctorFormField label="Years of Experience">
             <input
               name="yearsExperience"
               type="number"
@@ -166,39 +146,39 @@ export function NewDoctorForm({
               placeholder="Years of Experience"
               className={inputClassName}
             />
-          </Field>
+          </DoctorFormField>
         </div>
 
         <div className="md:col-span-2">
-          <Field label="Cover Image URL">
+          <DoctorFormField label="Cover Image URL">
             <input
               name="coverImage"
               placeholder="Cover image URL"
               className={inputClassName}
             />
-          </Field>
+          </DoctorFormField>
         </div>
 
-        <Field label="Gallery URLs">
+        <DoctorFormField label="Gallery URLs">
           <textarea
             name="gallery"
             rows={4}
             placeholder="Gallery URLs (one per line)"
             className={textareaClassName}
           />
-        </Field>
+        </DoctorFormField>
 
-        <Field label="Doctor Highlights">
+        <DoctorFormField label="Doctor Highlights">
           <textarea
             name="details"
             rows={4}
             placeholder="Doctor highlights (one per line)"
             className={textareaClassName}
           />
-        </Field>
+        </DoctorFormField>
 
         <div className="md:col-span-2">
-          <Field label="Available Time Slots">
+          <DoctorFormField label="Available Time Slots">
             <textarea
               name="availableTimes"
               defaultValue={defaultAvailableTimes}
@@ -206,7 +186,7 @@ export function NewDoctorForm({
               placeholder="Available time slots (one per line)"
               className={textareaClassName}
             />
-          </Field>
+          </DoctorFormField>
         </div>
 
         <div className="md:col-span-2 border-t border-[#edf2fb] pt-2">
@@ -273,7 +253,7 @@ export function NewDoctorForm({
         title={credential ? "Update Doctor Email" : "Create Doctor Email"}
       >
         <form onSubmit={handleSaveCredential} className="grid gap-4">
-          <Field label="Email">
+          <DoctorFormField label="Email">
             <input
               type="email"
               required
@@ -282,9 +262,9 @@ export function NewDoctorForm({
               placeholder="doctor@example.com"
               className={inputClassName}
             />
-          </Field>
+          </DoctorFormField>
 
-          <Field label="Password">
+          <DoctorFormField label="Password">
             <input
               type="password"
               required
@@ -293,7 +273,7 @@ export function NewDoctorForm({
               placeholder="Password"
               className={inputClassName}
             />
-          </Field>
+          </DoctorFormField>
 
           <div className="mt-2 flex justify-end gap-3">
             <button

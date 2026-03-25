@@ -51,9 +51,7 @@ export function DoctorsManagementClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(
-    doctors[0]?.id ?? null,
-  );
+  const [selectedDoctorId, setSelectedDoctorId] = useState<string | null>(null);
 
   const availableStatuses = Array.from(
     new Set(
@@ -129,7 +127,10 @@ export function DoctorsManagementClient({
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={() => setShowCreateForm(true)}
+              onClick={() => {
+                setSelectedDoctorId(null);
+                setShowCreateForm(true);
+              }}
               className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1f68cb]"
             >
               <Plus className="h-4 w-4" />
@@ -252,7 +253,10 @@ export function DoctorsManagementClient({
                           <div className="flex justify-end gap-2">
                             <button
                               type="button"
-                              onClick={() => setSelectedDoctorId(doctor.id)}
+                              onClick={() => {
+                                setShowCreateForm(false);
+                                setSelectedDoctorId(doctor.id);
+                              }}
                               className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ${
                                 isSelected
                                   ? "border-[#bfd5ff] bg-[#eef4ff] text-[var(--brand)]"
@@ -284,36 +288,6 @@ export function DoctorsManagementClient({
           </div>
         </section>
 
-        {selectedDoctor ? (
-          <section className="mt-6 rounded-[24px] border border-[#dce8fb] bg-white p-5 shadow-[0_12px_28px_-24px_rgba(17,24,39,0.25)]">
-            <div className="mb-4 flex flex-col gap-3 border-b border-[#eef2f7] pb-4 lg:flex-row lg:items-start lg:justify-between">
-              <div>
-                <p className="text-sm font-semibold text-[var(--brand)]">
-                  Editing Doctor
-                </p>
-                <h2 className="mt-1 text-2xl font-extrabold text-[var(--brand-deep)]">
-                  {selectedDoctor.title}
-                </h2>
-                <p className="mt-2 text-sm text-[var(--muted)]">
-                  {[selectedDoctor.sector, selectedDoctor.location].filter(Boolean).join(" - ") || "Doctor profile"}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedDoctorId(null)}
-                className="inline-flex items-center rounded-lg border border-[#d8e5fb] bg-white px-4 py-2 text-sm font-medium text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
-              >
-                Close Editor
-              </button>
-            </div>
-
-            <DoctorProfileForm
-              doctor={selectedDoctor}
-              credential={selectedCredential}
-            />
-          </section>
-        ) : null}
       </article>
 
       {showCreateForm ? (
@@ -356,6 +330,55 @@ export function DoctorsManagementClient({
 
             <div className="overflow-y-auto px-6 py-6 sm:px-8 sm:py-7">
               <NewDoctorForm onCancel={() => setShowCreateForm(false)} />
+            </div>
+          </section>
+        </div>
+      ) : null}
+
+      {selectedDoctor ? (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-[rgba(15,23,42,0.28)] p-4 backdrop-blur-[6px] sm:p-6">
+          <button
+            type="button"
+            aria-label="Close update doctor form"
+            onClick={() => setSelectedDoctorId(null)}
+            className="absolute inset-0 cursor-default"
+          />
+
+          <section className="relative z-10 flex max-h-[calc(100vh-3rem)] w-full max-w-5xl flex-col overflow-hidden rounded-[30px] border border-[#dce8fb] bg-white shadow-[0_36px_70px_-38px_rgba(15,23,42,0.42)]">
+            <div className="flex items-start justify-between gap-4 border-b border-[#edf2fb] px-6 py-5 sm:px-8">
+              <div className="flex items-start gap-4">
+                <div className="rounded-[20px] bg-[#eef4ff] p-3 text-[var(--brand)]">
+                  <Stethoscope className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
+                    Update Form
+                  </p>
+                  <h2 className="mt-1 text-[28px] font-extrabold tracking-[-0.03em] text-[var(--brand-deep)]">
+                    Update Doctor Profile
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
+                    Edit {selectedDoctor.title} and update clinic details, availability, and doctor login information from one place.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedDoctorId(null)}
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#d8e5fb] bg-white text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
+                title="Close form"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto px-6 py-6 sm:px-8 sm:py-7">
+              <DoctorProfileForm
+                doctor={selectedDoctor}
+                credential={selectedCredential}
+                onCancel={() => setSelectedDoctorId(null)}
+              />
             </div>
           </section>
         </div>

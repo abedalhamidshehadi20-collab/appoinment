@@ -21,12 +21,12 @@ export function DoctorCredentialActions({
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="rounded-lg border border-[#d8e5fb] bg-white px-4 py-2 text-sm font-medium text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
+          className="rounded-xl border border-[#d8e5fb] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
         >
           Update Email
         </button>
         {credential?.email ? (
-          <p className="text-xs font-medium text-[var(--muted)]">
+          <p className="text-sm font-medium text-[var(--muted)]">
             {credential.email}
           </p>
         ) : null}
