@@ -1,11 +1,30 @@
 import { deleteProjectAction, saveProjectAction } from "@/app/dashboard/actions";
+import { DoctorCredentialActions } from "@/components/dashboard/DoctorCredentialActions";
+import { NewDoctorForm } from "@/components/dashboard/NewDoctorForm";
 import { requirePermission } from "@/lib/auth";
-import { getAllDoctors, Doctor } from "@/lib/db";
+import { getAllDoctorCredentials, getAllDoctors, type Doctor, type DoctorCredential } from "@/lib/db";
+
+function getCredentialSuccessMessage(code: string | undefined) {
+  if (!code) return "";
+  if (code === "1") return "Doctor login saved successfully.";
+  return "";
+}
+
+function getCredentialErrorMessage(code: string | undefined) {
+  if (!code) return "";
+  if (code === "password_required") return "Password is required when creating a doctor email.";
+  if (code === "email_taken") return "This email is already being used by another doctor.";
+  if (code === "missing_fields") return "Doctor email and doctor selection are required.";
+  if (code === "doctor_credentials_missing") return "Run the doctor credentials SQL file first, then try again.";
+  return "Unable to save the doctor email right now.";
+}
 
 function ProjectForm({
   item,
+  credential,
 }: {
   item?: Doctor;
+  credential?: DoctorCredential | null;
 }) {
   return (
     <form action={saveProjectAction} className="grid gap-3">
@@ -36,29 +55,75 @@ function ProjectForm({
       <textarea name="gallery" defaultValue={item?.gallery?.join("\n")} rows={3} placeholder="Gallery URLs (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <textarea name="details" defaultValue={item?.details?.join("\n")} rows={3} placeholder="Doctor highlights (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
       <textarea name="availableTimes" defaultValue={item?.available_times?.join("\n") ?? "8:00 am\n8:30 am\n9:00 am\n9:30 am\n10:00 am\n10:30 am\n11:00 am\n11:30 am"} rows={4} placeholder="Available time slots (one per line)" className="rounded-lg border border-[var(--line)] px-3 py-2" />
-      <button className="button button-primary w-fit">{item ? "Save Doctor" : "Add Doctor"}</button>
+      {item ? (
+        <div className="flex flex-col items-start gap-3">
+          <DoctorCredentialActions
+            doctor={{ id: item.id, title: item.title }}
+            credential={credential}
+          />
+          <button className="button button-primary w-fit">Save Doctor</button>
+        </div>
+      ) : (
+        <button className="button button-primary w-fit">Add Doctor</button>
+      )}
     </form>
   );
 }
 
-export default async function DashboardProjectsPage() {
+type Props = {
+  searchParams: Promise<{ credential_success?: string; credential_error?: string }>;
+};
+
+export default async function DashboardProjectsPage({ searchParams }: Props) {
   await requirePermission("projects");
-  const doctors = await getAllDoctors();
+  const query = await searchParams;
+  const [doctors, credentials] = await Promise.all([
+    getAllDoctors(),
+    getAllDoctorCredentials(),
+  ]);
+
+  const credentialMap = new Map(
+    credentials.map((credential) => [credential.doctor_id, credential]),
+  );
+  const successMessage = getCredentialSuccessMessage(query.credential_success);
+  const errorMessage = getCredentialErrorMessage(query.credential_error);
 
   return (
     <>
+      {successMessage ? (
+        <article className="card border border-[#bde5cb] bg-[#ecfff3] p-4 text-sm font-medium text-[#145f39]">
+          {successMessage}
+        </article>
+      ) : null}
+
+      {errorMessage ? (
+        <article className="card border border-[#fecaca] bg-[#fef2f2] p-4 text-sm font-medium text-[#991b1b]">
+          {errorMessage}
+        </article>
+      ) : null}
+
       <article className="card p-6">
         <h1 className="text-2xl font-extrabold">Create Doctor Profile</h1>
+        <p className="mt-2 text-sm text-[var(--muted)]">
+          Add the doctor profile here. You can prepare the doctor login email and password before saving the profile.
+        </p>
         <div className="mt-4">
-          <ProjectForm />
+          <NewDoctorForm />
         </div>
       </article>
 
       {doctors.map((doctor) => (
         <article key={doctor.id} className="card p-6">
-          <h2 className="text-lg font-bold">{doctor.title}</h2>
+          <div className="mb-4 border-b border-[#eef2f7] pb-4">
+            <div>
+              <h2 className="text-lg font-bold">{doctor.title}</h2>
+              <p className="mt-1 text-sm text-[var(--muted)]">
+                {[doctor.sector, doctor.location].filter(Boolean).join(" - ") || "Doctor profile"}
+              </p>
+            </div>
+          </div>
           <div className="mt-3">
-            <ProjectForm item={doctor} />
+            <ProjectForm item={doctor} credential={credentialMap.get(doctor.id) ?? null} />
           </div>
           <form action={deleteProjectAction} className="mt-2">
             <input type="hidden" name="id" value={doctor.id} />

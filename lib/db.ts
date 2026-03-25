@@ -56,6 +56,15 @@ export type Doctor = {
   created_at: string;
 };
 
+export type DoctorCredential = {
+  id: string;
+  doctor_id: string;
+  email: string;
+  password: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Specialty = {
   id: string;
   slug: string;
@@ -686,6 +695,47 @@ export async function deleteDoctor(id: string) {
     .eq('id', id);
 
   if (error) throw error;
+}
+
+function isMissingDoctorCredentialsTableError(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? '';
+  return (
+    error.code === '42P01' ||
+    error.code === 'PGRST205' ||
+    message.includes('doctor_credentials')
+  );
+}
+
+export async function getAllDoctorCredentials() {
+  const { data, error } = await supabase
+    .from('doctor_credentials')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (isMissingDoctorCredentialsTableError(error)) {
+    return [] as DoctorCredential[];
+  }
+
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('doctor_credentials')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (isMissingDoctorCredentialsTableError(adminError)) {
+      return [] as DoctorCredential[];
+    }
+
+    if (adminError) throw adminError;
+    return adminData as DoctorCredential[];
+  }
+
+  if (error) throw error;
+  return data as DoctorCredential[];
 }
 
 // ============================================

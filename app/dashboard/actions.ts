@@ -35,7 +35,72 @@ const refreshSite = () => {
   revalidatePath("/dashboard/news");
   revalidatePath("/dashboard/home");
   revalidatePath("/dashboard/contacts");
+  revalidatePath("/dashboard/projects");
 };
+
+function isMissingDoctorCredentialsTableError(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? "";
+  return (
+    error.code === "42P01" ||
+    error.code === "PGRST205" ||
+    message.includes("doctor_credentials")
+  );
+}
+
+function isDoctorCredentialEmailTaken(error: { code?: string } | null) {
+  return error?.code === "23505";
+}
+
+async function insertDoctorCredentialRecord(payload: {
+  id: string;
+  doctor_id: string;
+  email: string;
+  password: string;
+  created_at: string;
+  updated_at: string;
+}) {
+  const { error } = await supabase
+    .from("doctor_credentials")
+    .insert(payload);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from("doctor_credentials")
+      .insert(payload);
+
+    return adminError;
+  }
+
+  return error;
+}
+
+async function deleteDoctorRecord(id: string) {
+  const { error } = await supabase
+    .from("doctors")
+    .delete()
+    .eq("id", id);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from("doctors")
+      .delete()
+      .eq("id", id);
+
+    if (adminError) {
+      throw adminError;
+    }
+
+    return;
+  }
+
+  if (error) {
+    throw error;
+  }
+}
 
 async function upsertSiteSetting(key: "home" | "about" | "contact", value: unknown) {
   const payload = { key, value, updated_at: new Date().toISOString() };
@@ -218,6 +283,18 @@ export async function saveProjectAction(formData: FormData) {
   await requirePermission("projects");
   const id = formData.get("id")?.toString();
   const title = formData.get("title")?.toString() ?? "";
+  const doctorCredentialEmail =
+    formData.get("doctorCredentialEmail")?.toString().trim().toLowerCase() ?? "";
+  const doctorCredentialPassword = formData.get("doctorCredentialPassword")?.toString() ?? "";
+  const shouldCreateCredential = !id && !!doctorCredentialEmail;
+
+  if (!id && doctorCredentialPassword && !doctorCredentialEmail) {
+    redirect("/dashboard/projects?credential_error=missing_fields");
+  }
+
+  if (!id && doctorCredentialEmail && !doctorCredentialPassword) {
+    redirect("/dashboard/projects?credential_error=password_required");
+  }
 
   // Parse available times from textarea or use default
   const availableTimesRaw = formData.get("availableTimes")?.toString() ?? "";
@@ -308,9 +385,10 @@ export async function saveProjectAction(formData: FormData) {
       throw error;
     }
   } else {
+    const createdAt = new Date().toISOString();
     const insertPayload = {
       ...payload,
-      created_at: new Date().toISOString(),
+      created_at: createdAt,
     };
 
     const { error } = await supabase.from("doctors").insert(insertPayload);
@@ -318,7 +396,7 @@ export async function saveProjectAction(formData: FormData) {
     if (isMissingColumnError(error)) {
       const fallbackInsertPayload = {
         ...fallbackPayload,
-        created_at: new Date().toISOString(),
+        created_at: createdAt,
       };
 
       const { error: fallbackError } = await supabase.from("doctors").insert(fallbackInsertPayload);
@@ -331,18 +409,39 @@ export async function saveProjectAction(formData: FormData) {
       } else if (fallbackError) {
         throw fallbackError;
       }
-
-      refreshSite();
-      return;
     }
-
-    if (error?.code === "42501" && supabaseAdmin) {
+    else if (error?.code === "42501" && supabaseAdmin) {
       const { error: adminError } = await supabaseAdmin.from("doctors").insert(insertPayload);
       if (adminError) {
         throw adminError;
       }
     } else if (error) {
       throw error;
+    }
+
+    if (shouldCreateCredential) {
+      const credentialError = await insertDoctorCredentialRecord({
+        id: nextId("dcr"),
+        doctor_id: payload.id,
+        email: doctorCredentialEmail,
+        password: doctorCredentialPassword,
+        created_at: createdAt,
+        updated_at: createdAt,
+      });
+
+      if (credentialError) {
+        await deleteDoctorRecord(payload.id);
+
+        if (isMissingDoctorCredentialsTableError(credentialError)) {
+          redirect("/dashboard/projects?credential_error=doctor_credentials_missing");
+        }
+
+        if (isDoctorCredentialEmailTaken(credentialError)) {
+          redirect("/dashboard/projects?credential_error=email_taken");
+        }
+
+        throw credentialError;
+      }
     }
   }
 
@@ -367,6 +466,84 @@ export async function deleteProjectAction(formData: FormData) {
   }
 
   refreshSite();
+}
+
+export async function saveDoctorCredentialAction(formData: FormData) {
+  await requirePermission("projects");
+
+  const credentialId = formData.get("credentialId")?.toString();
+  const doctorId = formData.get("doctorId")?.toString();
+  const email = formData.get("email")?.toString().trim().toLowerCase() ?? "";
+  const password = formData.get("password")?.toString() ?? "";
+  const timestamp = new Date().toISOString();
+
+  if (!doctorId || !email) {
+    redirect("/dashboard/projects?credential_error=missing_fields");
+  }
+
+  const handleCredentialError = (error: { code?: string; message?: string } | null) => {
+    if (!error) {
+      return;
+    }
+
+    if (isMissingDoctorCredentialsTableError(error)) {
+      redirect("/dashboard/projects?credential_error=doctor_credentials_missing");
+    }
+
+    if (isDoctorCredentialEmailTaken(error)) {
+      redirect("/dashboard/projects?credential_error=email_taken");
+    }
+
+    throw error;
+  };
+
+  if (credentialId) {
+    const updates: Record<string, string> = {
+      email,
+      updated_at: timestamp,
+    };
+
+    if (password) {
+      updates.password = password;
+    }
+
+    const { error } = await supabase
+      .from("doctor_credentials")
+      .update(updates)
+      .eq("id", credentialId)
+      .eq("doctor_id", doctorId);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin
+        .from("doctor_credentials")
+        .update(updates)
+        .eq("id", credentialId)
+        .eq("doctor_id", doctorId);
+
+      handleCredentialError(adminError);
+    } else {
+      handleCredentialError(error);
+    }
+  } else {
+    if (!password) {
+      redirect("/dashboard/projects?credential_error=password_required");
+    }
+
+    const payload = {
+      id: nextId("dcr"),
+      doctor_id: doctorId,
+      email,
+      password,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    const error = await insertDoctorCredentialRecord(payload);
+    handleCredentialError(error);
+  }
+
+  refreshSite();
+  redirect("/dashboard/projects?credential_success=1");
 }
 
 // ============================================
@@ -640,7 +817,8 @@ export async function savePatientAction(formData: FormData) {
   };
 
   if (id) {
-    const { created_at, ...updatePayload } = payload;
+    const { created_at: removedCreatedAt, ...updatePayload } = payload;
+    void removedCreatedAt;
     await supabase.from("patients").update(updatePayload).eq("id", id);
   } else {
     await supabase.from("patients").insert(payload);
