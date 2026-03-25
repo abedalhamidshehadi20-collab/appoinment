@@ -17,7 +17,7 @@ import {
   getAllContacts,
   getAllAppointments,
   getAllPatients,
-  getSiteSettings,
+  deleteContact,
 } from "@/lib/db";
 
 const refreshSite = () => {
@@ -800,7 +800,7 @@ export async function deleteContactAction(formData: FormData) {
 
   if (!id) return;
 
-  await supabase.from("contacts").delete().eq("id", id);
+  await deleteContact(id);
   refreshSite();
 }
 

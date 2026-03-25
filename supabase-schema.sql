@@ -209,6 +209,14 @@ CREATE POLICY "Anyone can view site settings" ON site_settings
 CREATE POLICY "Anyone can create contacts" ON contacts
   FOR INSERT WITH CHECK (true);
 
+-- The dashboard uses custom app cookies, not Supabase Auth sessions, so it
+-- reads and deletes contact submissions through the anon role by default.
+CREATE POLICY "Anyone can view contacts" ON contacts
+  FOR SELECT USING (true);
+
+CREATE POLICY "Anyone can delete contacts" ON contacts
+  FOR DELETE USING (true);
+
 -- Public can insert appointments
 CREATE POLICY "Anyone can create appointments" ON appointments
   FOR INSERT WITH CHECK (true);

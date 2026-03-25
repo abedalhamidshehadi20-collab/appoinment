@@ -4,7 +4,7 @@ import { getPatientSession } from "@/lib/patient-auth";
 import { getAllDoctors, getSiteSettings } from "@/lib/db";
 
 type Props = {
-  searchParams: Promise<{ sent?: string }>;
+  searchParams: Promise<{ sent?: string; error?: string }>;
 };
 
 export default async function ContactPage({ searchParams }: Props) {
@@ -47,7 +47,12 @@ export default async function ContactPage({ searchParams }: Props) {
           </div>
         </div>
 
-        <ContactFormToggle doctors={doctors} showSuccess={query.sent === "1"} isPatientLoggedIn={Boolean(patient)} />
+        <ContactFormToggle
+          doctors={doctors}
+          showSuccess={query.sent === "1"}
+          showError={query.error === "1"}
+          isPatientLoggedIn={Boolean(patient)}
+        />
       </section>
     </main>
   );
