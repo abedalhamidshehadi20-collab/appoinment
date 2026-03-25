@@ -1,35 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { SpecialtyLink, getSpecialtyItems } from "@/components/site/specialties";
+import { SpecialtyLink, getSpecialtyItems, type SpecialtyItem } from "@/components/site/specialties";
 import { getAllDoctors, getAllSpecialties } from "@/lib/db";
+import { doctorMatchesSpecialty, normalizeSpecialtyLabel } from "@/lib/doctor-specialties";
 import { getSafeDoctorImageSrc } from "@/lib/image";
 
 type Props = {
   searchParams: Promise<{ q?: string; specialty?: string }>;
-};
-
-const categoryKeywords: Record<string, string[]> = {
-  Dentist: ["dent", "oral", "teeth"],
-  Cardiologist: ["cardio", "heart"],
-  Orthopedic: ["ortho", "bone", "joint"],
-  Neurologist: ["neuro", "brain", "nerve"],
-  Otology: ["oto", "ent", "ear"],
-  "General Doctor": ["general", "internal", "family"],
-  Surgeon: ["surgery", "surgeon"],
-  Psychiatry: ["psych", "mental"],
-  "Eye Specialist": ["eye", "ophthal", "vision"],
-};
-
-const specialtySectorAliases: Record<string, string[]> = {
-  Dentist: ["Dentistry", "Dental"],
-  Cardiologist: ["Cardiology"],
-  Orthopedic: ["Orthopedics", "Orthopedic Surgery"],
-  Neurologist: ["Neurology"],
-  Otology: ["ENT", "Otolaryngology", "Otology"],
-  "General Doctor": ["Internal Medicine", "General Medicine", "Family Medicine"],
-  Surgeon: ["Surgery", "General Surgery"],
-  Psychiatry: ["Psychiatry"],
-  "Eye Specialist": ["Ophthalmology", "Eye Care"],
 };
 
 function decodeSpecialty(value: string) {
@@ -51,28 +28,29 @@ export default async function ProjectsPage({ searchParams }: Props) {
     getAllSpecialties().catch(() => null),
   ]);
 
-  const allSpecialties = getSpecialtyItems(specialtiesData, false);
-  const selectedSpecialty =
-    allSpecialties.find((item) => item.label.toLowerCase() === rawSpecialty.toLowerCase())?.label ??
-    (rawSpecialty ? decodeSpecialty(rawSpecialty) : "");
+  const allSpecialties = getSpecialtyItems(specialtiesData, false).reduce<SpecialtyItem[]>((items, item) => {
+    const label = normalizeSpecialtyLabel(item.label) || item.label;
 
-  const selectedKeywords = selectedSpecialty
-    ? categoryKeywords[selectedSpecialty] ?? [selectedSpecialty.toLowerCase()]
-    : [];
-  const selectedSectorAliases = selectedSpecialty
-    ? specialtySectorAliases[selectedSpecialty] ?? [selectedSpecialty]
-    : [];
+    if (items.some((existingItem) => existingItem.label.toLowerCase() === label.toLowerCase())) {
+      return items;
+    }
+
+    items.push({
+      ...item,
+      label,
+    });
+
+    return items;
+  }, []);
+  const selectedSpecialty =
+    allSpecialties.find(
+      (item) =>
+        normalizeSpecialtyLabel(item.label).toLowerCase() ===
+        normalizeSpecialtyLabel(rawSpecialty).toLowerCase(),
+    )?.label ?? normalizeSpecialtyLabel(rawSpecialty ? decodeSpecialty(rawSpecialty) : "");
 
   const doctorsBySpecialty = selectedSpecialty
-    ? allDoctors.filter((doctor) => {
-        const haystack = `${doctor.sector} ${doctor.title} ${doctor.excerpt}`.toLowerCase();
-        const sector = doctor.sector.toLowerCase();
-
-        return (
-          selectedSectorAliases.some((alias) => sector === alias.toLowerCase()) ||
-          selectedKeywords.some((keyword) => haystack.includes(keyword))
-        );
-      })
+    ? allDoctors.filter((doctor) => doctorMatchesSpecialty(doctor, selectedSpecialty))
     : allDoctors;
 
   const doctors = doctorsBySpecialty.filter((doctor) => {

@@ -1,9 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getAllDoctors, getSiteSettings, getFeaturedSpecialties } from "@/lib/db";
-import { SpecialtyLink, getSpecialtyItems, defaultHomepageSpecialties } from "@/components/site/specialties";
+import PopularDoctorsFilter from "@/components/site/PopularDoctorsFilter";
+import { type DoctorListItem } from "@/components/site/DoctorsList";
+import { type FilterSpecialtyItem } from "@/components/site/SpecialtyCards";
+import { getSpecialtyItems } from "@/components/site/specialties";
 import { getPatientSession } from "@/lib/patient-auth";
 import { getSafeDoctorImageSrc } from "@/lib/image";
+import { getDoctorSpecialty, normalizeSpecialtyLabel } from "@/lib/doctor-specialties";
 
 type Props = {
   searchParams: Promise<{ q?: string }>;
@@ -24,8 +28,34 @@ export default async function HomePage({ searchParams }: Props) {
       })
     : doctors;
 
-  const popularDoctors = filteredDoctors.slice(0, 4);
+  const popularDoctors: DoctorListItem[] = filteredDoctors.map((doctor) => ({
+    id: doctor.id,
+    slug: doctor.slug,
+    name: doctor.title,
+    specialty: getDoctorSpecialty(doctor),
+    status: doctor.status?.trim() || "Available",
+    image: getSafeDoctorImageSrc(doctor.cover_image),
+    bio: doctor.excerpt,
+    location: doctor.location,
+  }));
+
   const homepageSpecialties = getSpecialtyItems(specialtiesData, true);
+  const filterSpecialties = homepageSpecialties.reduce<FilterSpecialtyItem[]>((items, item) => {
+    const normalizedLabel = normalizeSpecialtyLabel(item.label);
+    const value = normalizedLabel || item.label.trim();
+
+    if (!value || items.some((existingItem) => existingItem.value.toLowerCase() === value.toLowerCase())) {
+      return items;
+    }
+
+    items.push({
+      ...item,
+      label: normalizedLabel || item.label,
+      value,
+    });
+
+    return items;
+  }, []);
 
   return (
     <main className="container fade-up pb-8">
@@ -84,75 +114,12 @@ export default async function HomePage({ searchParams }: Props) {
           </form>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          {homepageSpecialties.map((item) => (
-            <article key={item.label} className="overflow-hidden rounded-[22px] border border-[var(--line)] bg-white shadow-[0_12px_28px_-24px_rgba(17,24,39,0.28)]">
-              <SpecialtyLink item={item} />
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-10">
-          <h3 className="text-3xl font-extrabold">Popular Doctors</h3>
-        </div>
-
-        <div className="mt-5">
-          {popularDoctors.length === 0 ? (
-            <article className="card p-6 text-sm text-[var(--muted)]">No doctors found for your search.</article>
-          ) : null}
-          <div className="grid-cards">
-            {popularDoctors.map((project) => (
-              <article key={project.id} className="card overflow-hidden">
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100">
-                  <Image
-                    src={getSafeDoctorImageSrc(project.cover_image)}
-                    alt={project.title}
-                    fill
-                    className="object-cover object-top transition-transform duration-300 hover:scale-105"
-                  />
-                </div>
-                <div className="p-4">
-                  {/* Availability Badge */}
-                  {project.status && (
-                    <p className="mb-2 flex items-center gap-1 text-sm font-medium">
-                      <span className={`inline-block h-2 w-2 rounded-full ${
-                        project.status.toLowerCase() === 'available'
-                          ? 'bg-[#10b981]'
-                          : project.status.toLowerCase() === 'unavailable'
-                          ? 'bg-[#ef4444]'
-                          : project.status.toLowerCase() === 'on leave'
-                          ? 'bg-[#f59e0b]'
-                          : 'bg-[#6b7280]'
-                      }`}></span>
-                      <span className={
-                        project.status.toLowerCase() === 'available'
-                          ? 'text-[#10b981]'
-                          : project.status.toLowerCase() === 'unavailable'
-                          ? 'text-[#ef4444]'
-                          : project.status.toLowerCase() === 'on leave'
-                          ? 'text-[#f59e0b]'
-                          : 'text-[#6b7280]'
-                      }>
-                        {project.status}
-                      </span>
-                    </p>
-                  )}
-
-                  <p className="text-xs font-semibold uppercase text-[var(--brand)]">{project.sector}</p>
-                  <h3 className="mt-2 text-xl font-bold">{project.title}</h3>
-                  <p className="mt-2 text-sm text-[var(--muted)]">{project.excerpt}</p>
-                  <p className="mt-2 text-xs font-semibold text-[var(--brand-deep)]">{project.location}</p>
-
-                  <Link
-                    href={`/doctors/${project.slug}`}
-                    className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]"
-                  >
-                    View profile
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+        <div className="mt-8">
+          <PopularDoctorsFilter
+            specialties={filterSpecialties}
+            doctors={popularDoctors}
+            defaultEmptyMessage={query ? "No doctors found for your search." : "No doctors found."}
+          />
         </div>
 
         <div className="mt-10 grid gap-4 md:grid-cols-3">
