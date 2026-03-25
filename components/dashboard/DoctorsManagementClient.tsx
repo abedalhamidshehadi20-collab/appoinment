@@ -129,52 +129,14 @@ export function DoctorsManagementClient({
           <div className="flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={() => setShowCreateForm((current) => !current)}
+              onClick={() => setShowCreateForm(true)}
               className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1f68cb]"
             >
               <Plus className="h-4 w-4" />
-              {showCreateForm ? "Close Form" : "Add Doctor"}
+              Add Doctor
             </button>
           </div>
         </div>
-
-        {showCreateForm ? (
-          <section className="mt-6 flex justify-center">
-            <div className="w-full max-w-5xl overflow-hidden rounded-[30px] border border-[#dce8fb] bg-white shadow-[0_24px_50px_-34px_rgba(15,23,42,0.35)]">
-              <div className="flex items-start justify-between gap-4 border-b border-[#edf2fb] px-6 py-5">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-[20px] bg-[#eef4ff] p-3 text-[var(--brand)]">
-                    <Stethoscope className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
-                      Create Form
-                    </p>
-                    <h2 className="mt-1 text-2xl font-extrabold text-[var(--brand-deep)]">
-                      Create Doctor Profile
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                      Add the doctor profile here. You can prepare the doctor login email and password before saving the profile.
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setShowCreateForm(false)}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[#d8e5fb] bg-white text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
-                  title="Close form"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="px-6 py-6">
-                <NewDoctorForm />
-              </div>
-            </div>
-          </section>
-        ) : null}
 
         <section className="mt-6 rounded-[24px] border border-[#dce8fb] bg-white p-5 shadow-[0_12px_28px_-24px_rgba(17,24,39,0.25)]">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -353,6 +315,51 @@ export function DoctorsManagementClient({
           </section>
         ) : null}
       </article>
+
+      {showCreateForm ? (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-[rgba(15,23,42,0.28)] p-4 backdrop-blur-[6px] sm:p-6">
+          <button
+            type="button"
+            aria-label="Close create doctor form"
+            onClick={() => setShowCreateForm(false)}
+            className="absolute inset-0 cursor-default"
+          />
+
+          <section className="relative z-10 flex max-h-[calc(100vh-3rem)] w-full max-w-5xl flex-col overflow-hidden rounded-[30px] border border-[#dce8fb] bg-white shadow-[0_36px_70px_-38px_rgba(15,23,42,0.42)]">
+            <div className="flex items-start justify-between gap-4 border-b border-[#edf2fb] px-6 py-5 sm:px-8">
+              <div className="flex items-start gap-4">
+                <div className="rounded-[20px] bg-[#eef4ff] p-3 text-[var(--brand)]">
+                  <Stethoscope className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
+                    Create Form
+                  </p>
+                  <h2 className="mt-1 text-[28px] font-extrabold tracking-[-0.03em] text-[var(--brand-deep)]">
+                    Create Doctor Profile
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
+                    Add the doctor profile here. You can prepare the doctor login email and password before saving the profile.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowCreateForm(false)}
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#d8e5fb] bg-white text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
+                title="Close form"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto px-6 py-6 sm:px-8 sm:py-7">
+              <NewDoctorForm onCancel={() => setShowCreateForm(false)} />
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }
