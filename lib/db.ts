@@ -1038,6 +1038,16 @@ export async function getAllContacts() {
     .select('*')
     .order('created_at', { ascending: false });
 
+  if (error?.code === '42501' && supabaseAdmin) {
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('contacts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (adminError) throw adminError;
+    return adminData as Contact[];
+  }
+
   if (error) throw error;
   return data as Contact[];
 }
