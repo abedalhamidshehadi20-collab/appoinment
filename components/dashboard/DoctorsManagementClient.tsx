@@ -215,14 +215,9 @@ export function DoctorsManagementClient({
                         }`}
                       >
                         <td className="px-5 py-4">
-                          <div className="max-w-[270px]">
-                            <p className="text-sm font-semibold text-[var(--brand-deep)]">
-                              {doctor.title}
-                            </p>
-                            <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
-                              {doctor.excerpt || "No summary available."}
-                            </p>
-                          </div>
+                          <p className="max-w-[270px] text-sm font-semibold text-[var(--brand-deep)]">
+                            {doctor.title}
+                          </p>
                         </td>
                         <td className="px-4 py-4 text-sm font-medium text-[var(--brand-deep)]">
                           {doctor.sector || "-"}
