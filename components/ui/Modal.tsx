@@ -1,6 +1,7 @@
 "use client";
 
-import { ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 type ModalProps = {
@@ -37,9 +38,11 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
     }
   };
 
-  if (!isOpen) return null;
+  const portalTarget = typeof document === "undefined" ? null : document.body;
 
-  return (
+  if (!isOpen || !portalTarget) return null;
+
+  return createPortal(
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}
@@ -49,6 +52,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-[var(--brand-deep)]">{title}</h2>
           <button
+            type="button"
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
           >
@@ -57,6 +61,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    portalTarget,
   );
 }
