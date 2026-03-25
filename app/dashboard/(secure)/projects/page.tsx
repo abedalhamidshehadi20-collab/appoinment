@@ -16,6 +16,7 @@ function getCredentialErrorMessage(code: string | undefined) {
   if (code === "email_taken") return "This email is already being used by another doctor.";
   if (code === "missing_fields") return "Doctor email and doctor selection are required.";
   if (code === "doctor_credentials_missing") return "Run the doctor credentials SQL file first, then try again.";
+  if (code === "doctor_credentials_access_denied") return "Doctor credentials table exists, but this app cannot write to it yet. Add SUPABASE_SERVICE_ROLE_KEY to .env.local and restart the server.";
   return "Unable to save the doctor email right now.";
 }
 

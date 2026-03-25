@@ -25,9 +25,11 @@ export function DoctorCredentialActions({
         >
           Update Email
         </button>
-        <p className="text-xs font-medium text-[var(--muted)]">
-          {credential?.email || "No email created yet"}
-        </p>
+        {credential?.email ? (
+          <p className="text-xs font-medium text-[var(--muted)]">
+            {credential.email}
+          </p>
+        ) : null}
       </div>
 
       <DoctorCredentialModal

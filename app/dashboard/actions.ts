@@ -47,8 +47,18 @@ function isMissingDoctorCredentialsTableError(error: { code?: string; message?: 
   return (
     error.code === "42P01" ||
     error.code === "PGRST205" ||
-    message.includes("doctor_credentials")
+    message.includes('relation "doctor_credentials" does not exist') ||
+    message.includes("could not find the table")
   );
+}
+
+function isDoctorCredentialAccessDenied(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? "";
+  return error.code === "42501" || message.includes("permission denied");
 }
 
 function isDoctorCredentialEmailTaken(error: { code?: string } | null) {
@@ -436,6 +446,10 @@ export async function saveProjectAction(formData: FormData) {
           redirect("/dashboard/projects?credential_error=doctor_credentials_missing");
         }
 
+        if (isDoctorCredentialAccessDenied(credentialError)) {
+          redirect("/dashboard/projects?credential_error=doctor_credentials_access_denied");
+        }
+
         if (isDoctorCredentialEmailTaken(credentialError)) {
           redirect("/dashboard/projects?credential_error=email_taken");
         }
@@ -488,6 +502,10 @@ export async function saveDoctorCredentialAction(formData: FormData) {
 
     if (isMissingDoctorCredentialsTableError(error)) {
       redirect("/dashboard/projects?credential_error=doctor_credentials_missing");
+    }
+
+    if (isDoctorCredentialAccessDenied(error)) {
+      redirect("/dashboard/projects?credential_error=doctor_credentials_access_denied");
     }
 
     if (isDoctorCredentialEmailTaken(error)) {
