@@ -19,6 +19,12 @@ export default function PopularDoctorsFilter({
 }: Props) {
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>(ALL_SPECIALTIES);
 
+  function handleSelectSpecialty(specialty: string) {
+    setSelectedSpecialty((currentSpecialty) =>
+      currentSpecialty === specialty ? ALL_SPECIALTIES : specialty,
+    );
+  }
+
   const filteredDoctors =
     selectedSpecialty === ALL_SPECIALTIES
       ? doctors
@@ -34,7 +40,7 @@ export default function PopularDoctorsFilter({
       <SpecialtyCards
         specialties={specialties}
         selectedSpecialty={selectedSpecialty}
-        onSelect={setSelectedSpecialty}
+        onSelect={handleSelectSpecialty}
       />
 
       <div className="mt-10 flex flex-wrap items-end justify-between gap-4">

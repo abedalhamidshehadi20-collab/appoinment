@@ -81,22 +81,10 @@ export default function SpecialtyCards({
 }: Props) {
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4">
         <p className="text-sm text-[var(--muted)]">
           Click a specialty card to filter the doctor list instantly.
         </p>
-
-        <button
-          type="button"
-          onClick={() => onSelect(ALL_SPECIALTIES_VALUE)}
-          className={`inline-flex items-center rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-[#dbeafe] ${
-            selectedSpecialty === ALL_SPECIALTIES_VALUE
-              ? "border-[#cfe0ff] bg-[#eef5ff] text-[var(--brand-deep)]"
-              : "border-[#d8e5fb] bg-white text-[var(--brand)] hover:border-[#bfd5ff] hover:bg-[#f8fbff]"
-          }`}
-        >
-          All Doctors
-        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
