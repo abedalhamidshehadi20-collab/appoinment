@@ -98,6 +98,12 @@ export default async function LoginPage({ searchParams }: Props) {
               Click here
             </Link>
           </p>
+          <p className="mt-1 text-sm text-[var(--muted)]">
+            Doctor login?{" "}
+            <Link href="/dashboard/login?next=/dashboard/projects" className="font-semibold text-[var(--brand)]">
+              Click here
+            </Link>
+          </p>
         </article>
       </section>
     </main>

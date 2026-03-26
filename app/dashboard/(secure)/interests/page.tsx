@@ -1,14 +1,12 @@
 import { redirect } from "next/navigation";
 import { AppointmentsManagementClient } from "@/components/dashboard/AppointmentsManagementClient";
 import { requirePermission } from "@/lib/auth";
-import { sendSingleAppointmentReminderById } from "@/lib/appointment-reminders";
+import {
+  MANUAL_APPOINTMENT_REMINDER_LEAD_DAYS,
+  isManualAppointmentReminderEligibleDate,
+  sendSingleAppointmentReminderById,
+} from "@/lib/appointment-reminders";
 import { getAllAppointments, hasSentAppointmentReminder } from "@/lib/db";
-
-function getTomorrowISODate() {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split("T")[0];
-}
 
 function isEligibleForManualReminder(item: {
   appointment_date: string;
@@ -20,7 +18,7 @@ function isEligibleForManualReminder(item: {
     status === "pending" || status === "scheduled" || status === "confirmed";
 
   return (
-    item.appointment_date === getTomorrowISODate() &&
+    isManualAppointmentReminderEligibleDate(item.appointment_date) &&
     validStatus &&
     Boolean(item.email?.trim())
   );
@@ -31,10 +29,14 @@ function reminderMessage(code: string | undefined) {
 
   if (code === "sent") return "Reminder email sent successfully.";
   if (code === "already_sent") return "Reminder was already sent for this appointment.";
-  if (code === "not_tomorrow") return "Manual reminder is enabled only for tomorrow appointments.";
+  if (code === "not_in_window") {
+    return `Manual reminder is enabled only ${MANUAL_APPOINTMENT_REMINDER_LEAD_DAYS} days before the appointment date.`;
+  }
   if (code === "opted_out") return "Patient has disabled appointment reminders.";
   if (code === "missing_email") return "Cannot send reminder because appointment email is missing.";
-  if (code === "invalid_status") return "Reminder can only be sent for pending or scheduled appointments.";
+  if (code === "invalid_status") {
+    return "Reminder can only be sent for pending, scheduled, or confirmed appointments.";
+  }
   if (code === "not_found") return "Appointment was not found.";
 
   return "Could not send reminder right now. Please try again.";
