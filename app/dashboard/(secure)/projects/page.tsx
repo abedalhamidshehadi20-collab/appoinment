@@ -20,8 +20,18 @@ function getCredentialErrorMessage(code: string | undefined) {
   return "Unable to save the doctor email right now.";
 }
 
+function getDoctorSaveErrorMessage(code: string | undefined) {
+  if (!code) return "";
+  if (code === "slug_taken") return "This doctor slug is already being used. Change the slug or the doctor title and try again.";
+  return "Unable to save the doctor profile right now.";
+}
+
 type Props = {
-  searchParams: Promise<{ credential_success?: string; credential_error?: string }>;
+  searchParams: Promise<{
+    credential_success?: string;
+    credential_error?: string;
+    save_error?: string;
+  }>;
 };
 
 export default async function DashboardProjectsPage({ searchParams }: Props) {
@@ -51,7 +61,10 @@ export default async function DashboardProjectsPage({ searchParams }: Props) {
       doctors={visibleDoctors}
       credentials={visibleCredentials}
       successMessage={getCredentialSuccessMessage(query.credential_success)}
-      errorMessage={getCredentialErrorMessage(query.credential_error)}
+      errorMessage={
+        getCredentialErrorMessage(query.credential_error) ||
+        getDoctorSaveErrorMessage(query.save_error)
+      }
       allowCreate={user.role !== "doctor"}
       allowDelete={user.role !== "doctor"}
     />

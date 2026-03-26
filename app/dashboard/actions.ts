@@ -68,6 +68,30 @@ function isDoctorCredentialEmailTaken(error: { code?: string } | null) {
   return error?.code === "23505";
 }
 
+function isUniqueConstraintError(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? "";
+  return error.code === "23505" || message.includes("duplicate key");
+}
+
+async function findDoctorBySlugForSave(slug: string) {
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
+    .from("doctors")
+    .select("id")
+    .eq("slug", slug)
+    .limit(1);
+
+  if (error) {
+    throw error;
+  }
+
+  return data?.[0] ?? null;
+}
+
 async function insertDoctorCredentialRecord(payload: {
   id: string;
   doctor_id: string;
@@ -354,6 +378,10 @@ export async function saveProjectAction(formData: FormData) {
     gallery: payload.gallery,
     details: payload.details,
   };
+  const updatePayload: Partial<typeof payload> = { ...payload };
+  delete updatePayload.id;
+  const fallbackUpdatePayload: Partial<typeof fallbackPayload> = { ...fallbackPayload };
+  delete fallbackUpdatePayload.id;
 
   const isMissingColumnError = (error: { code?: string; message?: string } | null) => {
     if (!error) {
@@ -372,25 +400,37 @@ export async function saveProjectAction(formData: FormData) {
     );
   };
 
+  const existingDoctorWithSlug = await findDoctorBySlugForSave(payload.slug);
+
+  if (existingDoctorWithSlug && existingDoctorWithSlug.id !== payload.id) {
+    redirect("/dashboard/projects?save_error=slug_taken");
+  }
+
   if (id) {
-    const { error } = await supabase.from("doctors").update(payload).eq("id", id);
+    const { error } = await supabase.from("doctors").update(updatePayload).eq("id", id);
 
     if (isMissingColumnError(error)) {
       const { error: fallbackError } = await supabase
         .from("doctors")
-        .update(fallbackPayload)
+        .update(fallbackUpdatePayload)
         .eq("id", id);
 
       if (fallbackError?.code === "42501" && supabaseAdmin) {
         const { error: adminFallbackError } = await supabaseAdmin
           .from("doctors")
-          .update(fallbackPayload)
+          .update(fallbackUpdatePayload)
           .eq("id", id);
 
         if (adminFallbackError) {
+          if (isUniqueConstraintError(adminFallbackError)) {
+            redirect("/dashboard/projects?save_error=slug_taken");
+          }
           throw adminFallbackError;
         }
       } else if (fallbackError) {
+        if (isUniqueConstraintError(fallbackError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw fallbackError;
       }
 
@@ -399,11 +439,20 @@ export async function saveProjectAction(formData: FormData) {
     }
 
     if (error?.code === "42501" && supabaseAdmin) {
-      const { error: adminError } = await supabaseAdmin.from("doctors").update(payload).eq("id", id);
+      const { error: adminError } = await supabaseAdmin
+        .from("doctors")
+        .update(updatePayload)
+        .eq("id", id);
       if (adminError) {
+        if (isUniqueConstraintError(adminError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw adminError;
       }
     } else if (error) {
+      if (isUniqueConstraintError(error)) {
+        redirect("/dashboard/projects?save_error=slug_taken");
+      }
       throw error;
     }
   } else {
@@ -426,18 +475,30 @@ export async function saveProjectAction(formData: FormData) {
       if (fallbackError?.code === "42501" && supabaseAdmin) {
         const { error: adminFallbackError } = await supabaseAdmin.from("doctors").insert(fallbackInsertPayload);
         if (adminFallbackError) {
+          if (isUniqueConstraintError(adminFallbackError)) {
+            redirect("/dashboard/projects?save_error=slug_taken");
+          }
           throw adminFallbackError;
         }
       } else if (fallbackError) {
+        if (isUniqueConstraintError(fallbackError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw fallbackError;
       }
     }
     else if (error?.code === "42501" && supabaseAdmin) {
       const { error: adminError } = await supabaseAdmin.from("doctors").insert(insertPayload);
       if (adminError) {
+        if (isUniqueConstraintError(adminError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw adminError;
       }
     } else if (error) {
+      if (isUniqueConstraintError(error)) {
+        redirect("/dashboard/projects?save_error=slug_taken");
+      }
       throw error;
     }
 
