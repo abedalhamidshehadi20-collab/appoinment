@@ -1,177 +1,348 @@
 import Link from "next/link";
-import { CalendarClock, CheckCircle2, Users } from "lucide-react";
+import { redirect } from "next/navigation";
+import {
+  BellRing,
+  Calendar,
+  CheckCircle2,
+  CircleAlert,
+  PlusCircle,
+  UserRound,
+  Users,
+} from "lucide-react";
 import { requireDoctorUser } from "@/lib/auth";
 import {
+  getDoctorAppointments,
+  getDoctorBySessionId,
   getDoctorDashboardSummary,
   getDoctorNotifications,
-  getDoctorReports,
   getDoctorTodayAppointments,
 } from "@/lib/doctor-dashboard/service";
-import { SummaryCard } from "@/components/doctor-dashboard/summary-card";
-import { ReportsChart } from "@/components/doctor-dashboard/reports-chart";
 
-function formatDateTime(dateValue: string, timeValue: string) {
-  if (!dateValue) {
-    return timeValue || "N/A";
+function normalizeStatus(status: string) {
+  const value = status.trim().toLowerCase();
+
+  if (value === "completed" || value === "done") {
+    return "completed";
   }
 
-  const parsed = new Date(dateValue);
-  const dateLabel = Number.isNaN(parsed.getTime())
-    ? dateValue
-    : parsed.toLocaleDateString();
+  if (value === "scheduled" || value === "confirmed") {
+    return "scheduled";
+  }
 
-  return `${dateLabel} ${timeValue || ""}`.trim();
+  if (value === "cancelled" || value === "canceled") {
+    return "cancelled";
+  }
+
+  return "pending";
+}
+
+function statusLabel(status: string) {
+  const value = normalizeStatus(status);
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function statusBadge(status: string) {
+  const value = normalizeStatus(status);
+
+  if (value === "completed") {
+    return "bg-green-100 text-green-700";
+  }
+
+  if (value === "scheduled") {
+    return "bg-blue-100 text-blue-700";
+  }
+
+  if (value === "cancelled") {
+    return "bg-red-100 text-red-700";
+  }
+
+  return "bg-amber-100 text-amber-700";
+}
+
+function parseDate(value: string) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function formatDate(value: string) {
+  const parsed = parseDate(value);
+  return parsed ? parsed.toLocaleDateString() : value || "-";
+}
+
+function isSameDay(value: string, compare: Date) {
+  const parsed = parseDate(value);
+  if (!parsed) {
+    return false;
+  }
+
+  return (
+    parsed.getFullYear() === compare.getFullYear() &&
+    parsed.getMonth() === compare.getMonth() &&
+    parsed.getDate() === compare.getDate()
+  );
+}
+
+function formatNotificationDate(value: string) {
+  const parsed = parseDate(value);
+  return parsed ? parsed.toLocaleString() : value || "-";
 }
 
 export default async function DoctorDashboardHomePage() {
   const user = await requireDoctorUser();
-  const [summary, todaysAppointments, notifications, reports] = await Promise.all([
+  const [doctor, summary, appointments, todaysAppointments, notifications] = await Promise.all([
+    getDoctorBySessionId(user.doctorId!),
     getDoctorDashboardSummary(user.doctorId!),
+    getDoctorAppointments(user.doctorId!),
     getDoctorTodayAppointments(user.doctorId!),
     getDoctorNotifications(user.doctorId!),
-    getDoctorReports(user.doctorId!),
   ]);
 
+  if (!doctor) {
+    redirect("/doctor-login");
+  }
+
+  const today = new Date();
+  const pendingCount = appointments.filter(
+    (appointment) => normalizeStatus(appointment.status || "") === "pending",
+  ).length;
+
+  const recentAppointments = appointments
+    .filter((appointment) => !isSameDay(appointment.appointment_date, today))
+    .slice()
+    .sort((left, right) => {
+      const leftValue = parseDate(left.appointment_date)?.getTime() ?? 0;
+      const rightValue = parseDate(right.appointment_date)?.getTime() ?? 0;
+      return rightValue - leftValue;
+    })
+    .slice(0, 8);
+
   return (
-    <div className="space-y-6">
-      <section className="rounded-[30px] border border-[#dfe9f7] bg-[linear-gradient(135deg,#ffffff_0%,#f7fbff_58%,#edf5ff_100%)] p-6 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.2)] sm:p-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#5b87c5]">
-              Doctor Dashboard
-            </p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.04em] text-[#153a6b] sm:text-4xl">
-              Clinical command center
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[#6d7f95]">
-              Review your day, monitor patient flow, and stay on top of every visit from one professional workspace.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/doctor-dashboard/appointments"
-              className="rounded-2xl bg-[#2377e7] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1b67cb]"
-            >
-              Open appointments
-            </Link>
-            <Link
-              href="/doctor-dashboard/patients"
-              className="rounded-2xl border border-[#d7e4f5] bg-white px-5 py-3 text-sm font-semibold text-[#24476e] transition hover:bg-[#f8fbff]"
-            >
-              Review patients
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <div className="grid gap-4 xl:grid-cols-3">
-        <SummaryCard
-          label="Total patients"
-          value={summary.totalPatients}
-          hint="Assigned to your current practice"
-          icon={Users}
-          tone="blue"
-        />
-        <SummaryCard
-          label="Today's appointments"
-          value={summary.todaysAppointments}
-          hint="Scheduled for the current day"
-          icon={CalendarClock}
-          tone="amber"
-        />
-        <SummaryCard
-          label="Completed appointments"
-          value={summary.completedAppointments}
-          hint="Marked completed in your panel"
-          icon={CheckCircle2}
-          tone="green"
-        />
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <section className="rounded-[28px] border border-[#e6edf7] bg-white p-6 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.16)]">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5f8ed5]">
-                Today
-              </p>
-              <h3 className="mt-2 text-xl font-extrabold tracking-[-0.03em] text-[#153a6b]">
-                Today&apos;s appointments
-              </h3>
-            </div>
-            <Link href="/doctor-dashboard/appointments" className="text-sm font-semibold text-[#2377e7]">
-              View all
-            </Link>
-          </div>
-
-          <div className="mt-5 space-y-4">
-            {todaysAppointments.length === 0 ? (
-              <div className="rounded-[22px] border border-dashed border-[#d7e4f5] bg-[#fbfdff] px-5 py-10 text-center text-sm text-[#7f8da0]">
-                No appointments scheduled for today.
-              </div>
-            ) : (
-              todaysAppointments.map((appointment) => (
-                <article
-                  key={appointment.id}
-                  className="rounded-[22px] border border-[#e9eef7] bg-[#fbfdff] px-5 py-4"
-                >
-                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <p className="font-semibold text-[#153a6b]">{appointment.name}</p>
-                      <p className="mt-1 text-sm text-[#6d7f95]">
-                        {appointment.service || "General Consultation"}
-                      </p>
-                    </div>
-                    <div className="text-sm text-[#4a6078]">
-                      {formatDateTime(appointment.appointment_date, appointment.appointment_time)}
-                    </div>
-                  </div>
-                </article>
-              ))
-            )}
-          </div>
-        </section>
-
-        <section className="rounded-[28px] border border-[#e6edf7] bg-white p-6 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.16)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5f8ed5]">
-            Activity
-          </p>
-          <h3 className="mt-2 text-xl font-extrabold tracking-[-0.03em] text-[#153a6b]">
-            Recent notifications
-          </h3>
-
-          <div className="mt-5 space-y-4">
-            {notifications.slice(0, 5).map((notification) => (
-              <article key={notification.id} className="rounded-[22px] border border-[#e9eef7] bg-[#fbfdff] px-4 py-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold text-[#153a6b]">{notification.title}</p>
-                  {!notification.is_read ? (
-                    <span className="rounded-full bg-[#e8f1ff] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#2b63b8]">
-                      New
-                    </span>
-                  ) : null}
-                </div>
-                <p className="mt-2 text-sm leading-6 text-[#6d7f95]">{notification.message}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <section className="rounded-[28px] border border-[#e6edf7] bg-white p-6 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.16)]">
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-start justify-between gap-4 rounded-2xl bg-white p-5 shadow-sm">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5f8ed5]">
-            Reports Snapshot
+          <h1 className="text-2xl font-bold text-gray-900">Doctor Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Welcome back, {doctor.title}. Track today&apos;s visits, patient activity, and recent updates.
           </p>
-          <h3 className="mt-2 text-xl font-extrabold tracking-[-0.03em] text-[#153a6b]">
-            Appointment performance
-          </h3>
         </div>
-        <div className="mt-6">
-          <ReportsChart data={reports.monthlyAppointments} />
+
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/doctor-dashboard/appointments"
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium !text-white transition hover:bg-blue-700"
+          >
+            <PlusCircle className="h-4 w-4 text-white" />
+            Open Appointments
+          </Link>
+          <Link
+            href="/doctor-dashboard/patients"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+          >
+            <Users className="h-4 w-4" />
+            Review Patients
+          </Link>
         </div>
-      </section>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm transition hover:shadow-md">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500">
+            <Users className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500">Total Patients</p>
+            <p className="text-2xl font-bold text-gray-900">{summary.totalPatients}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm transition hover:shadow-md">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500">
+            <Calendar className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500">Today&apos;s Appointments</p>
+            <p className="text-2xl font-bold text-gray-900">{summary.todaysAppointments}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm transition hover:shadow-md">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500">
+            <CircleAlert className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500">Pending</p>
+            <p className="text-2xl font-bold text-gray-900">{pendingCount}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm transition hover:shadow-md">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-500">
+            <CheckCircle2 className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500">Completed</p>
+            <p className="text-2xl font-bold text-gray-900">{summary.completedAppointments}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-3">
+        <section className="rounded-xl bg-white p-6 shadow-sm xl:col-span-2">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">Today&apos;s Appointments</h2>
+            <span className="text-sm text-gray-500">Current day schedule</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Patient</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Service</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Time</th>
+                  <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {todaysAppointments.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-10 text-center text-sm text-gray-500">
+                      No appointments scheduled for today.
+                    </td>
+                  </tr>
+                ) : (
+                  todaysAppointments.map((appointment) => (
+                    <tr key={appointment.id} className="hover:bg-gray-50">
+                      <td className="py-3 text-sm font-medium text-gray-900">{appointment.name}</td>
+                      <td className="py-3 text-sm text-gray-600">{appointment.service || "General Consultation"}</td>
+                      <td className="py-3 text-sm text-gray-600">{formatDate(appointment.appointment_date)}</td>
+                      <td className="py-3 text-sm text-gray-600">{appointment.appointment_time || "-"}</td>
+                      <td className="py-3">
+                        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge(appointment.status)}`}>
+                          {statusLabel(appointment.status)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <UserRound className="h-5 w-5 text-blue-600" />
+              <h2 className="text-lg font-semibold text-gray-900">Profile</h2>
+            </div>
+
+            <dl className="space-y-3 text-sm">
+              <div>
+                <dt className="text-gray-500">Name</dt>
+                <dd className="font-medium text-gray-900">{doctor.title}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Specialty</dt>
+                <dd className="font-medium text-gray-900">{doctor.sector || "Doctor"}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Email</dt>
+                <dd className="font-medium text-gray-900">{user.email}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Location</dt>
+                <dd className="font-medium text-gray-900">{doctor.location || "-"}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
+              <BellRing className="h-5 w-5 text-blue-600" />
+              <h2 className="text-lg font-semibold text-gray-900">Recent Notifications</h2>
+            </div>
+
+            <div className="space-y-3">
+              {notifications.length === 0 ? (
+                <p className="text-sm text-gray-500">No notifications yet.</p>
+              ) : (
+                notifications.slice(0, 3).map((notification) => (
+                  <article key={notification.id} className="rounded-lg border border-gray-200 p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{notification.title}</p>
+                        <p className="mt-1 text-sm text-gray-600">{notification.message}</p>
+                      </div>
+                      {!notification.is_read ? (
+                        <span className="inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                          New
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="mt-2 text-xs text-gray-500">
+                      {formatNotificationDate(notification.created_at)}
+                    </p>
+                  </article>
+                ))
+              )}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div className="rounded-xl bg-white p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900">Recent Appointments</h2>
+          <span className="text-sm text-gray-500">Completed or older visits</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Patient</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Service</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Date</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Time</th>
+                <th className="pb-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {recentAppointments.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-10 text-center text-sm text-gray-500">
+                    No recent appointments outside today&apos;s queue.
+                  </td>
+                </tr>
+              ) : (
+                recentAppointments.map((appointment) => (
+                  <tr key={appointment.id} className="hover:bg-gray-50">
+                    <td className="py-3 text-sm font-medium text-gray-900">{appointment.name}</td>
+                    <td className="py-3 text-sm text-gray-600">{appointment.service || "General Consultation"}</td>
+                    <td className="py-3 text-sm text-gray-600">{formatDate(appointment.appointment_date)}</td>
+                    <td className="py-3 text-sm text-gray-600">{appointment.appointment_time || "-"}</td>
+                    <td className="py-3">
+                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusBadge(appointment.status)}`}>
+                        {statusLabel(appointment.status)}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
