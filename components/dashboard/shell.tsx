@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { logoutAction } from "@/app/dashboard/actions";
+import { getRoleLabel } from "@/lib/rbac";
 import {
   LayoutDashboard,
   Home,
@@ -101,7 +102,7 @@ export function DashboardShell({
             </div>
             <div className="flex-1 overflow-hidden">
               <p className="truncate text-sm font-medium">{user.name}</p>
-              <p className="truncate text-xs text-gray-400">{user.role}</p>
+              <p className="truncate text-xs text-gray-400">{getRoleLabel(user.role)}</p>
             </div>
           </div>
           <form action={logoutAction}>

@@ -215,6 +215,12 @@ export type SiteSettings = {
   contact: ContactSettings;
 };
 
+export type CustomRole = {
+  value: string;
+  label: string;
+  permissions: Permission[];
+};
+
 export const defaultContactSettings: ContactSettings = {
   address: "Eastern Highway",
   city: "Saida, Lebanon",
@@ -349,6 +355,67 @@ export async function updateSiteSettings(key: 'home' | 'about' | 'contact', valu
     .upsert({ key, value, updated_at: new Date().toISOString() });
 
   if (error) throw error;
+}
+
+function normalizePermissionList(value: unknown): Permission[] {
+  const allowedPermissions: Permission[] = [
+    'all',
+    'home',
+    'about',
+    'services',
+    'projects',
+    'blogs',
+    'news',
+    'contacts',
+    'interests',
+    'patients',
+    'employees',
+  ];
+
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return Array.from(
+    new Set(
+      value
+        .map((item) => item?.toString?.().trim() ?? '')
+        .filter((item): item is Permission => allowedPermissions.includes(item as Permission)),
+    ),
+  );
+}
+
+export async function getCustomRoles(): Promise<CustomRole[]> {
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
+    .from('site_settings')
+    .select('value')
+    .eq('key', 'custom_roles')
+    .maybeSingle();
+
+  if (error) throw error;
+
+  if (!Array.isArray(data?.value)) {
+    return [];
+  }
+
+  return data.value
+    .map((item) => {
+      const value = item?.value?.toString?.().trim() ?? '';
+      const label = item?.label?.toString?.().trim() ?? '';
+      const permissions = normalizePermissionList(item?.permissions);
+
+      if (!value || !label || permissions.length === 0) {
+        return null;
+      }
+
+      return {
+        value,
+        label,
+        permissions,
+      } satisfies CustomRole;
+    })
+    .filter((item): item is CustomRole => Boolean(item));
 }
 
 // ============================================

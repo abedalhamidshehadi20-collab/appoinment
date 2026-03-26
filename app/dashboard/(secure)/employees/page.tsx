@@ -1,5 +1,5 @@
 import { requirePermission } from "@/lib/auth";
-import { getAllUsers } from "@/lib/db";
+import { getAllUsers, getCustomRoles } from "@/lib/db";
 import { EmployeesPageClient } from "@/components/dashboard/EmployeesPageClient";
 
 function getSuccessMessage(code: string | undefined) {
@@ -11,6 +11,7 @@ function getSuccessMessage(code: string | undefined) {
 function getErrorMessage(code: string | undefined) {
   if (!code) return "";
   if (code === "password_required") return "Password is required for new employees.";
+  if (code === "invalid_role") return "The selected role is no longer available. Choose another role.";
   return "An error occurred. Please try again.";
 }
 
@@ -27,7 +28,10 @@ type Props = {
 export default async function EmployeesPage({ searchParams }: Props) {
   await requirePermission("employees");
   const query = await searchParams;
-  const employees = await getAllUsers();
+  const [employees, customRoles] = await Promise.all([
+    getAllUsers(),
+    getCustomRoles(),
+  ]);
 
   const successMessage = getSuccessMessage(query.success) || getDeleteMessage(query.deleted);
   const errorMessage = getErrorMessage(query.error);
@@ -35,6 +39,7 @@ export default async function EmployeesPage({ searchParams }: Props) {
   return (
     <EmployeesPageClient
       employees={employees}
+      customRoles={customRoles}
       successMessage={successMessage}
       errorMessage={errorMessage}
     />

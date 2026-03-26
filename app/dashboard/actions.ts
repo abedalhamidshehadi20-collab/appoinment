@@ -17,7 +17,10 @@ import {
   getAllContacts,
   getAllAppointments,
   getAllPatients,
+  getCustomRoles,
   deleteContact,
+  type Permission,
+  type CustomRole,
 } from "@/lib/db";
 
 const refreshSite = () => {
@@ -112,7 +115,10 @@ async function deleteDoctorRecord(id: string) {
   }
 }
 
-async function upsertSiteSetting(key: "home" | "about" | "contact", value: unknown) {
+async function upsertSiteSetting(
+  key: "home" | "about" | "contact" | "custom_roles",
+  value: unknown,
+) {
   const payload = { key, value, updated_at: new Date().toISOString() };
 
   const { error } = await supabase
@@ -1053,7 +1059,12 @@ export async function saveEmployeeAction(formData: FormData) {
 
   // Get permissions from role using rbac helper
   const { getRolePermissions } = await import("@/lib/rbac");
-  const permissions = getRolePermissions(role);
+  const customRoles = await getCustomRoles();
+  const permissions = getRolePermissions(role, customRoles);
+
+  if (permissions.length === 0) {
+    redirect("/dashboard/employees?error=invalid_role");
+  }
 
   if (id) {
     // Update existing employee
@@ -1111,6 +1122,87 @@ export async function saveEmployeeAction(formData: FormData) {
 
   revalidatePath("/dashboard/employees");
   redirect("/dashboard/employees?success=1");
+}
+
+export async function createCustomRoleAction(input: {
+  label: string;
+  permissions: Permission[];
+}): Promise<
+  | { ok: true; role: CustomRole }
+  | { ok: false; error: string }
+> {
+  await requirePermission("employees");
+
+  const { normalizeRoleValue } = await import("@/lib/rbac");
+
+  const label = input.label.trim();
+  const value = normalizeRoleValue(label);
+  const allowedPermissions: Permission[] = [
+    "all",
+    "home",
+    "about",
+    "services",
+    "projects",
+    "blogs",
+    "news",
+    "contacts",
+    "interests",
+    "patients",
+    "employees",
+  ];
+
+  const permissions = Array.from(
+    new Set(
+      input.permissions.filter((permission) =>
+        allowedPermissions.includes(permission),
+      ),
+    ),
+  );
+
+  if (!label || !value) {
+    return { ok: false, error: "Role name is required." };
+  }
+
+  if (value === "__create_role__") {
+    return { ok: false, error: "This role key is reserved." };
+  }
+
+  if (permissions.length === 0) {
+    return { ok: false, error: "Select at least one permission." };
+  }
+
+  const { getAllRoles } = await import("@/lib/rbac");
+  const existingCustomRoles = await getCustomRoles();
+  const existingRoles = getAllRoles(existingCustomRoles);
+
+  const roleAlreadyExists = existingRoles.some(
+    (role) =>
+      role.value === value ||
+      role.label.trim().toLowerCase() === label.toLowerCase(),
+  );
+
+  if (roleAlreadyExists) {
+    return { ok: false, error: "A role with this name already exists." };
+  }
+
+  const normalizedPermissions = permissions.includes("all")
+    ? (["all"] as Permission[])
+    : permissions;
+
+  const role: CustomRole = {
+    value,
+    label,
+    permissions: normalizedPermissions,
+  };
+
+  const updatedRoles = [...existingCustomRoles, role].sort((left, right) =>
+    left.label.localeCompare(right.label),
+  );
+
+  await upsertSiteSetting("custom_roles", updatedRoles);
+  revalidatePath("/dashboard/employees");
+
+  return { ok: true, role };
 }
 
 export async function deleteEmployeeAction(formData: FormData) {

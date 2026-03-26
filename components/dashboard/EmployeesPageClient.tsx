@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { User } from "@/lib/db";
+import { useEffect, useState } from "react";
+import { CustomRole, User } from "@/lib/db";
 import { getRoleLabel } from "@/lib/rbac";
 import { EmployeeFormModal } from "@/components/dashboard/EmployeeFormModal";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -10,12 +10,14 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 
 type EmployeesPageClientProps = {
   employees: User[];
+  customRoles: CustomRole[];
   successMessage?: string;
   errorMessage?: string;
 };
 
 export function EmployeesPageClient({
   employees,
+  customRoles,
   successMessage,
   errorMessage,
 }: EmployeesPageClientProps) {
@@ -23,6 +25,11 @@ export function EmployeesPageClient({
   const [selectedEmployee, setSelectedEmployee] = useState<User | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [roleCatalog, setRoleCatalog] = useState(customRoles);
+
+  useEffect(() => {
+    setRoleCatalog(customRoles);
+  }, [customRoles]);
 
   const handleAdd = () => {
     setSelectedEmployee(null);
@@ -141,7 +148,7 @@ export function EmployeesPageClient({
                             : "bg-blue-100 text-blue-700"
                         }`}
                       >
-                        {getRoleLabel(employee.role)}
+                        {getRoleLabel(employee.role, roleCatalog)}
                       </span>
                     </td>
                     <td className="py-3 text-sm text-gray-600">
@@ -175,11 +182,23 @@ export function EmployeesPageClient({
         )}
       </article>
 
-      <EmployeeFormModal
-        isOpen={isFormOpen}
-        onClose={handleCloseForm}
-        employee={selectedEmployee}
-      />
+      {isFormOpen ? (
+        <EmployeeFormModal
+          isOpen={isFormOpen}
+          onClose={handleCloseForm}
+          employee={selectedEmployee}
+          customRoles={roleCatalog}
+          onCustomRoleCreated={(role) =>
+            setRoleCatalog((current) => {
+              if (current.some((item) => item.value === role.value)) {
+                return current;
+              }
+
+              return [...current, role];
+            })
+          }
+        />
+      ) : null}
 
       <ConfirmDialog
         isOpen={!!deleteTarget}
