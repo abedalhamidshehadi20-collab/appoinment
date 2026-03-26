@@ -1,10 +1,7 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { requireDoctorUser } from "@/lib/auth";
-import {
-  getDoctorBySessionId,
-  getDoctorNotifications,
-} from "@/lib/doctor-dashboard/service";
+import { getDoctorBySessionId } from "@/lib/doctor-dashboard/service";
 import { DoctorDashboardShell } from "@/components/doctor-dashboard/shell";
 
 export default async function DoctorDashboardLayout({
@@ -13,10 +10,7 @@ export default async function DoctorDashboardLayout({
   children: ReactNode;
 }) {
   const user = await requireDoctorUser();
-  const [doctor, notifications] = await Promise.all([
-    getDoctorBySessionId(user.doctorId!),
-    getDoctorNotifications(user.doctorId!),
-  ]);
+  const doctor = await getDoctorBySessionId(user.doctorId!);
 
   if (!doctor) {
     redirect("/doctor-login");
@@ -29,7 +23,6 @@ export default async function DoctorDashboardLayout({
         specialty: doctor.sector || "Doctor",
         email: user.email,
       }}
-      unreadNotifications={notifications.filter((item) => !item.is_read).length}
     >
       {children}
     </DoctorDashboardShell>

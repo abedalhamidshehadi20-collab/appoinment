@@ -4,6 +4,7 @@ import { useState } from "react";
 import { deleteNewsAction } from "@/app/dashboard/actions";
 import { NewsForm } from "@/components/dashboard/NewsForm";
 import type { News } from "@/lib/db";
+import { formatPublishedDate } from "@/lib/published-date";
 import { FileText, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 
 type NewsManagementClientProps = {
@@ -143,7 +144,7 @@ export function NewsManagementClient({
                           {item.source || "-"}
                         </td>
                         <td className="px-4 py-4 text-sm text-[var(--muted)]">
-                          {item.published_at || "-"}
+                          {formatPublishedDate(item.published_at)}
                         </td>
                         <td className="px-5 py-4">
                           <div className="flex justify-end gap-2">

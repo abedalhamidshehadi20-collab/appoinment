@@ -14,7 +14,7 @@ export default async function DashboardAboutPage() {
 
   return (
     <article className="card overflow-hidden rounded-[28px] border border-[#e7eef9] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] p-6 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.28)]">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+      <div>
         <div>
           <span className="inline-flex rounded-full bg-[#eef4ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
             About
@@ -24,15 +24,6 @@ export default async function DashboardAboutPage() {
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
             Refine the clinic story, mission, vision, and values with a cleaner editing layout.
-          </p>
-        </div>
-
-        <div className="rounded-[22px] border border-[#dce8fb] bg-white px-5 py-4 shadow-[0_12px_28px_-24px_rgba(17,24,39,0.25)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
-            Writing Tip
-          </p>
-          <p className="mt-2 max-w-[260px] text-sm leading-6 text-[var(--muted)]">
-            Keep each section concise and keep values to one point per line.
           </p>
         </div>
       </div>

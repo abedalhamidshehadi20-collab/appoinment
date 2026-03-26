@@ -18,8 +18,6 @@ import {
   Calendar,
   LogOut,
   Search,
-  Bell,
-  Settings,
   UserCog,
 } from "lucide-react";
 
@@ -129,15 +127,6 @@ export function DashboardShell({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button className="relative flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
-              <Bell className="h-5 w-5" />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"></span>
-            </button>
-            <button className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
-              <Settings className="h-5 w-5" />
-            </button>
-          </div>
         </header>
 
         {/* Page Content */}

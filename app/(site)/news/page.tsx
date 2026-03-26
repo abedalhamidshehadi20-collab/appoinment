@@ -1,20 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getAllNews } from "@/lib/db";
-
-function formatPublishedDate(dateValue: string) {
-  const parsed = new Date(dateValue);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return dateValue;
-  }
-
-  return parsed.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
+import { formatPublishedDate } from "@/lib/published-date";
 
 export default async function NewsPage() {
   const news = await getAllNews();

@@ -5,14 +5,10 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { logoutAction } from "@/app/dashboard/actions";
 import {
-  Bell,
   CalendarClock,
   ClipboardList,
-  FileHeart,
   Home,
   LogOut,
-  PieChart,
-  ReceiptText,
   Search,
   UserRoundCog,
   Users,
@@ -24,7 +20,6 @@ type DoctorDashboardShellProps = {
     specialty: string;
     email: string;
   };
-  unreadNotifications: number;
   children: ReactNode;
 };
 
@@ -32,16 +27,11 @@ const navItems = [
   { href: "/doctor-dashboard", label: "Dashboard", icon: Home },
   { href: "/doctor-dashboard/appointments", label: "Appointments", icon: CalendarClock },
   { href: "/doctor-dashboard/patients", label: "Patients", icon: Users },
-  { href: "/doctor-dashboard/medical-records", label: "Medical Records", icon: FileHeart },
-  { href: "/doctor-dashboard/prescriptions", label: "Prescriptions", icon: ReceiptText },
-  { href: "/doctor-dashboard/reports", label: "Reports", icon: PieChart },
-  { href: "/doctor-dashboard/notifications", label: "Notifications", icon: Bell },
   { href: "/doctor-dashboard/profile", label: "Profile", icon: UserRoundCog },
 ];
 
 export function DoctorDashboardShell({
   doctor,
-  unreadNotifications,
   children,
 }: DoctorDashboardShellProps) {
   const pathname = usePathname();
@@ -76,11 +66,6 @@ export function DoctorDashboardShell({
               >
                 <Icon className="h-5 w-5" />
                 <span>{item.label}</span>
-                {item.href === "/doctor-dashboard/notifications" && unreadNotifications > 0 ? (
-                  <span className="ml-auto rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-[#1b5dc0]">
-                    {unreadNotifications}
-                  </span>
-                ) : null}
               </Link>
             );
           })}
@@ -118,24 +103,13 @@ export function DoctorDashboardShell({
               </h1>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="relative hidden sm:block">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa7b8]" />
-                <input
-                  type="text"
-                  placeholder="Search dashboard..."
-                  className="h-11 w-64 rounded-2xl border border-[#e6edf7] bg-[#f8fbff] pl-10 pr-4 text-sm text-[#24476e] outline-none"
-                />
-              </div>
-              <Link
-                href="/doctor-dashboard/notifications"
-                className="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-[#e6edf7] bg-white text-[#58708f] transition hover:bg-[#f8fbff]"
-              >
-                <Bell className="h-5 w-5" />
-                {unreadNotifications > 0 ? (
-                  <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-[#ef4444]" />
-                ) : null}
-              </Link>
+            <div className="relative hidden sm:block">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9aa7b8]" />
+              <input
+                type="text"
+                placeholder="Search dashboard..."
+                className="h-11 w-64 rounded-2xl border border-[#e6edf7] bg-[#f8fbff] pl-10 pr-4 text-sm text-[#24476e] outline-none"
+              />
             </div>
           </div>
         </header>

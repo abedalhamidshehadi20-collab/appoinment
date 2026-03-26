@@ -4,6 +4,7 @@ import { useState } from "react";
 import { deleteBlogAction } from "@/app/dashboard/actions";
 import { BlogForm } from "@/components/dashboard/BlogForm";
 import type { Blog } from "@/lib/db";
+import { formatPublishedDate } from "@/lib/published-date";
 import { FileText, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 
 type BlogsManagementClientProps = {
@@ -146,7 +147,7 @@ export function BlogsManagementClient({
                           {blog.author || "-"}
                         </td>
                         <td className="px-4 py-4 text-sm text-[var(--muted)]">
-                          {blog.published_at || "-"}
+                          {formatPublishedDate(blog.published_at)}
                         </td>
                         <td className="px-4 py-4">
                           <div className="max-w-[240px]">

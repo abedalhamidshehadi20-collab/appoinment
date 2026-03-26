@@ -7,6 +7,7 @@ import {
   textareaClassName,
 } from "@/components/dashboard/doctor-form-ui";
 import type { News } from "@/lib/db";
+import { toDateInputValue } from "@/lib/published-date";
 
 type NewsFormProps = {
   news?: News | null;
@@ -50,8 +51,9 @@ export function NewsForm({ news, submitLabel, onCancel }: NewsFormProps) {
 
         <DoctorFormField label="Published Date">
           <input
+            type="date"
             name="publishedAt"
-            defaultValue={news?.published_at ?? ""}
+            defaultValue={toDateInputValue(news?.published_at ?? "")}
             placeholder="Published date (YYYY-MM-DD)"
             className={inputClassName}
           />

@@ -7,6 +7,7 @@ import {
   textareaClassName,
 } from "@/components/dashboard/doctor-form-ui";
 import type { Blog } from "@/lib/db";
+import { toDateInputValue } from "@/lib/published-date";
 
 type BlogFormProps = {
   blog?: Blog | null;
@@ -50,8 +51,9 @@ export function BlogForm({ blog, submitLabel, onCancel }: BlogFormProps) {
 
         <DoctorFormField label="Published Date">
           <input
+            type="date"
             name="publishedAt"
-            defaultValue={blog?.published_at ?? ""}
+            defaultValue={toDateInputValue(blog?.published_at ?? "")}
             placeholder="Published date (YYYY-MM-DD)"
             className={inputClassName}
           />
