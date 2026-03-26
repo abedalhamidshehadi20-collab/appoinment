@@ -11,7 +11,7 @@ export default async function DoctorLoginPage({ searchParams }: Props) {
   const user = await getSessionUser();
 
   if (user) {
-    redirect(query.next || "/dashboard/projects");
+    redirect(query.next || "/doctor-dashboard");
   }
 
   return (
@@ -30,7 +30,7 @@ export default async function DoctorLoginPage({ searchParams }: Props) {
         ) : null}
 
         <form action={doctorLoginAction} className="mt-5 grid gap-3">
-          <input type="hidden" name="next" value={query.next || "/dashboard/projects"} />
+          <input type="hidden" name="next" value={query.next || "/doctor-dashboard"} />
           <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
             Email Address
             <input

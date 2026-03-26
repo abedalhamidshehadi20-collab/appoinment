@@ -80,7 +80,7 @@ export async function patientLogoutAction() {
 export async function doctorLoginAction(formData: FormData) {
   const email = formData.get("email")?.toString().trim() ?? "";
   const password = formData.get("password")?.toString() ?? "";
-  const next = formData.get("next")?.toString() || "/dashboard/projects";
+  const next = formData.get("next")?.toString() || "/doctor-dashboard";
 
   const ok = await loginDoctor(email, password);
   if (!ok) {

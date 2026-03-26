@@ -13,7 +13,7 @@ const COOKIE_NAME = "cms_session";
 const SECRET = process.env.SESSION_SECRET ?? "replace-this-in-production";
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
 
-type SessionPayload = {
+export type SessionPayload = {
   id: string;
   username: string;
   name: string;
@@ -163,4 +163,13 @@ export async function requirePermission(permission: Permission) {
 
 export function canAccess(user: Pick<User, "permissions"> | SessionPayload, permission: Permission) {
   return user.permissions.includes("all") || user.permissions.includes(permission);
+}
+
+export async function requireDoctorUser() {
+  const user = await getSessionUser();
+  if (!user || user.role !== "doctor" || !user.doctorId) {
+    redirect("/doctor-login");
+  }
+
+  return user;
 }

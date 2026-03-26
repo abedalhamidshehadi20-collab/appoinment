@@ -15,7 +15,7 @@ import { AppointmentsLineChart, DoctorBarChart, StatusPieChart } from "@/compone
 export default async function DashboardOverviewPage() {
   const user = await requireUser();
   if (user.role === "doctor") {
-    redirect("/dashboard/projects");
+    redirect("/doctor-dashboard");
   }
 
   const stats = await getDashboardStats();

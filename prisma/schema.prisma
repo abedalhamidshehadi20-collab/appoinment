@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Doctor {
+  id              String              @id @db.Text
+  slug            String              @unique @db.Text
+  title           String              @db.Text
+  excerpt         String?             @db.Text
+  description     String?             @db.Text
+  sector          String?             @db.Text
+  location        String?             @db.Text
+  status          String?             @db.Text
+  coverImage      String?             @map("cover_image") @db.Text
+  gallery         Json                @default("[]")
+  details         Json                @default("[]")
+  appointmentFee  Decimal?            @map("appointment_fee") @db.Decimal(10, 2)
+  yearsExperience Int?                @map("years_experience")
+  availableTimes  Json                @map("available_times") @default("[]")
+  createdAt       DateTime            @map("created_at") @default(now()) @db.Timestamptz(6)
+  appointments    Appointment[]
+  credential      DoctorCredential?
+  medicalRecords  MedicalRecord[]
+  notifications   Notification[]
+  prescriptions   Prescription[]
+
+  @@map("doctors")
+}
+
+model DoctorCredential {
+  id        String   @id @db.Text
+  doctorId  String   @unique @map("doctor_id") @db.Text
+  email     String   @unique @db.Text
+  password  String   @db.Text
+  createdAt DateTime @map("created_at") @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @map("updated_at") @default(now()) @db.Timestamptz(6)
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@map("doctor_credentials")
+}
+
+model Patient {
+  id             String          @id @db.Text
+  name           String          @db.Text
+  email          String          @unique @db.Text
+  password       String?         @db.Text
+  reminderOptIn  Boolean?        @map("reminder_opt_in")
+  phone          String?         @db.Text
+  address        String?         @db.Text
+  dateOfBirth    String?         @map("date_of_birth") @db.Text
+  gender         String?         @db.Text
+  medicalHistory String?         @map("medical_history") @db.Text
+  createdAt      DateTime        @map("created_at") @default(now()) @db.Timestamptz(6)
+  appointments   Appointment[]
+  medicalRecords MedicalRecord[]
+  prescriptions  Prescription[]
+
+  @@map("patients")
+}
+
+model Appointment {
+  id              String         @id @db.Text
+  patientId       String?        @map("patient_id") @db.Text
+  doctorId        String?        @map("doctor_id") @db.Text
+  doctorName      String?        @map("doctor_name") @db.Text
+  name            String         @db.Text
+  email           String         @db.Text
+  phone           String?        @db.Text
+  location        String?        @db.Text
+  service         String?        @db.Text
+  appointmentDate String?        @map("appointment_date") @db.Text
+  appointmentTime String?        @map("appointment_time") @db.Text
+  message         String?        @db.Text
+  status          String?        @default("pending") @db.Text
+  notes           String?        @db.Text
+  createdAt       DateTime       @map("created_at") @default(now()) @db.Timestamptz(6)
+  doctor          Doctor?        @relation(fields: [doctorId], references: [id], onDelete: SetNull)
+  patient         Patient?       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  notifications   Notification[]
+
+  @@map("appointments")
+}
+
+model MedicalRecord {
+  id         String   @id @db.Text
+  doctorId   String   @map("doctor_id") @db.Text
+  patientId  String   @map("patient_id") @db.Text
+  diagnosis  String   @db.Text
+  notes      String?  @db.Text
+  attachments Json    @default("[]")
+  createdAt  DateTime @map("created_at") @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime @map("updated_at") @default(now()) @db.Timestamptz(6)
+  doctor     Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId, patientId])
+  @@map("medical_records")
+}
+
+model Prescription {
+  id           String   @id @db.Text
+  doctorId     String   @map("doctor_id") @db.Text
+  patientId    String   @map("patient_id") @db.Text
+  medication   String   @db.Text
+  dosage       String   @db.Text
+  duration     String   @db.Text
+  instructions String?  @db.Text
+  createdAt    DateTime @map("created_at") @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @map("updated_at") @default(now()) @db.Timestamptz(6)
+  doctor       Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patient      Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([doctorId, patientId])
+  @@map("prescriptions")
+}
+
+model Notification {
+  id            String       @id @db.Text
+  doctorId      String       @map("doctor_id") @db.Text
+  appointmentId String?      @map("appointment_id") @db.Text
+  title         String       @db.Text
+  message       String       @db.Text
+  type          String       @default("info") @db.Text
+  isRead        Boolean      @map("is_read") @default(false)
+  readAt        DateTime?    @map("read_at") @db.Timestamptz(6)
+  createdAt     DateTime     @map("created_at") @default(now()) @db.Timestamptz(6)
+  doctor        Doctor       @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+
+  @@index([doctorId, isRead, createdAt])
+  @@map("notifications")
+}
