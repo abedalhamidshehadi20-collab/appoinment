@@ -9,6 +9,36 @@ type Props = {
   searchParams: Promise<{ q?: string; specialty?: string }>;
 };
 
+function getStatusStyles(status?: string) {
+  const normalizedStatus = status?.trim().toLowerCase() ?? "available";
+
+  if (normalizedStatus === "available") {
+    return {
+      dot: "bg-[#10b981]",
+      text: "text-[#10b981]",
+    };
+  }
+
+  if (normalizedStatus === "unavailable") {
+    return {
+      dot: "bg-[#ef4444]",
+      text: "text-[#ef4444]",
+    };
+  }
+
+  if (normalizedStatus === "on leave") {
+    return {
+      dot: "bg-[#f59e0b]",
+      text: "text-[#f59e0b]",
+    };
+  }
+
+  return {
+    dot: "bg-[#6b7280]",
+    text: "text-[#6b7280]",
+  };
+}
+
 function decodeSpecialty(value: string) {
   try {
     return decodeURIComponent(value);
@@ -157,18 +187,31 @@ export default async function ProjectsPage({ searchParams }: Props) {
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {doctors.map((doctor) => (
-              <article key={doctor.id} className="card p-3">
-                <Image
-                  src={getSafeDoctorImageSrc(doctor.cover_image)}
-                  alt={doctor.title}
-                  width={900}
-                  height={700}
-                  className="h-52 w-full rounded-lg object-cover"
-                />
-                <div className="p-1 pt-3">
-                  <span className="rounded-full bg-[#dbeafe] px-3 py-1 text-xs font-semibold text-[var(--brand)]">
-                    {doctor.sector}
-                  </span>
+              (() => {
+                const doctorStatus = doctor.status?.trim() || "Available";
+                const statusStyles = getStatusStyles(doctorStatus);
+
+                return (
+                  <article
+                    key={doctor.id}
+                    className="card overflow-hidden rounded-[22px] border border-[#e7eef9] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] shadow-[0_18px_36px_-28px_rgba(15,23,42,0.25)]"
+                  >
+                    <div className="relative h-56 w-full overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
+                      <Image
+                        src={getSafeDoctorImageSrc(doctor.cover_image)}
+                        alt={doctor.title}
+                        fill
+                        className="object-cover object-[center_18%] transition-transform duration-300 hover:scale-[1.03]"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <p className="flex items-center gap-2 text-sm font-semibold">
+                        <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusStyles.dot}`} />
+                        <span className={statusStyles.text}>{doctorStatus}</span>
+                      </p>
+                      <span className="mt-3 inline-flex rounded-full bg-[#dbeafe] px-3 py-1 text-xs font-semibold text-[var(--brand)]">
+                        {doctor.sector}
+                      </span>
                   <h2 className="mt-3 text-2xl font-bold">{doctor.title}</h2>
                   <p className="mt-1 text-lg font-semibold text-[var(--brand)]">
                     {doctor.years_experience || 10} Years
@@ -178,8 +221,10 @@ export default async function ProjectsPage({ searchParams }: Props) {
                   <Link href={`/doctors/${doctor.slug}`} className="button button-secondary mt-4 w-full">
                     View profile
                   </Link>
-                </div>
-              </article>
+                    </div>
+                  </article>
+                );
+              })()
             ))}
           </div>
         </section>
