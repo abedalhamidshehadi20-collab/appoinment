@@ -24,9 +24,12 @@ export default async function SecureDashboardLayout({
 }) {
   const user = await requireUser();
 
-  const navItems = sections
-    .filter((item) => !item.permission || canAccess(user, item.permission))
-    .map(({ href, label }) => ({ href, label }));
+  const navItems =
+    user.role === "doctor"
+      ? [{ href: "/dashboard/projects", label: "My Profile" }]
+      : sections
+          .filter((item) => !item.permission || canAccess(user, item.permission))
+          .map(({ href, label }) => ({ href, label }));
 
   return (
     <DashboardShell

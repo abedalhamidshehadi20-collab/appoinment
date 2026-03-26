@@ -22,6 +22,8 @@ type DoctorsManagementClientProps = {
   credentials: DoctorCredential[];
   successMessage?: string;
   errorMessage?: string;
+  allowCreate?: boolean;
+  allowDelete?: boolean;
 };
 
 function getStatusBadge(status: string) {
@@ -47,6 +49,8 @@ export function DoctorsManagementClient({
   credentials,
   successMessage,
   errorMessage,
+  allowCreate = true,
+  allowDelete = true,
 }: DoctorsManagementClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -124,19 +128,21 @@ export function DoctorsManagementClient({
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 pt-16 lg:pt-20">
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedDoctorId(null);
-                setShowCreateForm(true);
-              }}
-              className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1f68cb]"
-            >
-              <Plus className="h-4 w-4" />
-              Add Doctor
-            </button>
-          </div>
+          {allowCreate ? (
+            <div className="flex flex-wrap gap-3 pt-16 lg:pt-20">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedDoctorId(null);
+                  setShowCreateForm(true);
+                }}
+                className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1f68cb]"
+              >
+                <Plus className="h-4 w-4" />
+                Add Doctor
+              </button>
+            </div>
+          ) : null}
         </div>
 
         <section className="mt-6 rounded-[24px] border border-[#dce8fb] bg-white p-5 shadow-[0_12px_28px_-24px_rgba(17,24,39,0.25)]">
@@ -262,16 +268,18 @@ export function DoctorsManagementClient({
                               <Pencil className="h-4 w-4" />
                             </button>
 
-                            <form action={deleteProjectAction}>
-                              <input type="hidden" name="id" value={doctor.id} />
-                              <button
-                                type="submit"
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
-                                title="Delete Doctor"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </form>
+                            {allowDelete ? (
+                              <form action={deleteProjectAction}>
+                                <input type="hidden" name="id" value={doctor.id} />
+                                <button
+                                  type="submit"
+                                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
+                                  title="Delete Doctor"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              </form>
+                            ) : null}
                           </div>
                         </td>
                       </tr>

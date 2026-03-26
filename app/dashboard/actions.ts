@@ -296,13 +296,19 @@ export async function deleteServiceAction(formData: FormData) {
 // ============================================
 
 export async function saveProjectAction(formData: FormData) {
-  await requirePermission("projects");
+  const user = await requirePermission("projects");
   const id = formData.get("id")?.toString();
   const title = formData.get("title")?.toString() ?? "";
   const doctorCredentialEmail =
     formData.get("doctorCredentialEmail")?.toString().trim().toLowerCase() ?? "";
   const doctorCredentialPassword = formData.get("doctorCredentialPassword")?.toString() ?? "";
   const shouldCreateCredential = !id && !!doctorCredentialEmail;
+
+  if (user.role === "doctor") {
+    if (!user.doctorId || !id || id !== user.doctorId) {
+      redirect("/dashboard/projects?credential_error=doctor_scope");
+    }
+  }
 
   if (!id && doctorCredentialPassword && !doctorCredentialEmail) {
     redirect("/dashboard/projects?credential_error=missing_fields");
@@ -469,10 +475,14 @@ export async function saveProjectAction(formData: FormData) {
 }
 
 export async function deleteProjectAction(formData: FormData) {
-  await requirePermission("projects");
+  const user = await requirePermission("projects");
   const id = formData.get("id")?.toString();
 
   if (!id) return;
+
+  if (user.role === "doctor") {
+    redirect("/dashboard/projects?credential_error=doctor_scope");
+  }
 
   const { error } = await supabase.from("doctors").delete().eq("id", id);
 
@@ -489,13 +499,19 @@ export async function deleteProjectAction(formData: FormData) {
 }
 
 export async function saveDoctorCredentialAction(formData: FormData) {
-  await requirePermission("projects");
+  const user = await requirePermission("projects");
 
   const credentialId = formData.get("credentialId")?.toString();
   const doctorId = formData.get("doctorId")?.toString();
   const email = formData.get("email")?.toString().trim().toLowerCase() ?? "";
   const password = formData.get("password")?.toString() ?? "";
   const timestamp = new Date().toISOString();
+
+  if (user.role === "doctor") {
+    if (!user.doctorId || doctorId !== user.doctorId) {
+      redirect("/dashboard/projects?credential_error=doctor_scope");
+    }
+  }
 
   if (!doctorId || !email) {
     redirect("/dashboard/projects?credential_error=missing_fields");

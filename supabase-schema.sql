@@ -178,6 +178,7 @@ CREATE INDEX idx_doctors_slug ON doctors(slug);
 CREATE INDEX idx_doctors_sector ON doctors(sector);
 CREATE INDEX idx_doctor_credentials_doctor_id ON doctor_credentials(doctor_id);
 CREATE INDEX idx_doctor_credentials_email ON doctor_credentials(email);
+CREATE UNIQUE INDEX idx_doctor_credentials_email_lower ON doctor_credentials(LOWER(email));
 CREATE INDEX idx_appointments_patient ON appointments(patient_id);
 CREATE INDEX idx_appointments_doctor ON appointments(doctor_id);
 CREATE INDEX idx_appointments_date ON appointments(appointment_date);
@@ -265,3 +266,18 @@ COMMENT ON TABLE blogs IS 'Blog posts';
 COMMENT ON TABLE news IS 'News articles';
 COMMENT ON TABLE contacts IS 'Contact form submissions';
 COMMENT ON TABLE site_settings IS 'Site-wide settings stored as JSON';
+
+CREATE OR REPLACE FUNCTION set_doctor_credentials_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_doctor_credentials_updated_at ON doctor_credentials;
+
+CREATE TRIGGER trg_doctor_credentials_updated_at
+BEFORE UPDATE ON doctor_credentials
+FOR EACH ROW
+EXECUTE FUNCTION set_doctor_credentials_updated_at();

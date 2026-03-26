@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createPatientSession, logoutPatient, patientLogin } from "@/lib/patient-auth";
 import { findPatientByEmail, createPatient } from "@/lib/db";
+import { loginDoctor } from "@/lib/auth";
 
 export async function patientLoginAction(formData: FormData) {
   const email = formData.get("email")?.toString().trim() ?? "";
@@ -74,4 +75,17 @@ export async function patientSignupAction(formData: FormData) {
 export async function patientLogoutAction() {
   await logoutPatient();
   redirect("/");
+}
+
+export async function doctorLoginAction(formData: FormData) {
+  const email = formData.get("email")?.toString().trim() ?? "";
+  const password = formData.get("password")?.toString() ?? "";
+  const next = formData.get("next")?.toString() || "/dashboard/projects";
+
+  const ok = await loginDoctor(email, password);
+  if (!ok) {
+    redirect(`/doctor-login?error=1&next=${encodeURIComponent(next)}`);
+  }
+
+  redirect(next);
 }

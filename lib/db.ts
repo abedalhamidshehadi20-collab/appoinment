@@ -778,7 +778,8 @@ function isMissingDoctorCredentialsTableError(error: { code?: string; message?: 
 }
 
 export async function getAllDoctorCredentials() {
-  const { data, error } = await supabase
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
     .from('doctor_credentials')
     .select('*')
     .order('created_at', { ascending: false });
@@ -787,22 +788,30 @@ export async function getAllDoctorCredentials() {
     return [] as DoctorCredential[];
   }
 
-  if (error?.code === '42501' && supabaseAdmin) {
-    const { data: adminData, error: adminError } = await supabaseAdmin
-      .from('doctor_credentials')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (isMissingDoctorCredentialsTableError(adminError)) {
-      return [] as DoctorCredential[];
-    }
-
-    if (adminError) throw adminError;
-    return adminData as DoctorCredential[];
-  }
-
   if (error) throw error;
   return data as DoctorCredential[];
+}
+
+export async function findDoctorCredentialByCredentials(email: string, password: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
+    .from('doctor_credentials')
+    .select('*')
+    .ilike('email', normalizedEmail)
+    .eq('password', password)
+    .single();
+
+  if (isMissingDoctorCredentialsTableError(error)) {
+    return null;
+  }
+
+  if (error) {
+    return null;
+  }
+
+  return data as DoctorCredential;
 }
 
 // ============================================

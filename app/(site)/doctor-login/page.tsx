@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { loginAction } from "@/app/dashboard/actions";
+import { doctorLoginAction } from "@/app/(site)/auth-actions";
 import { getSessionUser } from "@/lib/auth";
 
 type Props = {
@@ -29,7 +29,7 @@ export default async function DoctorLoginPage({ searchParams }: Props) {
           </p>
         ) : null}
 
-        <form action={loginAction} className="mt-5 grid gap-3">
+        <form action={doctorLoginAction} className="mt-5 grid gap-3">
           <input type="hidden" name="next" value={query.next || "/dashboard/projects"} />
           <label className="grid gap-2 text-sm font-semibold text-[var(--brand-deep)]">
             Email Address

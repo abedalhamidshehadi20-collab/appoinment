@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { getDashboardStats, getRecentAppointments } from "../actions";
 import { requireUser } from "@/lib/auth";
 import {
@@ -7,13 +8,16 @@ import {
   UserPlus,
   TrendingUp,
   Activity,
-  DollarSign,
   Clock,
 } from "lucide-react";
 import { AppointmentsLineChart, DoctorBarChart, StatusPieChart } from "@/components/dashboard/charts";
 
 export default async function DashboardOverviewPage() {
   const user = await requireUser();
+  if (user.role === "doctor") {
+    redirect("/dashboard/projects");
+  }
+
   const stats = await getDashboardStats();
   const recentAppointments = await getRecentAppointments(5);
 
