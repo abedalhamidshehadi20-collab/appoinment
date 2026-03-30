@@ -61,12 +61,13 @@ export function NewsForm({ news, submitLabel, onCancel }: NewsFormProps) {
       </div>
 
       <DoctorFormField label="Excerpt">
-        <input
+        <TiptapEditorField
+          key={news?.id ?? "new-news-excerpt"}
           name="excerpt"
           required
+          size="compact"
           defaultValue={news?.excerpt ?? ""}
           placeholder="Excerpt"
-          className={inputClassName}
         />
       </DoctorFormField>
 

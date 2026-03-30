@@ -16,7 +16,9 @@ import {
   Undo2,
 } from "lucide-react";
 import {
+  normalizeLineListContent,
   normalizeRichTextContent,
+  stripRichTextToLineListText,
   stripRichTextToPlainText,
   toStoredRichTextContent,
 } from "@/lib/rich-text";
@@ -26,14 +28,27 @@ type TiptapEditorFieldProps = {
   defaultValue?: string;
   placeholder?: string;
   required?: boolean;
+  size?: "default" | "compact";
+  submitMode?: "html" | "line-list";
 };
 
-function getEditorValue(editor: Editor) {
-  const html = toStoredRichTextContent(editor.getHTML());
+function getEditorValue(editor: Editor, submitMode: "html" | "line-list") {
+  const html = editor.getHTML();
+
+  if (submitMode === "line-list") {
+    const lineListValue = stripRichTextToLineListText(html);
+
+    return {
+      fieldValue: lineListValue,
+      plainText: lineListValue,
+    };
+  }
+
+  const storedHtml = toStoredRichTextContent(html);
 
   return {
-    html,
-    plainText: stripRichTextToPlainText(html),
+    fieldValue: storedHtml,
+    plainText: stripRichTextToPlainText(storedHtml),
   };
 }
 
@@ -73,15 +88,22 @@ export function TiptapEditorField({
   defaultValue = "",
   placeholder = "Write here...",
   required = false,
+  size = "default",
+  submitMode = "html",
 }: TiptapEditorFieldProps) {
   const initialValue = useMemo(
-    () => toStoredRichTextContent(defaultValue),
-    [defaultValue],
+    () =>
+      submitMode === "line-list"
+        ? stripRichTextToLineListText(defaultValue)
+        : toStoredRichTextContent(defaultValue),
+    [defaultValue, submitMode],
   );
-  const [htmlValue, setHtmlValue] = useState(initialValue);
+  const [fieldValue, setFieldValue] = useState(initialValue);
   const [plainTextValue, setPlainTextValue] = useState(
     stripRichTextToPlainText(initialValue),
   );
+  const editorHeightClassName =
+    size === "compact" ? "min-h-[140px]" : "min-h-[240px]";
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -92,21 +114,23 @@ export function TiptapEditorField({
         },
       }),
     ],
-    content: normalizeRichTextContent(defaultValue) || "<p></p>",
+    content:
+      (submitMode === "line-list"
+        ? normalizeLineListContent(initialValue)
+        : normalizeRichTextContent(defaultValue)) || "<p></p>",
     editorProps: {
       attributes: {
-        class:
-          "tiptap-editor-content min-h-[240px] px-4 py-3 text-sm text-[var(--brand-deep)] outline-none",
+        class: `tiptap-editor-content ${editorHeightClassName} px-4 py-3 text-sm text-[var(--brand-deep)] outline-none`,
       },
     },
     onCreate: ({ editor: currentEditor }) => {
-      const nextValue = getEditorValue(currentEditor);
-      setHtmlValue(nextValue.html);
+      const nextValue = getEditorValue(currentEditor, submitMode);
+      setFieldValue(nextValue.fieldValue);
       setPlainTextValue(nextValue.plainText);
     },
     onUpdate: ({ editor: currentEditor }) => {
-      const nextValue = getEditorValue(currentEditor);
-      setHtmlValue(nextValue.html);
+      const nextValue = getEditorValue(currentEditor, submitMode);
+      setFieldValue(nextValue.fieldValue);
       setPlainTextValue(nextValue.plainText);
     },
   });
@@ -200,7 +224,7 @@ export function TiptapEditorField({
         <EditorContent editor={editor} />
       </div>
 
-      <input type="hidden" name={name} value={htmlValue} readOnly />
+      <input type="hidden" name={name} value={fieldValue} readOnly />
       {required ? (
         <input
           required

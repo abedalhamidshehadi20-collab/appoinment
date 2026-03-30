@@ -62,6 +62,36 @@ export function stripRichTextToPlainText(value: string) {
   return decodeEntities(withoutTags).replace(/\n{3,}/g, "\n\n").trim();
 }
 
+export function normalizeLineListContent(value: string) {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return "";
+  }
+
+  if (isRichTextHtml(trimmedValue)) {
+    return trimmedValue;
+  }
+
+  return trimmedValue
+    .split(/\n+/)
+    .map((line) => `<p>${escapeHtml(line.trim())}</p>`)
+    .join("");
+}
+
+export function stripRichTextToLineListText(value: string) {
+  return stripRichTextToPlainText(value)
+    .split(/\n+/)
+    .map((line) =>
+      line
+        .replace(/^\d+\.\s+/, "")
+        .replace(/^[-*]\s+/, "")
+        .trim(),
+    )
+    .filter(Boolean)
+    .join("\n");
+}
+
 export function toStoredRichTextContent(value: string) {
   const normalizedHtml = normalizeRichTextContent(value);
 

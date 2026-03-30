@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllNews } from "@/lib/db";
 import { formatPublishedDate } from "@/lib/published-date";
+import { stripRichTextToPlainText } from "@/lib/rich-text";
 
 export default async function NewsPage() {
   const news = await getAllNews();
@@ -50,7 +51,7 @@ export default async function NewsPage() {
                     {item.title}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-[#6b7280]">
-                    {item.excerpt}
+                    {stripRichTextToPlainText(item.excerpt)}
                   </p>
                   <div className="mt-4 flex items-center justify-between">
                     <p className="text-xs text-[#9ca3af]">{formatPublishedDate(item.published_at)}</p>

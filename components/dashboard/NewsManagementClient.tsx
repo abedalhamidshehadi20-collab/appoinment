@@ -31,7 +31,7 @@ export function NewsManagementClient({
       item.title,
       item.slug,
       item.source,
-      item.excerpt,
+      stripRichTextToPlainText(item.excerpt),
       stripRichTextToPlainText(item.content),
       item.published_at,
     ]
@@ -138,7 +138,7 @@ export function NewsManagementClient({
                               {item.slug || "-"}
                             </p>
                             <p className="mt-2 line-clamp-2 text-sm leading-6 text-[var(--muted)]">
-                              {item.excerpt}
+                              {stripRichTextToPlainText(item.excerpt)}
                             </p>
                           </div>
                         </td>

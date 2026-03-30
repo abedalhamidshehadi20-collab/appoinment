@@ -31,7 +31,7 @@ export function BlogsManagementClient({
       blog.title,
       blog.slug,
       blog.author,
-      blog.excerpt,
+      stripRichTextToPlainText(blog.excerpt),
       stripRichTextToPlainText(blog.content),
       blog.published_at,
       ...(blog.tags ?? []),
@@ -141,7 +141,7 @@ export function BlogsManagementClient({
                               {blog.slug || "-"}
                             </p>
                             <p className="mt-2 line-clamp-2 text-sm leading-6 text-[var(--muted)]">
-                              {blog.excerpt}
+                              {stripRichTextToPlainText(blog.excerpt)}
                             </p>
                           </div>
                         </td>

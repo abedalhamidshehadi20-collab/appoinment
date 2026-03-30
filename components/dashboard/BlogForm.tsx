@@ -4,7 +4,6 @@ import { saveBlogAction } from "@/app/dashboard/actions";
 import {
   DoctorFormField,
   inputClassName,
-  textareaClassName,
 } from "@/components/dashboard/doctor-form-ui";
 import { TiptapEditorField } from "@/components/dashboard/TiptapEditorField";
 import type { Blog } from "@/lib/db";
@@ -62,12 +61,13 @@ export function BlogForm({ blog, submitLabel, onCancel }: BlogFormProps) {
       </div>
 
       <DoctorFormField label="Excerpt">
-        <input
+        <TiptapEditorField
+          key={blog?.id ?? "new-blog-excerpt"}
           name="excerpt"
           required
+          size="compact"
           defaultValue={blog?.excerpt ?? ""}
           placeholder="Excerpt"
-          className={inputClassName}
         />
       </DoctorFormField>
 
@@ -82,12 +82,13 @@ export function BlogForm({ blog, submitLabel, onCancel }: BlogFormProps) {
       </DoctorFormField>
 
       <DoctorFormField label="Tags">
-        <textarea
+        <TiptapEditorField
+          key={blog?.id ?? "new-blog-tags"}
           name="tags"
-          rows={5}
+          size="compact"
+          submitMode="line-list"
           defaultValue={blog?.tags?.join("\n") ?? ""}
           placeholder="Tags (one per line)"
-          className={textareaClassName}
         />
       </DoctorFormField>
 
