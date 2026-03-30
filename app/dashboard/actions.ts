@@ -197,7 +197,7 @@ export async function updateHomeAction(formData: FormData) {
 
   const homeData = {
     headline: formData.get("headline")?.toString() ?? "",
-    subheadline: formData.get("subheadline")?.toString() ?? "",
+    subheadline: toStoredRichTextContent(formData.get("subheadline")?.toString() ?? ""),
     primaryCtaText: formData.get("primaryCtaText")?.toString() ?? "",
     primaryCtaLink: formData.get("primaryCtaLink")?.toString() ?? "",
     secondaryCtaText: formData.get("secondaryCtaText")?.toString() ?? "",

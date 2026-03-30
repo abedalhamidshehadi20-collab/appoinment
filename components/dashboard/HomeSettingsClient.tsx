@@ -3,7 +3,9 @@
 import { useState, type ReactNode } from "react";
 import { updateContactAction, updateHomeAction } from "@/app/dashboard/actions";
 import { DoctorFormField } from "@/components/dashboard/doctor-form-ui";
+import { TiptapEditorField } from "@/components/dashboard/TiptapEditorField";
 import type { ContactSettings, SiteSettings } from "@/lib/db";
+import { stripRichTextToPlainText } from "@/lib/rich-text";
 import {
   BadgeCheck,
   ChevronDown,
@@ -212,7 +214,7 @@ export function HomeSettingsClient({
     matchesQuery(normalizedQuery, [
       "home hero headline subheadline cta stats homepage content",
       home.headline,
-      home.subheadline,
+      stripRichTextToPlainText(home.subheadline),
       home.primaryCtaText,
       home.secondaryCtaText,
       ...home.stats.map((stat) => `${stat.label} ${stat.value}`),
@@ -364,11 +366,12 @@ export function HomeSettingsClient({
                     </DoctorFormField>
 
                     <DoctorFormField label="Subheadline">
-                      <textarea
+                      <TiptapEditorField
+                        key="home-subheadline"
                         name="subheadline"
                         defaultValue={home.subheadline}
-                        rows={3}
-                        className={compactTextareaClassName}
+                        size="compact"
+                        placeholder="Subheadline"
                       />
                     </DoctorFormField>
                   </div>
