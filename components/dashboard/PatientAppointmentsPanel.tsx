@@ -1,6 +1,7 @@
 import { deleteAppointmentAction, updateAppointmentStatusAction } from "@/app/dashboard/actions";
 import AppointmentStatusSelector from "@/components/AppointmentStatusSelector";
 import AddPatientAppointmentForm from "@/components/dashboard/add-patient-appointment-form";
+import { DeleteActionButton } from "@/components/ui/DeleteActionButton";
 import type { Appointment } from "@/lib/db";
 
 type Props = {
@@ -93,17 +94,19 @@ export function PatientAppointmentsPanel({
                       onUpdate={updateAppointmentStatusAction}
                     />
 
-                    <form action={deleteAppointmentAction}>
-                      <input type="hidden" name="patientId" value={patientId} />
-                      <input
-                        type="hidden"
-                        name="appointmentId"
-                        value={appointment.id}
-                      />
-                      <button className="rounded-xl border border-[#d8e5fb] bg-white px-4 py-2 text-xs font-semibold text-[var(--brand-deep)] transition hover:bg-[#f8fbff]">
+                    <DeleteActionButton
+                      action={deleteAppointmentAction}
+                      values={{
+                        patientId,
+                        appointmentId: appointment.id,
+                      }}
+                      dialogTitle="Delete Appointment"
+                      dialogMessage={`Are you sure you want to delete the appointment with "${appointment.doctor_name || "this doctor"}" on ${formatDate(appointment.appointment_date)} at ${appointment.appointment_time}? This action cannot be undone.`}
+                      buttonTitle="Delete Appointment"
+                      buttonClassName="rounded-xl border border-[#d8e5fb] bg-white px-4 py-2 text-xs font-semibold text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
+                    >
                         Delete
-                      </button>
-                    </form>
+                    </DeleteActionButton>
                   </div>
                 </div>
               </article>

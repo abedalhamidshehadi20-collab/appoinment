@@ -4,6 +4,7 @@ import { useState } from "react";
 import { deleteProjectAction } from "@/app/dashboard/actions";
 import { DoctorProfileForm } from "@/components/dashboard/DoctorProfileForm";
 import { NewDoctorForm } from "@/components/dashboard/NewDoctorForm";
+import { DeleteActionButton } from "@/components/ui/DeleteActionButton";
 import type { Doctor, DoctorCredential } from "@/lib/db";
 import {
   ChevronDown,
@@ -269,16 +270,16 @@ export function DoctorsManagementClient({
                             </button>
 
                             {allowDelete ? (
-                              <form action={deleteProjectAction}>
-                                <input type="hidden" name="id" value={doctor.id} />
-                                <button
-                                  type="submit"
-                                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
-                                  title="Delete Doctor"
-                                >
+                              <DeleteActionButton
+                                action={deleteProjectAction}
+                                values={{ id: doctor.id }}
+                                dialogTitle="Delete Doctor"
+                                dialogMessage={`Are you sure you want to delete "${doctor.title}"? This action cannot be undone.`}
+                                buttonTitle="Delete Doctor"
+                                buttonClassName="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
+                              >
                                   <Trash2 className="h-4 w-4" />
-                                </button>
-                              </form>
+                              </DeleteActionButton>
                             ) : null}
                           </div>
                         </td>

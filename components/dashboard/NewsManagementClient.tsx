@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { deleteNewsAction } from "@/app/dashboard/actions";
 import { NewsForm } from "@/components/dashboard/NewsForm";
+import { DeleteActionButton } from "@/components/ui/DeleteActionButton";
 import type { News } from "@/lib/db";
 import { formatPublishedDate } from "@/lib/published-date";
 import { FileText, Pencil, Plus, Search, Trash2, X } from "lucide-react";
@@ -164,16 +165,16 @@ export function NewsManagementClient({
                               <Pencil className="h-4 w-4" />
                             </button>
 
-                            <form action={deleteNewsAction}>
-                              <input type="hidden" name="id" value={item.id} />
-                              <button
-                                type="submit"
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
-                                title="Delete News"
-                              >
+                            <DeleteActionButton
+                              action={deleteNewsAction}
+                              values={{ id: item.id }}
+                              dialogTitle="Delete News"
+                              dialogMessage={`Are you sure you want to delete "${item.title}"? This action cannot be undone.`}
+                              buttonTitle="Delete News"
+                              buttonClassName="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
+                            >
                                 <Trash2 className="h-4 w-4" />
-                              </button>
-                            </form>
+                            </DeleteActionButton>
                           </div>
                         </td>
                       </tr>

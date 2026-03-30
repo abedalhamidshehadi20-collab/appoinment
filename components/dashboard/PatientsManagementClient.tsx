@@ -4,6 +4,7 @@ import { useState } from "react";
 import { deletePatientAction } from "@/app/dashboard/actions";
 import { PatientAppointmentsPanel } from "@/components/dashboard/PatientAppointmentsPanel";
 import { PatientProfileForm } from "@/components/dashboard/PatientProfileForm";
+import { DeleteActionButton } from "@/components/ui/DeleteActionButton";
 import type { Appointment, Patient } from "@/lib/db";
 import PatientWithAppointmentForm from "@/components/PatientWithAppointmentForm";
 import {
@@ -255,16 +256,16 @@ export function PatientsManagementClient({
                               <Pencil className="h-4 w-4" />
                             </button>
 
-                            <form action={deletePatientAction}>
-                              <input type="hidden" name="id" value={patient.id} />
-                              <button
-                                type="submit"
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
-                                title="Delete Patient"
-                              >
+                            <DeleteActionButton
+                              action={deletePatientAction}
+                              values={{ id: patient.id }}
+                              dialogTitle="Delete Patient"
+                              dialogMessage={`Are you sure you want to delete "${patient.name}"? This action cannot be undone.`}
+                              buttonTitle="Delete Patient"
+                              buttonClassName="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
+                            >
                                 <Trash2 className="h-4 w-4" />
-                              </button>
-                            </form>
+                            </DeleteActionButton>
                           </div>
                         </td>
                       </tr>

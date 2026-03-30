@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { deleteServiceAction } from "@/app/dashboard/actions";
 import { ServiceForm } from "@/components/dashboard/ServiceForm";
+import { DeleteActionButton } from "@/components/ui/DeleteActionButton";
 import type { Service } from "@/lib/db";
 import { FileText, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 
@@ -182,16 +183,16 @@ export function ServicesManagementClient({
                               <Pencil className="h-4 w-4" />
                             </button>
 
-                            <form action={deleteServiceAction}>
-                              <input type="hidden" name="id" value={service.id} />
-                              <button
-                                type="submit"
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
-                                title="Delete Service"
-                              >
+                            <DeleteActionButton
+                              action={deleteServiceAction}
+                              values={{ id: service.id }}
+                              dialogTitle="Delete Service"
+                              dialogMessage={`Are you sure you want to delete "${service.title}"? This action cannot be undone.`}
+                              buttonTitle="Delete Service"
+                              buttonClassName="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e5e7eb] bg-white text-[var(--muted)] transition hover:border-[#fecaca] hover:text-[#dc2626]"
+                            >
                                 <Trash2 className="h-4 w-4" />
-                              </button>
-                            </form>
+                            </DeleteActionButton>
                           </div>
                         </td>
                       </tr>
