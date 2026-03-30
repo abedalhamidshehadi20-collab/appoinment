@@ -6,6 +6,7 @@ import { NewsForm } from "@/components/dashboard/NewsForm";
 import { DeleteActionButton } from "@/components/ui/DeleteActionButton";
 import type { News } from "@/lib/db";
 import { formatPublishedDate } from "@/lib/published-date";
+import { stripRichTextToPlainText } from "@/lib/rich-text";
 import { FileText, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 
 type NewsManagementClientProps = {
@@ -31,7 +32,7 @@ export function NewsManagementClient({
       item.slug,
       item.source,
       item.excerpt,
-      item.content,
+      stripRichTextToPlainText(item.content),
       item.published_at,
     ]
       .join(" ")

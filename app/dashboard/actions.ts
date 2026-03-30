@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { login, logout, requirePermission } from "@/lib/auth";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { getSafeDoctorImageSrc } from "@/lib/image";
+import { toStoredRichTextContent } from "@/lib/rich-text";
 import {
   nextId,
   slugify,
@@ -680,7 +681,7 @@ export async function saveBlogAction(formData: FormData) {
     slug: slugify(formData.get("slug")?.toString() || title),
     title,
     excerpt: formData.get("excerpt")?.toString() ?? "",
-    content: formData.get("content")?.toString() ?? "",
+    content: toStoredRichTextContent(formData.get("content")?.toString() ?? ""),
     author: formData.get("author")?.toString() ?? "",
     published_at: toSafePublishedAt(publishedAtRaw),
     tags: toList(formData.get("tags")),
@@ -766,7 +767,7 @@ export async function saveNewsAction(formData: FormData) {
     slug: slugify(formData.get("slug")?.toString() || title),
     title,
     excerpt: formData.get("excerpt")?.toString() ?? "",
-    content: formData.get("content")?.toString() ?? "",
+    content: toStoredRichTextContent(formData.get("content")?.toString() ?? ""),
     source: formData.get("source")?.toString() ?? "",
     published_at: toSafePublishedAt(publishedAtRaw),
   };

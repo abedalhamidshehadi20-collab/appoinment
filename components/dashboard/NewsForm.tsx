@@ -4,8 +4,8 @@ import { saveNewsAction } from "@/app/dashboard/actions";
 import {
   DoctorFormField,
   inputClassName,
-  textareaClassName,
 } from "@/components/dashboard/doctor-form-ui";
+import { TiptapEditorField } from "@/components/dashboard/TiptapEditorField";
 import type { News } from "@/lib/db";
 import { toDateInputValue } from "@/lib/published-date";
 
@@ -71,13 +71,12 @@ export function NewsForm({ news, submitLabel, onCancel }: NewsFormProps) {
       </DoctorFormField>
 
       <DoctorFormField label="Content">
-        <textarea
+        <TiptapEditorField
+          key={news?.id ?? "new-news-content"}
           name="content"
           required
-          rows={10}
           defaultValue={news?.content ?? ""}
           placeholder="Content"
-          className={textareaClassName}
         />
       </DoctorFormField>
 

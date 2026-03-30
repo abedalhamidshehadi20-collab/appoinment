@@ -6,6 +6,7 @@ import {
   inputClassName,
   textareaClassName,
 } from "@/components/dashboard/doctor-form-ui";
+import { TiptapEditorField } from "@/components/dashboard/TiptapEditorField";
 import type { Blog } from "@/lib/db";
 import { toDateInputValue } from "@/lib/published-date";
 
@@ -71,13 +72,12 @@ export function BlogForm({ blog, submitLabel, onCancel }: BlogFormProps) {
       </DoctorFormField>
 
       <DoctorFormField label="Content">
-        <textarea
+        <TiptapEditorField
+          key={blog?.id ?? "new-blog-content"}
           name="content"
           required
-          rows={10}
           defaultValue={blog?.content ?? ""}
           placeholder="Content"
-          className={textareaClassName}
         />
       </DoctorFormField>
 
