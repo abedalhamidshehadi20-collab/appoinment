@@ -3,9 +3,8 @@ import { requirePermission } from "@/lib/auth";
 import { getSiteSettings } from "@/lib/db";
 import {
   DoctorFormField,
-  inputClassName,
-  textareaClassName,
 } from "@/components/dashboard/doctor-form-ui";
+import { TiptapEditorField } from "@/components/dashboard/TiptapEditorField";
 
 export default async function DashboardAboutPage() {
   await requirePermission("about");
@@ -31,48 +30,56 @@ export default async function DashboardAboutPage() {
       <section className="mt-6 rounded-[24px] border border-[#dce8fb] bg-white p-5 shadow-[0_12px_28px_-24px_rgba(17,24,39,0.25)]">
         <form action={updateAboutAction} className="grid gap-6">
           <DoctorFormField label="Section Title">
-            <input
+            <TiptapEditorField
+              key="about-title"
               name="title"
               defaultValue={data.about.title}
-              className={inputClassName}
+              size="compact"
+              submitMode="plain-text"
+              placeholder="Section title"
             />
           </DoctorFormField>
 
           <DoctorFormField label="Description">
-            <textarea
+            <TiptapEditorField
+              key="about-description"
               name="description"
-              rows={3}
               defaultValue={data.about.description}
-              className={textareaClassName}
+              size="compact"
+              placeholder="Description"
             />
           </DoctorFormField>
 
           <div className="grid gap-6 lg:grid-cols-2">
             <DoctorFormField label="Mission">
-              <textarea
+              <TiptapEditorField
+                key="about-mission"
                 name="mission"
-                rows={3}
                 defaultValue={data.about.mission}
-                className={textareaClassName}
+                size="compact"
+                placeholder="Mission"
               />
             </DoctorFormField>
 
             <DoctorFormField label="Vision">
-              <textarea
+              <TiptapEditorField
+                key="about-vision"
                 name="vision"
-                rows={3}
                 defaultValue={data.about.vision}
-                className={textareaClassName}
+                size="compact"
+                placeholder="Vision"
               />
             </DoctorFormField>
           </div>
 
           <DoctorFormField label="Core Values">
-            <textarea
+            <TiptapEditorField
+              key="about-values"
               name="values"
-              rows={4}
+              size="compact"
+              submitMode="line-list"
               defaultValue={data.about.values.join("\n")}
-              className={textareaClassName}
+              placeholder="Core values (one per line)"
             />
           </DoctorFormField>
 

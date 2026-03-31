@@ -4,8 +4,8 @@ import { saveServiceAction } from "@/app/dashboard/actions";
 import {
   DoctorFormField,
   inputClassName,
-  textareaClassName,
 } from "@/components/dashboard/doctor-form-ui";
+import { TiptapEditorField } from "@/components/dashboard/TiptapEditorField";
 import type { Service } from "@/lib/db";
 
 type ServiceFormProps = {
@@ -34,23 +34,23 @@ export function ServiceForm({
       </DoctorFormField>
 
       <DoctorFormField label="Summary">
-        <textarea
+        <TiptapEditorField
+          key={service?.id ?? "new-service-summary"}
           name="summary"
           required
-          rows={4}
+          size="compact"
           defaultValue={service?.summary ?? ""}
           placeholder="Summary"
-          className={textareaClassName}
         />
       </DoctorFormField>
 
       <DoctorFormField label="Features">
-        <textarea
+        <TiptapEditorField
+          key={service?.id ?? "new-service-features"}
           name="features"
-          rows={8}
+          submitMode="line-list"
           defaultValue={service?.features?.join("\n") ?? ""}
           placeholder="One feature per line"
-          className={textareaClassName}
         />
       </DoctorFormField>
 

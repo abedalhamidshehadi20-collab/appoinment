@@ -5,6 +5,7 @@ import { deleteServiceAction } from "@/app/dashboard/actions";
 import { ServiceForm } from "@/components/dashboard/ServiceForm";
 import { DeleteActionButton } from "@/components/ui/DeleteActionButton";
 import type { Service } from "@/lib/db";
+import { stripRichTextToPlainText } from "@/lib/rich-text";
 import { FileText, Pencil, Plus, Search, Trash2, X } from "lucide-react";
 
 type ServicesManagementClientProps = {
@@ -27,7 +28,7 @@ export function ServicesManagementClient({
 
     const haystack = [
       service.title,
-      service.summary,
+      stripRichTextToPlainText(service.summary),
       ...(service.features ?? []),
     ]
       .join(" ")
@@ -134,7 +135,7 @@ export function ServicesManagementClient({
                         </td>
                         <td className="px-4 py-4">
                           <p className="max-w-[380px] line-clamp-2 text-sm leading-6 text-[var(--muted)]">
-                            {service.summary}
+                            {stripRichTextToPlainText(service.summary)}
                           </p>
                         </td>
                         <td className="px-4 py-4">

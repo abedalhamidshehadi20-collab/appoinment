@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useTransition, type FormEvent } from "react";
 import { saveProjectAction } from "@/app/dashboard/actions";
 import {
   DoctorFormField,
@@ -21,6 +21,7 @@ export function NewDoctorForm({
   onCancel?: () => void;
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, startTransition] = useTransition();
   const [credential, setCredential] = useState<DraftCredential | null>(null);
   const [draftEmail, setDraftEmail] = useState("");
   const [draftPassword, setDraftPassword] = useState("");
@@ -41,9 +42,20 @@ export function NewDoctorForm({
     setIsModalOpen(false);
   }
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    startTransition(async () => {
+      await saveProjectAction(formData);
+      onCancel?.();
+    });
+  }
+
   return (
     <>
-      <form action={saveProjectAction} className="grid gap-6 md:grid-cols-2">
+      <form onSubmit={handleSubmit} className="grid gap-6 md:grid-cols-2">
         {credential ? (
           <>
             <input
@@ -207,6 +219,7 @@ export function NewDoctorForm({
                 <button
                   type="button"
                   onClick={handleOpenCredentialModal}
+                  disabled={isSubmitting}
                   className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
                     credential
                       ? "border border-[#d8e5fb] bg-white text-[var(--brand-deep)] hover:bg-[#f8fbff]"
@@ -220,6 +233,7 @@ export function NewDoctorForm({
                   <button
                     type="button"
                     onClick={() => setCredential(null)}
+                    disabled={isSubmitting}
                     className="rounded-xl border border-[#d8e5fb] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
                   >
                     Remove Email
@@ -233,14 +247,19 @@ export function NewDoctorForm({
                 <button
                   type="button"
                   onClick={onCancel}
+                  disabled={isSubmitting}
                   className="rounded-xl border border-[#d8e5fb] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--brand-deep)] transition hover:bg-[#f8fbff]"
                 >
                   Cancel
                 </button>
               ) : null}
 
-              <button className="button button-primary rounded-xl px-5 py-2.5">
-                Add Doctor
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="button button-primary rounded-xl px-5 py-2.5 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isSubmitting ? "Saving..." : "Add Doctor"}
               </button>
             </div>
           </div>

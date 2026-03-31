@@ -29,10 +29,13 @@ type TiptapEditorFieldProps = {
   placeholder?: string;
   required?: boolean;
   size?: "default" | "compact";
-  submitMode?: "html" | "line-list";
+  submitMode?: "html" | "line-list" | "plain-text";
 };
 
-function getEditorValue(editor: Editor, submitMode: "html" | "line-list") {
+function getEditorValue(
+  editor: Editor,
+  submitMode: "html" | "line-list" | "plain-text",
+) {
   const html = editor.getHTML();
 
   if (submitMode === "line-list") {
@@ -41,6 +44,15 @@ function getEditorValue(editor: Editor, submitMode: "html" | "line-list") {
     return {
       fieldValue: lineListValue,
       plainText: lineListValue,
+    };
+  }
+
+  if (submitMode === "plain-text") {
+    const plainTextValue = stripRichTextToPlainText(html);
+
+    return {
+      fieldValue: plainTextValue,
+      plainText: plainTextValue,
     };
   }
 
@@ -95,7 +107,9 @@ export function TiptapEditorField({
     () =>
       submitMode === "line-list"
         ? stripRichTextToLineListText(defaultValue)
-        : toStoredRichTextContent(defaultValue),
+        : submitMode === "plain-text"
+          ? stripRichTextToPlainText(defaultValue)
+          : toStoredRichTextContent(defaultValue),
     [defaultValue, submitMode],
   );
   const [fieldValue, setFieldValue] = useState(initialValue);
@@ -117,7 +131,7 @@ export function TiptapEditorField({
     content:
       (submitMode === "line-list"
         ? normalizeLineListContent(initialValue)
-        : normalizeRichTextContent(defaultValue)) || "<p></p>",
+        : normalizeRichTextContent(initialValue)) || "<p></p>",
     editorProps: {
       attributes: {
         class: `tiptap-editor-content ${editorHeightClassName} px-4 py-3 text-sm text-[var(--brand-deep)] outline-none`,

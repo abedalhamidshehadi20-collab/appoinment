@@ -228,9 +228,9 @@ export async function updateAboutAction(formData: FormData) {
 
   const aboutData = {
     title: formData.get("title")?.toString() ?? "",
-    description: formData.get("description")?.toString() ?? "",
-    mission: formData.get("mission")?.toString() ?? "",
-    vision: formData.get("vision")?.toString() ?? "",
+    description: toStoredRichTextContent(formData.get("description")?.toString() ?? ""),
+    mission: toStoredRichTextContent(formData.get("mission")?.toString() ?? ""),
+    vision: toStoredRichTextContent(formData.get("vision")?.toString() ?? ""),
     values: toList(formData.get("values")),
   };
 
@@ -293,7 +293,7 @@ export async function saveServiceAction(formData: FormData) {
   const payload = {
     id: id || nextId("svc"),
     title: formData.get("title")?.toString() ?? "",
-    summary: formData.get("summary")?.toString() ?? "",
+    summary: toStoredRichTextContent(formData.get("summary")?.toString() ?? ""),
     features: toList(formData.get("features")),
   };
 
