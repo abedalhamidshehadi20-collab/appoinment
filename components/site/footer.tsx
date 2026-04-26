@@ -62,8 +62,8 @@ function SocialLink({
 }
 
 export async function SiteFooter() {
-  const settings = await getSiteSettings();
-  const contactInfo = normalizeContactSettings(settings.contact);
+  const settings = await getSiteSettings().catch(() => null);
+  const contactInfo = normalizeContactSettings(settings?.contact);
   const showFooterLocation = Boolean(contactInfo.mapUrl);
   const footerAddress = [contactInfo.address, contactInfo.city].filter(Boolean).join(", ");
   const copyright = contactInfo.footer.copyright.replace(

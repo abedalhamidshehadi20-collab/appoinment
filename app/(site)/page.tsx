@@ -13,10 +13,20 @@ type Props = {
   searchParams: Promise<{ q?: string }>;
 };
 
+const FALLBACK_HOME_SETTINGS = {
+  home: {
+    stats: [
+      { label: "Clinics Managed", value: "48" },
+      { label: "Cities", value: "11" },
+      { label: "Patient Satisfaction", value: "96%" },
+    ],
+  },
+};
+
 export default async function HomePage({ searchParams }: Props) {
   const [doctors, settings, specialtiesData] = await Promise.all([
-    getAllDoctors(),
-    getSiteSettings(),
+    getAllDoctors().catch(() => []),
+    getSiteSettings().catch(() => FALLBACK_HOME_SETTINGS),
     getFeaturedSpecialties().catch(() => null)
   ]);
   const patient = await getPatientSession();
