@@ -175,7 +175,7 @@ export async function loginAction(formData: FormData) {
   const password = formData.get("password")?.toString() ?? "";
   const next = formData.get("next")?.toString() || "/dashboard";
 
-  const ok = await login(identifier, password);
+  const ok = await login(identifier.trim().toLowerCase(), password.trim());
   if (!ok) {
     redirect(`/dashboard/login?error=1&next=${encodeURIComponent(next)}`);
   }
