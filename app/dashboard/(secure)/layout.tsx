@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { requireUser, canAccess } from "@/lib/auth";
 import { Permission } from "@/lib/db";
@@ -14,6 +15,7 @@ const sections: { href: string; label: string; permission?: Permission }[] = [
   { href: "/dashboard/news", label: "News", permission: "news" },
   { href: "/dashboard/contacts", label: "Messages", permission: "contacts" },
   { href: "/dashboard/interests", label: "Appointments", permission: "interests" },
+  { href: "/dashboard/employees", label: "Employees", permission: "employees" },
 ];
 
 export default async function SecureDashboardLayout({
@@ -22,6 +24,10 @@ export default async function SecureDashboardLayout({
   children: ReactNode;
 }) {
   const user = await requireUser();
+
+  if (user.role === "doctor") {
+    redirect("/doctor-dashboard");
+  }
 
   const navItems = sections
     .filter((item) => !item.permission || canAccess(user, item.permission))

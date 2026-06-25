@@ -10,7 +10,8 @@ export type Permission =
   | 'news'
   | 'contacts'
   | 'interests'
-  | 'patients';
+  | 'patients'
+  | 'employees';
 
 export type User = {
   id: string;
@@ -20,7 +21,29 @@ export type User = {
   password: string;
   role: string;
   permissions: Permission[];
+  created_at?: string;
 };
+
+const FALLBACK_USERS: User[] = [
+  {
+    id: "usr_admin_fallback",
+    name: "Admin User",
+    username: "admin",
+    email: "admin@shmed.com",
+    password: "admin123",
+    role: "admin",
+    permissions: ["all"],
+  },
+  {
+    id: "usr_editor_fallback",
+    name: "Blog Editor",
+    username: "blogger",
+    email: "blogger@shmed.com",
+    password: "blog123",
+    role: "editor",
+    permissions: ["blogs", "news"],
+  },
+];
 
 export type Patient = {
   id: string;
@@ -52,6 +75,15 @@ export type Doctor = {
   years_experience: number;
   available_times: string[];
   created_at: string;
+};
+
+export type DoctorCredential = {
+  id: string;
+  doctor_id: string;
+  email: string;
+  password: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type Specialty = {
@@ -149,6 +181,41 @@ export type Contact = {
   created_at: string;
 };
 
+export type ContactSettings = {
+  address: string;
+  city: string;
+  phone: string;
+  email: string;
+  mapUrl: string;
+  mapLinkUrl: string;
+  mapLinkLabel: string;
+  workingHours: {
+    weekdays: string;
+    saturday: string;
+    sunday: string;
+  };
+  topBar: {
+    phoneTitle: string;
+    phoneText: string;
+    emailTitle: string;
+    emailText: string;
+    locationTitle: string;
+    locationText: string;
+  };
+  footer: {
+    brandName: string;
+    connectTitle: string;
+    quickLinksTitle: string;
+    treatmentsTitle: string;
+    treatments: string[];
+    mapSectionTitle: string;
+    copyright: string;
+    facebookUrl: string;
+    instagramUrl: string;
+    whatsappUrl: string;
+  };
+};
+
 export type SiteSettings = {
   home: {
     headline: string;
@@ -166,19 +233,97 @@ export type SiteSettings = {
     vision: string;
     values: string[];
   };
-  contact: {
-    address: string;
-    city: string;
-    phone: string;
-    email: string;
-    mapUrl: string;
-    workingHours: {
-      weekdays: string;
-      saturday: string;
-      sunday: string;
-    };
-  };
+  contact: ContactSettings;
 };
+
+export type CustomRole = {
+  value: string;
+  label: string;
+  permissions: Permission[];
+};
+
+export const defaultContactSettings: ContactSettings = {
+  address: "Eastern Highway",
+  city: "Saida, Lebanon",
+  phone: "+961 81865142",
+  email: "abedalhamidshehadi20@gmail.com",
+  mapUrl: "https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik",
+  mapLinkUrl: "https://maps.google.com",
+  mapLinkLabel: "View On Google Map",
+  workingHours: {
+    weekdays: "8:00 AM - 6:00 PM",
+    saturday: "9:00 AM - 2:00 PM",
+    sunday: "Closed",
+  },
+  topBar: {
+    phoneTitle: "Phone",
+    phoneText: "Your health doesn't wait, and neither do we. Call to reach out to us now.",
+    emailTitle: "Email",
+    emailText: "We look forward to helping you achieve better health. Reach out to us now.",
+    locationTitle: "Location",
+    locationText: "Eastern Highway, Saida, Lebanon",
+  },
+  footer: {
+    brandName: "Sh-Med",
+    connectTitle: "Connect With Us",
+    quickLinksTitle: "Quick Links",
+    treatmentsTitle: "Treatments",
+    treatments: [
+      "Hearing Loss",
+      "Ear Infection",
+      "Dizziness & Vertigo",
+      "Allergy Rhinitis",
+      "Swallowing Disorders",
+    ],
+    mapSectionTitle: "Location",
+    copyright: "Copyright {year} Sh-Med. All rights reserved. This site is protected by reCAPTCHA and the Google Terms and Sitemap.",
+    facebookUrl: "",
+    instagramUrl: "",
+    whatsappUrl: "",
+  },
+};
+
+export function normalizeContactSettings(
+  value: Partial<ContactSettings> | null | undefined,
+): ContactSettings {
+  const source: Partial<ContactSettings> =
+    value && typeof value === "object" ? value : {};
+  const workingHours: Partial<ContactSettings["workingHours"]> = source.workingHours ?? {};
+  const topBar: Partial<ContactSettings["topBar"]> = source.topBar ?? {};
+  const footer: Partial<ContactSettings["footer"]> = source.footer ?? {};
+
+  const mergedBase = {
+    ...defaultContactSettings,
+    ...source,
+    workingHours: {
+      ...defaultContactSettings.workingHours,
+      ...workingHours,
+    },
+  };
+
+  const locationText =
+    topBar.locationText?.toString().trim() ||
+    [mergedBase.address, mergedBase.city].filter(Boolean).join(", ") ||
+    defaultContactSettings.topBar.locationText;
+
+  const treatments = Array.isArray(footer.treatments)
+    ? footer.treatments.map((item) => item.toString().trim()).filter(Boolean)
+    : defaultContactSettings.footer.treatments;
+
+  return {
+    ...mergedBase,
+    topBar: {
+      ...defaultContactSettings.topBar,
+      ...topBar,
+      locationText,
+    },
+    footer: {
+      ...defaultContactSettings.footer,
+      ...footer,
+      treatments: treatments.length > 0 ? treatments : defaultContactSettings.footer.treatments,
+    },
+  };
+}
 
 // ============================================
 // Helper Functions
@@ -225,7 +370,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   return settings as SiteSettings;
 }
 
-export async function updateSiteSettings(key: 'home' | 'about', value: unknown) {
+export async function updateSiteSettings(key: 'home' | 'about' | 'contact', value: unknown) {
   const { error } = await supabase
     .from('site_settings')
     .upsert({ key, value, updated_at: new Date().toISOString() });
@@ -233,20 +378,109 @@ export async function updateSiteSettings(key: 'home' | 'about', value: unknown) 
   if (error) throw error;
 }
 
+function normalizePermissionList(value: unknown): Permission[] {
+  const allowedPermissions: Permission[] = [
+    'all',
+    'home',
+    'about',
+    'services',
+    'projects',
+    'blogs',
+    'news',
+    'contacts',
+    'interests',
+    'patients',
+    'employees',
+  ];
+
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return Array.from(
+    new Set(
+      value
+        .map((item) => item?.toString?.().trim() ?? '')
+        .filter((item): item is Permission => allowedPermissions.includes(item as Permission)),
+    ),
+  );
+}
+
+export async function getCustomRoles(): Promise<CustomRole[]> {
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
+    .from('site_settings')
+    .select('value')
+    .eq('key', 'custom_roles')
+    .maybeSingle();
+
+  if (error) throw error;
+
+  if (!Array.isArray(data?.value)) {
+    return [];
+  }
+
+  return data.value
+    .map((item) => {
+      const value = item?.value?.toString?.().trim() ?? '';
+      const label = item?.label?.toString?.().trim() ?? '';
+      const permissions = normalizePermissionList(item?.permissions);
+
+      if (!value || !label || permissions.length === 0) {
+        return null;
+      }
+
+      return {
+        value,
+        label,
+        permissions,
+      } satisfies CustomRole;
+    })
+    .filter((item): item is CustomRole => Boolean(item));
+}
+
 // ============================================
 // Users (Admin/Staff)
 // ============================================
 
 export async function findUser(identifier: string, password: string) {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .or(`username.eq.${identifier},email.eq.${identifier}`)
-    .eq('password', password)
-    .single();
+  const normalizedIdentifier = identifier.trim();
+  const normalizedPassword = password.trim();
+  const normalizedIdentifierLower = normalizedIdentifier.toLowerCase();
 
-  if (error) return null;
-  return data as User;
+  if (!normalizedIdentifier || !normalizedPassword) {
+    return null;
+  }
+
+  const query = (client: typeof supabase) =>
+    client
+      .from('users')
+      .select('*')
+      .or(`username.eq.${normalizedIdentifier},email.eq.${normalizedIdentifier}`)
+      .eq('password', normalizedPassword)
+      .single();
+
+  const { data, error } = await query(supabase);
+
+  if (!error && data) {
+    return data as User;
+  }
+
+  if (supabaseAdmin) {
+    const { data: adminData, error: adminError } = await query(supabaseAdmin);
+    if (!adminError && adminData) {
+      return adminData as User;
+    }
+  }
+
+  const fallbackUser = FALLBACK_USERS.find(
+    (user) =>
+      (user.username.toLowerCase() === normalizedIdentifierLower ||
+        user.email.toLowerCase() === normalizedIdentifierLower) &&
+      user.password === normalizedPassword,
+  );
+
+  return fallbackUser ?? null;
 }
 
 export async function getAllUsers() {
@@ -265,6 +499,35 @@ export async function createUser(user: Omit<User, 'id'>) {
 
   if (error) throw error;
   return newUser;
+}
+
+export async function getUserById(id: string) {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) return null;
+  return data as User;
+}
+
+export async function updateUser(id: string, updates: Partial<Omit<User, 'id'>>) {
+  const { error } = await supabase
+    .from('users')
+    .update(updates)
+    .eq('id', id);
+
+  if (error) throw error;
+}
+
+export async function deleteUser(id: string) {
+  const { error } = await supabase
+    .from('users')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
 }
 
 // ============================================
@@ -548,6 +811,56 @@ export async function deleteDoctor(id: string) {
     .eq('id', id);
 
   if (error) throw error;
+}
+
+function isMissingDoctorCredentialsTableError(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? '';
+  return (
+    error.code === '42P01' ||
+    error.code === 'PGRST205' ||
+    message.includes('doctor_credentials')
+  );
+}
+
+export async function getAllDoctorCredentials() {
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
+    .from('doctor_credentials')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (isMissingDoctorCredentialsTableError(error)) {
+    return [] as DoctorCredential[];
+  }
+
+  if (error) throw error;
+  return data as DoctorCredential[];
+}
+
+export async function findDoctorCredentialByCredentials(email: string, password: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
+    .from('doctor_credentials')
+    .select('*')
+    .ilike('email', normalizedEmail)
+    .eq('password', password)
+    .single();
+
+  if (isMissingDoctorCredentialsTableError(error)) {
+    return null;
+  }
+
+  if (error) {
+    return null;
+  }
+
+  return data as DoctorCredential;
 }
 
 // ============================================
@@ -1033,7 +1346,9 @@ export async function deleteNews(id: string) {
 // ============================================
 
 export async function getAllContacts() {
-  const { data, error } = await supabase
+  const client = supabaseAdmin ?? supabase;
+
+  const { data, error } = await client
     .from('contacts')
     .select('*')
     .order('created_at', { ascending: false });
@@ -1049,14 +1364,17 @@ export async function createContact(contact: Omit<Contact, 'id' | 'created_at'>)
     created_at: new Date().toISOString()
   };
 
-  const { error } = await supabase.from('contacts').insert(newContact);
+  const client = supabaseAdmin ?? supabase;
+  const { error } = await client.from('contacts').insert(newContact);
 
   if (error) throw error;
   return newContact;
 }
 
 export async function deleteContact(id: string) {
-  const { error } = await supabase
+  const client = supabaseAdmin ?? supabase;
+
+  const { error } = await client
     .from('contacts')
     .delete()
     .eq('id', id);

@@ -54,6 +54,18 @@ CREATE TABLE doctors (
 );
 
 -- =============================================
+-- Table: doctor_credentials
+-- =============================================
+CREATE TABLE doctor_credentials (
+  id TEXT PRIMARY KEY,
+  doctor_id TEXT UNIQUE NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
 -- Table: appointments (interests)
 -- =============================================
 CREATE TABLE appointments (
@@ -164,6 +176,9 @@ INSERT INTO site_settings (key, value) VALUES
 CREATE INDEX idx_patients_email ON patients(email);
 CREATE INDEX idx_doctors_slug ON doctors(slug);
 CREATE INDEX idx_doctors_sector ON doctors(sector);
+CREATE INDEX idx_doctor_credentials_doctor_id ON doctor_credentials(doctor_id);
+CREATE INDEX idx_doctor_credentials_email ON doctor_credentials(email);
+CREATE UNIQUE INDEX idx_doctor_credentials_email_lower ON doctor_credentials(LOWER(email));
 CREATE INDEX idx_appointments_patient ON appointments(patient_id);
 CREATE INDEX idx_appointments_doctor ON appointments(doctor_id);
 CREATE INDEX idx_appointments_date ON appointments(appointment_date);
@@ -178,6 +193,7 @@ CREATE INDEX idx_news_slug ON news(slug);
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE patients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE doctors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE doctor_credentials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
@@ -209,6 +225,14 @@ CREATE POLICY "Anyone can view site settings" ON site_settings
 CREATE POLICY "Anyone can create contacts" ON contacts
   FOR INSERT WITH CHECK (true);
 
+-- The dashboard uses custom app cookies, not Supabase Auth sessions, so it
+-- reads and deletes contact submissions through the anon role by default.
+CREATE POLICY "Anyone can view contacts" ON contacts
+  FOR SELECT USING (true);
+
+CREATE POLICY "Anyone can delete contacts" ON contacts
+  FOR DELETE USING (true);
+
 -- Public can insert appointments
 CREATE POLICY "Anyone can create appointments" ON appointments
   FOR INSERT WITH CHECK (true);
@@ -235,9 +259,25 @@ CREATE POLICY "Patients can view their appointments" ON appointments
 COMMENT ON TABLE users IS 'Admin and staff users for dashboard';
 COMMENT ON TABLE patients IS 'Patient accounts and profiles';
 COMMENT ON TABLE doctors IS 'Doctor profiles (previously called projects)';
+COMMENT ON TABLE doctor_credentials IS 'Doctor login credentials managed from the dashboard';
 COMMENT ON TABLE appointments IS 'Patient appointment bookings (previously called interests)';
 COMMENT ON TABLE services IS 'Clinic services offered';
 COMMENT ON TABLE blogs IS 'Blog posts';
 COMMENT ON TABLE news IS 'News articles';
 COMMENT ON TABLE contacts IS 'Contact form submissions';
 COMMENT ON TABLE site_settings IS 'Site-wide settings stored as JSON';
+
+CREATE OR REPLACE FUNCTION set_doctor_credentials_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_doctor_credentials_updated_at ON doctor_credentials;
+
+CREATE TRIGGER trg_doctor_credentials_updated_at
+BEFORE UPDATE ON doctor_credentials
+FOR EACH ROW
+EXECUTE FUNCTION set_doctor_credentials_updated_at();

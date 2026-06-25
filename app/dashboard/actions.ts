@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { login, logout, requirePermission } from "@/lib/auth";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { getSafeDoctorImageSrc } from "@/lib/image";
+import { toStoredRichTextContent } from "@/lib/rich-text";
 import {
   nextId,
   slugify,
@@ -17,12 +18,16 @@ import {
   getAllContacts,
   getAllAppointments,
   getAllPatients,
-  getSiteSettings,
+  getCustomRoles,
+  deleteContact,
+  type Permission,
+  type CustomRole,
 } from "@/lib/db";
 
 const refreshSite = () => {
   revalidatePath("/", "layout");
   revalidatePath("/about");
+  revalidatePath("/appointments");
   revalidatePath("/blog");
   revalidatePath("/contact");
   revalidatePath("/doctors");
@@ -34,9 +39,111 @@ const refreshSite = () => {
   revalidatePath("/dashboard/news");
   revalidatePath("/dashboard/home");
   revalidatePath("/dashboard/contacts");
+  revalidatePath("/dashboard/projects");
 };
 
-async function upsertSiteSetting(key: "home" | "about" | "contact", value: unknown) {
+function isMissingDoctorCredentialsTableError(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? "";
+  return (
+    error.code === "42P01" ||
+    error.code === "PGRST205" ||
+    message.includes('relation "doctor_credentials" does not exist') ||
+    message.includes("could not find the table")
+  );
+}
+
+function isDoctorCredentialAccessDenied(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? "";
+  return error.code === "42501" || message.includes("permission denied");
+}
+
+function isDoctorCredentialEmailTaken(error: { code?: string } | null) {
+  return error?.code === "23505";
+}
+
+function isUniqueConstraintError(error: { code?: string; message?: string } | null) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? "";
+  return error.code === "23505" || message.includes("duplicate key");
+}
+
+async function findDoctorBySlugForSave(slug: string) {
+  const client = supabaseAdmin ?? supabase;
+  const { data, error } = await client
+    .from("doctors")
+    .select("id")
+    .eq("slug", slug)
+    .limit(1);
+
+  if (error) {
+    throw error;
+  }
+
+  return data?.[0] ?? null;
+}
+
+async function insertDoctorCredentialRecord(payload: {
+  id: string;
+  doctor_id: string;
+  email: string;
+  password: string;
+  created_at: string;
+  updated_at: string;
+}) {
+  const { error } = await supabase
+    .from("doctor_credentials")
+    .insert(payload);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from("doctor_credentials")
+      .insert(payload);
+
+    return adminError;
+  }
+
+  return error;
+}
+
+async function deleteDoctorRecord(id: string) {
+  const { error } = await supabase
+    .from("doctors")
+    .delete()
+    .eq("id", id);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from("doctors")
+      .delete()
+      .eq("id", id);
+
+    if (adminError) {
+      throw adminError;
+    }
+
+    return;
+  }
+
+  if (error) {
+    throw error;
+  }
+}
+
+async function upsertSiteSetting(
+  key: "home" | "about" | "contact" | "custom_roles",
+  value: unknown,
+) {
   const payload = { key, value, updated_at: new Date().toISOString() };
 
   const { error } = await supabase
@@ -68,7 +175,7 @@ export async function loginAction(formData: FormData) {
   const password = formData.get("password")?.toString() ?? "";
   const next = formData.get("next")?.toString() || "/dashboard";
 
-  const ok = await login(identifier, password);
+  const ok = await login(identifier.trim().toLowerCase(), password.trim());
   if (!ok) {
     redirect(`/dashboard/login?error=1&next=${encodeURIComponent(next)}`);
   }
@@ -90,7 +197,7 @@ export async function updateHomeAction(formData: FormData) {
 
   const homeData = {
     headline: formData.get("headline")?.toString() ?? "",
-    subheadline: formData.get("subheadline")?.toString() ?? "",
+    subheadline: toStoredRichTextContent(formData.get("subheadline")?.toString() ?? ""),
     primaryCtaText: formData.get("primaryCtaText")?.toString() ?? "",
     primaryCtaLink: formData.get("primaryCtaLink")?.toString() ?? "",
     secondaryCtaText: formData.get("secondaryCtaText")?.toString() ?? "",
@@ -121,9 +228,9 @@ export async function updateAboutAction(formData: FormData) {
 
   const aboutData = {
     title: formData.get("title")?.toString() ?? "",
-    description: formData.get("description")?.toString() ?? "",
-    mission: formData.get("mission")?.toString() ?? "",
-    vision: formData.get("vision")?.toString() ?? "",
+    description: toStoredRichTextContent(formData.get("description")?.toString() ?? ""),
+    mission: toStoredRichTextContent(formData.get("mission")?.toString() ?? ""),
+    vision: toStoredRichTextContent(formData.get("vision")?.toString() ?? ""),
     values: toList(formData.get("values")),
   };
 
@@ -133,7 +240,7 @@ export async function updateAboutAction(formData: FormData) {
 }
 
 export async function updateContactAction(formData: FormData) {
-  await requirePermission("contacts");
+  await requirePermission("home");
 
   const contactData = {
     address: formData.get("address")?.toString() ?? "",
@@ -141,10 +248,32 @@ export async function updateContactAction(formData: FormData) {
     phone: formData.get("phone")?.toString() ?? "",
     email: formData.get("email")?.toString() ?? "",
     mapUrl: formData.get("mapUrl")?.toString() ?? "",
+    mapLinkUrl: formData.get("mapLinkUrl")?.toString() ?? "",
+    mapLinkLabel: formData.get("mapLinkLabel")?.toString() ?? "",
     workingHours: {
       weekdays: formData.get("weekdaysHours")?.toString() ?? "",
       saturday: formData.get("saturdayHours")?.toString() ?? "",
       sunday: formData.get("sundayHours")?.toString() ?? "",
+    },
+    topBar: {
+      phoneTitle: formData.get("phoneTitle")?.toString() ?? "",
+      phoneText: formData.get("phoneText")?.toString() ?? "",
+      emailTitle: formData.get("emailTitle")?.toString() ?? "",
+      emailText: formData.get("emailText")?.toString() ?? "",
+      locationTitle: formData.get("locationTitle")?.toString() ?? "",
+      locationText: formData.get("locationText")?.toString() ?? "",
+    },
+    footer: {
+      brandName: formData.get("brandName")?.toString() ?? "",
+      connectTitle: formData.get("connectTitle")?.toString() ?? "",
+      quickLinksTitle: formData.get("quickLinksTitle")?.toString() ?? "",
+      treatmentsTitle: formData.get("treatmentsTitle")?.toString() ?? "",
+      treatments: toList(formData.get("treatments")),
+      mapSectionTitle: formData.get("mapSectionTitle")?.toString() ?? "",
+      copyright: formData.get("copyright")?.toString() ?? "",
+      facebookUrl: formData.get("facebookUrl")?.toString() ?? "",
+      instagramUrl: formData.get("instagramUrl")?.toString() ?? "",
+      whatsappUrl: formData.get("whatsappUrl")?.toString() ?? "",
     },
   };
 
@@ -164,7 +293,7 @@ export async function saveServiceAction(formData: FormData) {
   const payload = {
     id: id || nextId("svc"),
     title: formData.get("title")?.toString() ?? "",
-    summary: formData.get("summary")?.toString() ?? "",
+    summary: toStoredRichTextContent(formData.get("summary")?.toString() ?? ""),
     features: toList(formData.get("features")),
   };
 
@@ -192,9 +321,27 @@ export async function deleteServiceAction(formData: FormData) {
 // ============================================
 
 export async function saveProjectAction(formData: FormData) {
-  await requirePermission("projects");
+  const user = await requirePermission("projects");
   const id = formData.get("id")?.toString();
   const title = formData.get("title")?.toString() ?? "";
+  const doctorCredentialEmail =
+    formData.get("doctorCredentialEmail")?.toString().trim().toLowerCase() ?? "";
+  const doctorCredentialPassword = formData.get("doctorCredentialPassword")?.toString() ?? "";
+  const shouldCreateCredential = !id && !!doctorCredentialEmail;
+
+  if (user.role === "doctor") {
+    if (!user.doctorId || !id || id !== user.doctorId) {
+      redirect("/dashboard/projects?credential_error=doctor_scope");
+    }
+  }
+
+  if (!id && doctorCredentialPassword && !doctorCredentialEmail) {
+    redirect("/dashboard/projects?credential_error=missing_fields");
+  }
+
+  if (!id && doctorCredentialEmail && !doctorCredentialPassword) {
+    redirect("/dashboard/projects?credential_error=password_required");
+  }
 
   // Parse available times from textarea or use default
   const availableTimesRaw = formData.get("availableTimes")?.toString() ?? "";
@@ -232,6 +379,10 @@ export async function saveProjectAction(formData: FormData) {
     gallery: payload.gallery,
     details: payload.details,
   };
+  const updatePayload: Partial<typeof payload> = { ...payload };
+  delete updatePayload.id;
+  const fallbackUpdatePayload: Partial<typeof fallbackPayload> = { ...fallbackPayload };
+  delete fallbackUpdatePayload.id;
 
   const isMissingColumnError = (error: { code?: string; message?: string } | null) => {
     if (!error) {
@@ -250,25 +401,37 @@ export async function saveProjectAction(formData: FormData) {
     );
   };
 
+  const existingDoctorWithSlug = await findDoctorBySlugForSave(payload.slug);
+
+  if (existingDoctorWithSlug && existingDoctorWithSlug.id !== payload.id) {
+    redirect("/dashboard/projects?save_error=slug_taken");
+  }
+
   if (id) {
-    const { error } = await supabase.from("doctors").update(payload).eq("id", id);
+    const { error } = await supabase.from("doctors").update(updatePayload).eq("id", id);
 
     if (isMissingColumnError(error)) {
       const { error: fallbackError } = await supabase
         .from("doctors")
-        .update(fallbackPayload)
+        .update(fallbackUpdatePayload)
         .eq("id", id);
 
       if (fallbackError?.code === "42501" && supabaseAdmin) {
         const { error: adminFallbackError } = await supabaseAdmin
           .from("doctors")
-          .update(fallbackPayload)
+          .update(fallbackUpdatePayload)
           .eq("id", id);
 
         if (adminFallbackError) {
+          if (isUniqueConstraintError(adminFallbackError)) {
+            redirect("/dashboard/projects?save_error=slug_taken");
+          }
           throw adminFallbackError;
         }
       } else if (fallbackError) {
+        if (isUniqueConstraintError(fallbackError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw fallbackError;
       }
 
@@ -277,17 +440,27 @@ export async function saveProjectAction(formData: FormData) {
     }
 
     if (error?.code === "42501" && supabaseAdmin) {
-      const { error: adminError } = await supabaseAdmin.from("doctors").update(payload).eq("id", id);
+      const { error: adminError } = await supabaseAdmin
+        .from("doctors")
+        .update(updatePayload)
+        .eq("id", id);
       if (adminError) {
+        if (isUniqueConstraintError(adminError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw adminError;
       }
     } else if (error) {
+      if (isUniqueConstraintError(error)) {
+        redirect("/dashboard/projects?save_error=slug_taken");
+      }
       throw error;
     }
   } else {
+    const createdAt = new Date().toISOString();
     const insertPayload = {
       ...payload,
-      created_at: new Date().toISOString(),
+      created_at: createdAt,
     };
 
     const { error } = await supabase.from("doctors").insert(insertPayload);
@@ -295,7 +468,7 @@ export async function saveProjectAction(formData: FormData) {
     if (isMissingColumnError(error)) {
       const fallbackInsertPayload = {
         ...fallbackPayload,
-        created_at: new Date().toISOString(),
+        created_at: createdAt,
       };
 
       const { error: fallbackError } = await supabase.from("doctors").insert(fallbackInsertPayload);
@@ -303,23 +476,60 @@ export async function saveProjectAction(formData: FormData) {
       if (fallbackError?.code === "42501" && supabaseAdmin) {
         const { error: adminFallbackError } = await supabaseAdmin.from("doctors").insert(fallbackInsertPayload);
         if (adminFallbackError) {
+          if (isUniqueConstraintError(adminFallbackError)) {
+            redirect("/dashboard/projects?save_error=slug_taken");
+          }
           throw adminFallbackError;
         }
       } else if (fallbackError) {
+        if (isUniqueConstraintError(fallbackError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw fallbackError;
       }
-
-      refreshSite();
-      return;
     }
-
-    if (error?.code === "42501" && supabaseAdmin) {
+    else if (error?.code === "42501" && supabaseAdmin) {
       const { error: adminError } = await supabaseAdmin.from("doctors").insert(insertPayload);
       if (adminError) {
+        if (isUniqueConstraintError(adminError)) {
+          redirect("/dashboard/projects?save_error=slug_taken");
+        }
         throw adminError;
       }
     } else if (error) {
+      if (isUniqueConstraintError(error)) {
+        redirect("/dashboard/projects?save_error=slug_taken");
+      }
       throw error;
+    }
+
+    if (shouldCreateCredential) {
+      const credentialError = await insertDoctorCredentialRecord({
+        id: nextId("dcr"),
+        doctor_id: payload.id,
+        email: doctorCredentialEmail,
+        password: doctorCredentialPassword,
+        created_at: createdAt,
+        updated_at: createdAt,
+      });
+
+      if (credentialError) {
+        await deleteDoctorRecord(payload.id);
+
+        if (isMissingDoctorCredentialsTableError(credentialError)) {
+          redirect("/dashboard/projects?credential_error=doctor_credentials_missing");
+        }
+
+        if (isDoctorCredentialAccessDenied(credentialError)) {
+          redirect("/dashboard/projects?credential_error=doctor_credentials_access_denied");
+        }
+
+        if (isDoctorCredentialEmailTaken(credentialError)) {
+          redirect("/dashboard/projects?credential_error=email_taken");
+        }
+
+        throw credentialError;
+      }
     }
   }
 
@@ -327,10 +537,14 @@ export async function saveProjectAction(formData: FormData) {
 }
 
 export async function deleteProjectAction(formData: FormData) {
-  await requirePermission("projects");
+  const user = await requirePermission("projects");
   const id = formData.get("id")?.toString();
 
   if (!id) return;
+
+  if (user.role === "doctor") {
+    redirect("/dashboard/projects?credential_error=doctor_scope");
+  }
 
   const { error } = await supabase.from("doctors").delete().eq("id", id);
 
@@ -344,6 +558,94 @@ export async function deleteProjectAction(formData: FormData) {
   }
 
   refreshSite();
+}
+
+export async function saveDoctorCredentialAction(formData: FormData) {
+  const user = await requirePermission("projects");
+
+  const credentialId = formData.get("credentialId")?.toString();
+  const doctorId = formData.get("doctorId")?.toString();
+  const email = formData.get("email")?.toString().trim().toLowerCase() ?? "";
+  const password = formData.get("password")?.toString() ?? "";
+  const timestamp = new Date().toISOString();
+
+  if (user.role === "doctor") {
+    if (!user.doctorId || doctorId !== user.doctorId) {
+      redirect("/dashboard/projects?credential_error=doctor_scope");
+    }
+  }
+
+  if (!doctorId || !email) {
+    redirect("/dashboard/projects?credential_error=missing_fields");
+  }
+
+  const handleCredentialError = (error: { code?: string; message?: string } | null) => {
+    if (!error) {
+      return;
+    }
+
+    if (isMissingDoctorCredentialsTableError(error)) {
+      redirect("/dashboard/projects?credential_error=doctor_credentials_missing");
+    }
+
+    if (isDoctorCredentialAccessDenied(error)) {
+      redirect("/dashboard/projects?credential_error=doctor_credentials_access_denied");
+    }
+
+    if (isDoctorCredentialEmailTaken(error)) {
+      redirect("/dashboard/projects?credential_error=email_taken");
+    }
+
+    throw error;
+  };
+
+  if (credentialId) {
+    const updates: Record<string, string> = {
+      email,
+      updated_at: timestamp,
+    };
+
+    if (password) {
+      updates.password = password;
+    }
+
+    const { error } = await supabase
+      .from("doctor_credentials")
+      .update(updates)
+      .eq("id", credentialId)
+      .eq("doctor_id", doctorId);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin
+        .from("doctor_credentials")
+        .update(updates)
+        .eq("id", credentialId)
+        .eq("doctor_id", doctorId);
+
+      handleCredentialError(adminError);
+    } else {
+      handleCredentialError(error);
+    }
+  } else {
+    if (!password) {
+      redirect("/dashboard/projects?credential_error=password_required");
+    }
+
+    const payload = {
+      id: nextId("dcr"),
+      doctor_id: doctorId,
+      email,
+      password,
+      created_at: timestamp,
+      updated_at: timestamp,
+    };
+
+    const error = await insertDoctorCredentialRecord(payload);
+    handleCredentialError(error);
+  }
+
+  refreshSite();
+  redirect("/dashboard/projects?credential_success=1");
 }
 
 // ============================================
@@ -378,8 +680,8 @@ export async function saveBlogAction(formData: FormData) {
     id: id || nextId("blg"),
     slug: slugify(formData.get("slug")?.toString() || title),
     title,
-    excerpt: formData.get("excerpt")?.toString() ?? "",
-    content: formData.get("content")?.toString() ?? "",
+    excerpt: toStoredRichTextContent(formData.get("excerpt")?.toString() ?? ""),
+    content: toStoredRichTextContent(formData.get("content")?.toString() ?? ""),
     author: formData.get("author")?.toString() ?? "",
     published_at: toSafePublishedAt(publishedAtRaw),
     tags: toList(formData.get("tags")),
@@ -464,8 +766,8 @@ export async function saveNewsAction(formData: FormData) {
     id: id || nextId("nws"),
     slug: slugify(formData.get("slug")?.toString() || title),
     title,
-    excerpt: formData.get("excerpt")?.toString() ?? "",
-    content: formData.get("content")?.toString() ?? "",
+    excerpt: toStoredRichTextContent(formData.get("excerpt")?.toString() ?? ""),
+    content: toStoredRichTextContent(formData.get("content")?.toString() ?? ""),
     source: formData.get("source")?.toString() ?? "",
     published_at: toSafePublishedAt(publishedAtRaw),
   };
@@ -617,7 +919,8 @@ export async function savePatientAction(formData: FormData) {
   };
 
   if (id) {
-    const { created_at, ...updatePayload } = payload;
+    const { created_at: removedCreatedAt, ...updatePayload } = payload;
+    void removedCreatedAt;
     await supabase.from("patients").update(updatePayload).eq("id", id);
   } else {
     await supabase.from("patients").insert(payload);
@@ -800,7 +1103,7 @@ export async function deleteContactAction(formData: FormData) {
 
   if (!id) return;
 
-  await supabase.from("contacts").delete().eq("id", id);
+  await deleteContact(id);
   refreshSite();
 }
 
@@ -816,4 +1119,188 @@ export async function deleteInterestAction(formData: FormData) {
 
   await supabase.from("appointments").delete().eq("id", id);
   refreshSite();
+}
+
+// ============================================
+// Employee Management Actions
+// ============================================
+
+export async function saveEmployeeAction(formData: FormData) {
+  await requirePermission("employees");
+  const id = formData.get("id")?.toString();
+
+  const name = formData.get("name")?.toString() ?? "";
+  const email = formData.get("email")?.toString() ?? "";
+  const username = formData.get("username")?.toString() ?? "";
+  const password = formData.get("password")?.toString() ?? "";
+  const role = formData.get("role")?.toString() ?? "blog_manager";
+
+  // Get permissions from role using rbac helper
+  const { getRolePermissions } = await import("@/lib/rbac");
+  const customRoles = await getCustomRoles();
+  const permissions = getRolePermissions(role, customRoles);
+
+  if (permissions.length === 0) {
+    redirect("/dashboard/employees?error=invalid_role");
+  }
+
+  if (id) {
+    // Update existing employee
+    const updates: Record<string, unknown> = {
+      name,
+      email,
+      username,
+      role,
+      permissions,
+    };
+
+    // Only update password if provided
+    if (password) {
+      updates.password = password;
+    }
+
+    const { error } = await supabase.from("users").update(updates).eq("id", id);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin
+        .from("users")
+        .update(updates)
+        .eq("id", id);
+      if (adminError) throw adminError;
+    } else if (error) {
+      throw error;
+    }
+  } else {
+    // Create new employee
+    if (!password) {
+      redirect("/dashboard/employees?error=password_required");
+    }
+
+    const payload = {
+      id: nextId("usr"),
+      name,
+      email,
+      username,
+      password,
+      role,
+      permissions,
+    };
+
+    const { error } = await supabase.from("users").insert(payload);
+
+    if (error?.code === "42501" && supabaseAdmin) {
+      const { error: adminError } = await supabaseAdmin
+        .from("users")
+        .insert(payload);
+      if (adminError) throw adminError;
+    } else if (error) {
+      throw error;
+    }
+  }
+
+  revalidatePath("/dashboard/employees");
+  redirect("/dashboard/employees?success=1");
+}
+
+export async function createCustomRoleAction(input: {
+  label: string;
+  permissions: Permission[];
+}): Promise<
+  | { ok: true; role: CustomRole }
+  | { ok: false; error: string }
+> {
+  await requirePermission("employees");
+
+  const { normalizeRoleValue } = await import("@/lib/rbac");
+
+  const label = input.label.trim();
+  const value = normalizeRoleValue(label);
+  const allowedPermissions: Permission[] = [
+    "all",
+    "home",
+    "about",
+    "services",
+    "projects",
+    "blogs",
+    "news",
+    "contacts",
+    "interests",
+    "patients",
+    "employees",
+  ];
+
+  const permissions = Array.from(
+    new Set(
+      input.permissions.filter((permission) =>
+        allowedPermissions.includes(permission),
+      ),
+    ),
+  );
+
+  if (!label || !value) {
+    return { ok: false, error: "Role name is required." };
+  }
+
+  if (value === "__create_role__") {
+    return { ok: false, error: "This role key is reserved." };
+  }
+
+  if (permissions.length === 0) {
+    return { ok: false, error: "Select at least one permission." };
+  }
+
+  const { getAllRoles } = await import("@/lib/rbac");
+  const existingCustomRoles = await getCustomRoles();
+  const existingRoles = getAllRoles(existingCustomRoles);
+
+  const roleAlreadyExists = existingRoles.some(
+    (role) =>
+      role.value === value ||
+      role.label.trim().toLowerCase() === label.toLowerCase(),
+  );
+
+  if (roleAlreadyExists) {
+    return { ok: false, error: "A role with this name already exists." };
+  }
+
+  const normalizedPermissions = permissions.includes("all")
+    ? (["all"] as Permission[])
+    : permissions;
+
+  const role: CustomRole = {
+    value,
+    label,
+    permissions: normalizedPermissions,
+  };
+
+  const updatedRoles = [...existingCustomRoles, role].sort((left, right) =>
+    left.label.localeCompare(right.label),
+  );
+
+  await upsertSiteSetting("custom_roles", updatedRoles);
+  revalidatePath("/dashboard/employees");
+
+  return { ok: true, role };
+}
+
+export async function deleteEmployeeAction(formData: FormData) {
+  await requirePermission("employees");
+  const id = formData.get("id")?.toString();
+
+  if (!id) return;
+
+  const { error } = await supabase.from("users").delete().eq("id", id);
+
+  if (error?.code === "42501" && supabaseAdmin) {
+    const { error: adminError } = await supabaseAdmin
+      .from("users")
+      .delete()
+      .eq("id", id);
+    if (adminError) throw adminError;
+  } else if (error) {
+    throw error;
+  }
+
+  revalidatePath("/dashboard/employees");
+  redirect("/dashboard/employees?deleted=1");
 }

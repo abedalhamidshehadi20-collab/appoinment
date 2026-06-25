@@ -1,4 +1,4 @@
-import { getAllDoctors, getAllServices, getSiteSettings } from "@/lib/db";
+import { getAllDoctors, getAllServices, getSiteSettings, normalizeContactSettings } from "@/lib/db";
 import AppointmentForm from "@/components/AppointmentForm";
 import { getPatientSession } from "@/lib/patient-auth";
 import { getSessionUser } from "@/lib/auth";
@@ -22,13 +22,7 @@ export default async function AppointmentsPage({ searchParams }: Props) {
     getSiteSettings()
   ]);
 
-  const contactInfo = settings.contact || {
-    address: "Eastern Highway",
-    city: "Saida|Lebanon",
-    email: "abedalhamidshehadi20@gmail.com",
-    phone: "+961 81865142",
-    mapUrl: "https://www.openstreetmap.org/export/embed.html?bbox=72.48%2C23.00%2C72.68%2C23.14&layer=mapnik"
-  };
+  const contactInfo = normalizeContactSettings(settings.contact);
 
   return (
     <main className="container fade-up py-10">

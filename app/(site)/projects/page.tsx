@@ -1,68 +1,233 @@
-import Link from "next/link";
 import Image from "next/image";
-import { getAllDoctors } from "@/lib/db";
+import Link from "next/link";
+import { SpecialtyLink, getSpecialtyItems, type SpecialtyItem } from "@/components/site/specialties";
+import { getAllDoctors, getAllSpecialties } from "@/lib/db";
+import { doctorMatchesSpecialty, normalizeSpecialtyLabel } from "@/lib/doctor-specialties";
 import { getSafeDoctorImageSrc } from "@/lib/image";
 
-export default async function ProjectsPage() {
-  const doctors = await getAllDoctors();
+type Props = {
+  searchParams: Promise<{ q?: string; specialty?: string }>;
+};
+
+function getStatusStyles(status?: string) {
+  const normalizedStatus = status?.trim().toLowerCase() ?? "available";
+
+  if (normalizedStatus === "available") {
+    return {
+      dot: "bg-[#10b981]",
+      text: "text-[#10b981]",
+    };
+  }
+
+  if (normalizedStatus === "unavailable") {
+    return {
+      dot: "bg-[#ef4444]",
+      text: "text-[#ef4444]",
+    };
+  }
+
+  if (normalizedStatus === "on leave") {
+    return {
+      dot: "bg-[#f59e0b]",
+      text: "text-[#f59e0b]",
+    };
+  }
+
+  return {
+    dot: "bg-[#6b7280]",
+    text: "text-[#6b7280]",
+  };
+}
+
+function decodeSpecialty(value: string) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+export default async function ProjectsPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const rawQuery = params.q?.trim() ?? "";
+  const rawSpecialty = params.specialty?.trim() ?? "";
+  const query = rawQuery.toLowerCase();
+
+  const [allDoctors, specialtiesData] = await Promise.all([
+    getAllDoctors(),
+    getAllSpecialties().catch(() => null),
+  ]);
+
+  const allSpecialties = getSpecialtyItems(specialtiesData, false).reduce<SpecialtyItem[]>((items, item) => {
+    const label = normalizeSpecialtyLabel(item.label) || item.label;
+
+    if (items.some((existingItem) => existingItem.label.toLowerCase() === label.toLowerCase())) {
+      return items;
+    }
+
+    items.push({
+      ...item,
+      label,
+    });
+
+    return items;
+  }, []);
+  const selectedSpecialty =
+    allSpecialties.find(
+      (item) =>
+        normalizeSpecialtyLabel(item.label).toLowerCase() ===
+        normalizeSpecialtyLabel(rawSpecialty).toLowerCase(),
+    )?.label ?? normalizeSpecialtyLabel(rawSpecialty ? decodeSpecialty(rawSpecialty) : "");
+
+  const doctorsBySpecialty = selectedSpecialty
+    ? allDoctors.filter((doctor) => doctorMatchesSpecialty(doctor, selectedSpecialty))
+    : allDoctors;
+
+  const doctors = doctorsBySpecialty.filter((doctor) => {
+    if (!query) {
+      return true;
+    }
+    const haystack = `${doctor.title} ${doctor.sector} ${doctor.location} ${doctor.excerpt}`.toLowerCase();
+    return haystack.includes(query);
+  });
+
+  const emptyStateMessage = selectedSpecialty
+    ? "No doctors found for this specialty."
+    : query
+    ? "No doctors found for your search."
+    : "No doctors are available right now.";
 
   return (
-    <main className="container fade-up pb-16">
-      <section className="rounded-[32px] border border-[#e5e7eb] bg-white p-8 shadow-sm md:p-10">
-        <div>
-          <h1 className="text-4xl font-extrabold">Doctors</h1>
-          <p className="mt-3 text-[var(--muted)]">Meet our medical specialists and book your appointment.</p>
-        </div>
-
-        <div className="grid-cards mt-6">
-          {doctors.map((doctor) => (
-            <article key={doctor.id} className="card overflow-hidden">
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100">
-                <Image
-                  src={getSafeDoctorImageSrc(doctor.cover_image)}
-                  alt={doctor.title}
-                  fill
-                  className="object-cover object-top transition-transform duration-300 hover:scale-105"
-                />
+    <main className="container fade-up pb-10">
+      <section className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
+        <aside className="card h-fit p-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+          <div className="rounded-[20px] border border-[#e7eef9] bg-[linear-gradient(180deg,#fbfdff_0%,#f5f9ff_100%)] px-4 py-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold text-[var(--brand-deep)]">Specialties</p>
+                <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
+                  Choose a specialty to narrow the doctor list quickly.
+                </p>
               </div>
-              <div className="p-5">
-                {/* Availability Badge */}
-                {doctor.status && (
-                  <p className="mb-2 flex items-center gap-1 text-sm font-medium">
-                    <span className={`inline-block h-2 w-2 rounded-full ${
-                      doctor.status.toLowerCase() === 'available'
-                        ? 'bg-[#10b981]'
-                        : doctor.status.toLowerCase() === 'unavailable'
-                        ? 'bg-[#ef4444]'
-                        : doctor.status.toLowerCase() === 'on leave'
-                        ? 'bg-[#f59e0b]'
-                        : 'bg-[#6b7280]'
-                    }`}></span>
-                    <span className={
-                      doctor.status.toLowerCase() === 'available'
-                        ? 'text-[#10b981]'
-                        : doctor.status.toLowerCase() === 'unavailable'
-                        ? 'text-[#ef4444]'
-                        : doctor.status.toLowerCase() === 'on leave'
-                        ? 'text-[#f59e0b]'
-                        : 'text-[#6b7280]'
-                    }>
-                      {doctor.status}
-                    </span>
-                  </p>
-                )}
+              <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-[var(--brand)] shadow-sm">
+                {allSpecialties.length}
+              </span>
+            </div>
+          </div>
 
-                <p className="text-xs font-semibold uppercase text-[var(--accent)]">{doctor.sector}</p>
-                <h2 className="mt-2 text-xl font-bold">{doctor.title}</h2>
-                <p className="mt-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
+          <nav className="mt-3 grid gap-2">
+            {allSpecialties.map((item) => (
+              <SpecialtyLink
+                key={item.label}
+                item={item}
+                active={item.label === selectedSpecialty}
+                compact
+              />
+            ))}
+          </nav>
+        </aside>
 
-                <Link href={`/doctors/${doctor.slug}`} className="mt-4 inline-block text-sm font-semibold text-[var(--brand-deep)]">
-                  View profile
+        <section className="min-w-0">
+          <div className="mb-5 rounded-[28px] border border-[#e7eef9] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] p-5 shadow-[0_14px_36px_-30px_rgba(17,24,39,0.35)] md:p-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <span className="inline-flex rounded-full bg-[#eef4ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--brand)]">
+                  Doctor Directory
+                </span>
+                <h1 className="mt-3 text-3xl font-extrabold tracking-[-0.03em] text-[var(--brand-deep)] md:text-4xl">
+                  {selectedSpecialty || "Find the right specialist"}
+                </h1>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">
+                  {selectedSpecialty
+                    ? "Explore doctors in this specialty and refine the list with a quick search."
+                    : "Browse all specialists and narrow the list by specialty or search term."}
+                </p>
+              </div>
+
+              <form method="get" className="flex w-full flex-wrap gap-2 sm:w-auto sm:flex-nowrap">
+                {selectedSpecialty ? (
+                  <input type="hidden" name="specialty" value={selectedSpecialty} />
+                ) : null}
+                <input
+                  name="q"
+                  defaultValue={rawQuery}
+                  placeholder="Search doctors"
+                  className="h-11 w-full rounded-xl border border-[var(--line)] bg-white px-4 text-sm shadow-sm outline-none transition focus:border-[#bfd5ff] focus:ring-4 focus:ring-[#e8f0ff] sm:w-64"
+                />
+                <button className="button button-primary h-11 rounded-xl px-5 text-sm">Search</button>
+              </form>
+            </div>
+
+            {selectedSpecialty ? (
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <span className="rounded-full border border-[#d8e5fb] bg-[#f8fbff] px-3 py-1 text-xs font-semibold text-[var(--brand-deep)]">
+                  Active specialty: {selectedSpecialty}
+                </span>
+                <Link href="/doctors" className="text-sm font-semibold text-[var(--brand)] transition hover:text-[var(--brand-deep)]">
+                  View all doctors
                 </Link>
               </div>
-            </article>
-          ))}
-        </div>
+            ) : null}
+          </div>
+
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-[var(--brand-deep)]">
+                {doctors.length} doctor{doctors.length === 1 ? "" : "s"} found
+              </h2>
+              <p className="text-sm text-[var(--muted)]">
+                Profiles are updated based on the selected specialty and search filters.
+              </p>
+            </div>
+          </div>
+
+          {doctors.length === 0 ? (
+            <article className="card rounded-[24px] p-8 text-sm text-[var(--muted)]">{emptyStateMessage}</article>
+          ) : null}
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {doctors.map((doctor) => (
+              (() => {
+                const doctorStatus = doctor.status?.trim() || "Available";
+                const statusStyles = getStatusStyles(doctorStatus);
+
+                return (
+                  <article
+                    key={doctor.id}
+                    className="card overflow-hidden rounded-[22px] border border-[#e7eef9] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] shadow-[0_18px_36px_-28px_rgba(15,23,42,0.25)]"
+                  >
+                    <div className="relative h-56 w-full overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)]">
+                      <Image
+                        src={getSafeDoctorImageSrc(doctor.cover_image)}
+                        alt={doctor.title}
+                        fill
+                        className="object-cover object-[center_18%] transition-transform duration-300 hover:scale-[1.03]"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <p className="flex items-center gap-2 text-sm font-semibold">
+                        <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusStyles.dot}`} />
+                        <span className={statusStyles.text}>{doctorStatus}</span>
+                      </p>
+                      <span className="mt-3 inline-flex rounded-full bg-[#dbeafe] px-3 py-1 text-xs font-semibold text-[var(--brand)]">
+                        {doctor.sector}
+                      </span>
+                  <h2 className="mt-3 text-2xl font-bold">{doctor.title}</h2>
+                  <p className="mt-1 text-lg font-semibold text-[var(--brand)]">
+                    {doctor.years_experience || 10} Years
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--muted)]">{doctor.location}</p>
+                  <p className="mt-1 line-clamp-2 text-sm text-[var(--muted)]">{doctor.excerpt}</p>
+                  <Link href={`/doctors/${doctor.slug}`} className="button button-secondary mt-4 w-full">
+                    View profile
+                  </Link>
+                    </div>
+                  </article>
+                );
+              })()
+            ))}
+          </div>
+        </section>
       </section>
     </main>
   );

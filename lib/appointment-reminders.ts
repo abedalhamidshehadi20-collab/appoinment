@@ -17,12 +17,14 @@ type SingleReminderResult = {
     | "sent"
     | "not_found"
     | "missing_email"
-    | "not_tomorrow"
+    | "not_in_window"
     | "opted_out"
     | "already_sent"
     | "invalid_status"
     | "failed";
 };
+
+export const MANUAL_APPOINTMENT_REMINDER_LEAD_DAYS = 2;
 
 function toISODate(date: Date) {
   return date.toISOString().split("T")[0];
@@ -32,6 +34,16 @@ function getTomorrowISODate() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   return toISODate(tomorrow);
+}
+
+export function getManualAppointmentReminderISODate() {
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + MANUAL_APPOINTMENT_REMINDER_LEAD_DAYS);
+  return toISODate(targetDate);
+}
+
+export function isManualAppointmentReminderEligibleDate(appointmentDate: string) {
+  return appointmentDate === getManualAppointmentReminderISODate();
 }
 
 function isReminderEligibleStatus(status: string) {
@@ -173,9 +185,8 @@ export async function sendSingleAppointmentReminderById(appointmentId: string): 
     return { ok: false, reason: "invalid_status" };
   }
 
-  const tomorrowDate = getTomorrowISODate();
-  if (appointment.appointment_date !== tomorrowDate) {
-    return { ok: false, reason: "not_tomorrow" };
+  if (!isManualAppointmentReminderEligibleDate(appointment.appointment_date)) {
+    return { ok: false, reason: "not_in_window" };
   }
 
   const optedIn = await isPatientReminderEnabled(appointment.patient_id, email);

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/db";
+import { normalizeRichTextContent } from "@/lib/rich-text";
 
 export default async function AboutPage() {
   const settings = await getSiteSettings();
@@ -21,18 +22,27 @@ export default async function AboutPage() {
 
           <div className="space-y-6">
             <h1 className="text-4xl font-extrabold text-[#1f2937]">{data.about.title}</h1>
-            <p className="text-[#4b5563] leading-relaxed">
-              {data.about.description}
-            </p>
-            <p className="text-[#4b5563] leading-relaxed">
-              {data.about.mission}
-            </p>
+            <div
+              className="rich-text text-[#4b5563]"
+              dangerouslySetInnerHTML={{
+                __html: normalizeRichTextContent(data.about.description),
+              }}
+            />
+            <div
+              className="rich-text text-[#4b5563]"
+              dangerouslySetInnerHTML={{
+                __html: normalizeRichTextContent(data.about.mission),
+              }}
+            />
 
             <div className="pt-4">
               <h2 className="text-xl font-bold text-[#1f2937]">Our Vision</h2>
-              <p className="mt-3 text-[#4b5563] leading-relaxed">
-                {data.about.vision}
-              </p>
+              <div
+                className="rich-text mt-3 text-[#4b5563]"
+                dangerouslySetInnerHTML={{
+                  __html: normalizeRichTextContent(data.about.vision),
+                }}
+              />
             </div>
           </div>
         </div>

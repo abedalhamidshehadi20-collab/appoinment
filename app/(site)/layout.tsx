@@ -8,7 +8,7 @@ export default async function PublicLayout({ children }: { children: ReactNode }
 
   return (
     <SiteShell
-      admin={admin ? { name: admin.name, role: admin.role } : null}
+      admin={admin ? { name: admin.name, email: admin.email || admin.role, role: admin.role } : null}
       patient={patient ? { name: patient.name, email: patient.email } : null}
     >
       {children}

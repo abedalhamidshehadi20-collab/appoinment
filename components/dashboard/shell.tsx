@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 import { logoutAction } from "@/app/dashboard/actions";
+import { getRoleLabel } from "@/lib/rbac";
 import {
   LayoutDashboard,
   Home,
@@ -17,8 +18,7 @@ import {
   Calendar,
   LogOut,
   Search,
-  Bell,
-  Settings,
+  UserCog,
 } from "lucide-react";
 
 type NavItem = {
@@ -37,6 +37,7 @@ const iconMap: Record<string, React.ElementType> = {
   "/dashboard/news": Newspaper,
   "/dashboard/contacts": Mail,
   "/dashboard/interests": Calendar,
+  "/dashboard/employees": UserCog,
 };
 
 type User = {
@@ -99,7 +100,7 @@ export function DashboardShell({
             </div>
             <div className="flex-1 overflow-hidden">
               <p className="truncate text-sm font-medium">{user.name}</p>
-              <p className="truncate text-xs text-gray-400">{user.role}</p>
+              <p className="truncate text-xs text-gray-400">{getRoleLabel(user.role)}</p>
             </div>
           </div>
           <form action={logoutAction}>
@@ -126,15 +127,6 @@ export function DashboardShell({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button className="relative flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
-              <Bell className="h-5 w-5" />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"></span>
-            </button>
-            <button className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
-              <Settings className="h-5 w-5" />
-            </button>
-          </div>
         </header>
 
         {/* Page Content */}

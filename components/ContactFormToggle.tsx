@@ -28,10 +28,11 @@ type Doctor = {
 type Props = {
   doctors: Doctor[];
   showSuccess: boolean;
+  showError?: boolean;
   isPatientLoggedIn: boolean;
 };
 
-export default function ContactFormToggle({ showSuccess, isPatientLoggedIn }: Props) {
+export default function ContactFormToggle({ showSuccess, showError, isPatientLoggedIn }: Props) {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   return (
@@ -129,6 +130,12 @@ export default function ContactFormToggle({ showSuccess, isPatientLoggedIn }: Pr
             {showSuccess ? (
               <p className="mt-6 rounded-2xl border border-[#bde5cb] bg-[#ecfff3] p-4 text-sm font-medium text-[#145f39]">
                 Your message has been sent successfully.
+              </p>
+            ) : null}
+
+            {showError ? (
+              <p className="mt-6 rounded-2xl border border-[#f5c2c7] bg-[#f8d7da] p-4 text-sm font-medium text-[#842029]">
+                Failed to send your message. Please try again or contact us directly.
               </p>
             ) : null}
 

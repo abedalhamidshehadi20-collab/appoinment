@@ -1,18 +1,26 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { findUser, Permission, User } from "./db";
+import {
+  findDoctorCredentialByCredentials,
+  findUser,
+  getDoctorById,
+  Permission,
+  User,
+} from "./db";
 
 const COOKIE_NAME = "cms_session";
 const SECRET = process.env.SESSION_SECRET ?? "replace-this-in-production";
 const SESSION_TTL_MS = 1000 * 60 * 60 * 8;
 
-type SessionPayload = {
+export type SessionPayload = {
   id: string;
   username: string;
   name: string;
+  email: string;
   role: string;
   permissions: Permission[];
+  doctorId?: string;
   exp: number;
 };
 
@@ -71,8 +79,43 @@ export async function login(username: string, password: string) {
     id: user.id,
     username: user.username,
     name: user.name,
+    email: user.email,
     role: user.role,
     permissions: user.permissions,
+    exp: Date.now() + SESSION_TTL_MS,
+  };
+
+  const store = await cookies();
+  store.set(COOKIE_NAME, encode(payload), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: SESSION_TTL_MS / 1000,
+  });
+
+  return true;
+}
+
+export async function loginDoctor(email: string, password: string) {
+  const credential = await findDoctorCredentialByCredentials(email, password);
+  if (!credential) {
+    return false;
+  }
+
+  const doctor = await getDoctorById(credential.doctor_id);
+  if (!doctor) {
+    return false;
+  }
+
+  const payload: SessionPayload = {
+    id: credential.id,
+    username: credential.email,
+    name: doctor.title,
+    email: credential.email,
+    role: "doctor",
+    permissions: ["projects"],
+    doctorId: doctor.id,
     exp: Date.now() + SESSION_TTL_MS,
   };
 
@@ -120,4 +163,13 @@ export async function requirePermission(permission: Permission) {
 
 export function canAccess(user: Pick<User, "permissions"> | SessionPayload, permission: Permission) {
   return user.permissions.includes("all") || user.permissions.includes(permission);
+}
+
+export async function requireDoctorUser() {
+  const user = await getSessionUser();
+  if (!user || user.role !== "doctor" || !user.doctorId) {
+    redirect("/doctor-login");
+  }
+
+  return user;
 }

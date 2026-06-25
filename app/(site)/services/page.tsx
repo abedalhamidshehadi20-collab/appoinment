@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getAllServices } from "@/lib/db";
+import { normalizeRichTextContent } from "@/lib/rich-text";
 
 export default async function ServicesPage() {
   const services = await getAllServices();
@@ -51,9 +52,12 @@ export default async function ServicesPage() {
                   <h2 className="mt-4 text-lg font-bold text-[#1f2937] group-hover:text-[#5f6fff]">
                     {service.title}
                   </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-[#6b7280]">
-                    {service.summary}
-                  </p>
+                  <div
+                    className="rich-text mt-3 text-sm text-[#6b7280]"
+                    dangerouslySetInnerHTML={{
+                      __html: normalizeRichTextContent(service.summary),
+                    }}
+                  />
                   <ul className="mt-4 list-disc pl-5 text-sm leading-relaxed text-[#6b7280]">
                     {service.features.map((feature) => (
                       <li key={feature}>{feature}</li>
